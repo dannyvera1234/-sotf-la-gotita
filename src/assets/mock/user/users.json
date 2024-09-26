@@ -1,0 +1,22 @@
+[
+  {
+    "id": "6489d935b08f8d1282fcd3e8",
+    "nombre": "Juan Pérez",
+    "identificacion": "12345678",
+    "estado": "Activo",
+    "direccion": "Calle Falsa 123, Ciudad, País",
+    "establecimiento": "Oficina Central",
+    "telefono": "+1234567890",
+    "correo": "adasd@ds.com"
+  },
+  {
+    "id": 2,
+    "nombre": "Ana Gómez",
+    "identificacion": "87654321",
+    "estado": "Inactivo",
+    "direccion": "Avenida Siempre Viva 742, Ciudad, País",
+    "establecimiento": "Sucursal Norte",
+    "telefono": "+0987654321",
+    "correo": "adasd@ds.com"
+  }
+]

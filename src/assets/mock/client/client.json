@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+
+    "name": "Juan Pérez",
+    "identificacion": "12345678",
+    "telefono": "+1234567890",
+    "direccion": "Calle Falsa 123, Ciudad, País",
+    "correo": "juan.perez@example.com"
+  },
+  {
+    "id": 2,
+
+    "name": "Ana Gómez",
+    "identificacion": "87654321",
+    "telefono": "+0987654321",
+    "direccion": "Avenida Siempre Viva 742, Ciudad, País",
+    "correo": "ana.gomez@example.com"
+  }
+]

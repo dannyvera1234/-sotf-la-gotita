@@ -1,0 +1,57 @@
+[
+  {
+    "id": 7,
+    "name": "Guantes de Ciclismo",
+    "descripcion": "Guantes con agarre antideslizante",
+    "tipo": "VENTA",
+    "precio": 22.99,
+    "foto": null,
+    "status": "VENTA",
+    "cantidad": 3,
+    "variaciones": []
+  },
+  {
+    "id": 8,
+    "name": "Sudadera Capucha",
+    "descripcion": "Sudadera cómoda para uso diario",
+    "tipo": "VENTA",
+    "precio": 35.99,
+    "foto": null,
+    "status": "DISPONIBLE",
+    "cantidad": 12,
+    "variaciones": []
+  },
+  {
+    "id": 9,
+    "name": "Casco de Ciclismo",
+    "descripcion": "Casco de seguridad para ciclistas",
+    "tipo": "VENTA",
+    "precio": 45.99,
+    "foto": null,
+    "status": "DISPONIBLE",
+    "cantidad": 5,
+    "variaciones": []
+  },
+  {
+    "id": 10,
+    "name": "Bicicleta de Montaña",
+    "descripcion": "Bicicleta de montaña con frenos de disco",
+    "tipo": "VENTA",
+    "precio": 150.99,
+    "foto": null,
+    "status": "ALQUILADO",
+    "cantidad": 2,
+    "variaciones": []
+  },
+  {
+    "id": 11,
+    "name": "Bicicleta de Ruta",
+    "descripcion": "Bicicleta de ruta con cambios Shimano",
+    "tipo": "VENTA",
+    "precio": 250.99,
+    "foto": null,
+    "status": "DISPONIBLE",
+    "cantidad": 3,
+    "variaciones": []
+  }
+]

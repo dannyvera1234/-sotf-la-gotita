@@ -1,0 +1,33 @@
+{
+  "id": "2",
+  "membresias": [
+    {
+      "tipo_membresia": "MEMBRESIA_BASICA",
+      "fecha_inicio": "2023-07-01",
+      "fecha_fin": "2024-07-01",
+      "precio": 29.99,
+      "metodo_pago": "TARJETA_CREDITO",
+      "beneficios": ["Acceso a contenido general", "Soporte estándar"],
+      "status": "Activa"
+    },
+    {
+      "tipo_membresia": "MEMBRESIA_PREMIUM",
+      "fecha_inicio": "2024-01-01",
+      "fecha_fin": "2024-12-31",
+      "precio": 59.99,
+      "metodo_pago": "EFECTIVO",
+      "beneficios": ["Acceso a contenido premium", "Soporte prioritario"],
+      "status": "Expirada"
+    },
+    {
+      "tipo_membresia": "MEMBRESIA_VIP",
+      "descripcion": "Acceso a contenido exclusivo y eventos",
+      "fecha_inicio": "2024-06-01",
+      "fecha_fin": "2025-06-01",
+      "precio": 199.99,
+      "metodo_pago": "TRANSFERENCIA",
+      "beneficios": ["Acceso a contenido exclusivo", "Invitaciones a eventos especiales", "Soporte VIP"],
+      "status": "Expirada"
+    }
+  ]
+}

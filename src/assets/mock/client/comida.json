@@ -1,0 +1,124 @@
+{"comidas" :[
+  {
+    "nombre": "Ensalada César",
+    "descripcion": "Ensalada clásica con lechuga romana, crutones, queso parmesano y aderezo César.",
+    "calorias_ingeridas": 250,
+    "intensidad": "Baja"
+  },
+  {
+    "nombre": "Pechuga de Pollo a la Parrilla",
+    "descripcion": "Pollo marinado y cocinado a la parrilla, acompañado de verduras al vapor.",
+    "calorias_ingeridas": 400,
+    "intensidad": "Media"
+  },
+  {
+    "nombre": "Tacos de Pescado",
+    "descripcion": "Tacos con pescado a la parrilla, col rallada y salsa de aguacate.",
+    "calorias_ingeridas": 350,
+    "intensidad": "Media"
+  },
+  {
+    "nombre": "Salmón al Horno",
+    "descripcion": "Filete de salmón horneado con hierbas y limón, servido con arroz integral.",
+    "calorias_ingeridas": 500,
+    "intensidad": "Alta"
+  },
+  {
+    "nombre": "Batido de Proteína",
+    "descripcion": "Batido de proteína de suero con plátano y leche de almendras.",
+    "calorias_ingeridas": 300,
+    "intensidad": "Media"
+  },
+  {
+    "nombre": "Pizza Margarita",
+    "descripcion": "Pizza tradicional con salsa de tomate, queso mozzarella fresco y albahaca.",
+    "calorias_ingeridas": 600,
+    "intensidad": "Alta"
+  },
+  {
+    "nombre": "Sopa de Lentejas",
+    "descripcion": "Sopa casera con lentejas, zanahorias y apio.",
+    "calorias_ingeridas": 250,
+    "intensidad": "Baja"
+  },
+  {
+    "nombre": "Wrap de Pollo",
+    "descripcion": "Tortilla integral rellena de pollo, lechuga, tomate y aderezo de yogur.",
+    "calorias_ingeridas": 350,
+    "intensidad": "Media"
+  },
+  {
+    "nombre": "Hamburguesa de Res",
+    "descripcion": "Hamburguesa clásica con queso, lechuga, tomate y cebolla en un pan integral.",
+    "calorias_ingeridas": 700,
+    "intensidad": "Alta"
+  },
+  {
+    "nombre": "Pasta al Pesto",
+    "descripcion": "Pasta fusilli con salsa pesto, queso parmesano y piñones.",
+    "calorias_ingeridas": 550,
+    "intensidad": "Media"
+  },
+  {
+    "nombre": "Omelette de Claras",
+    "descripcion": "Omelette de claras de huevo con espinacas y champiñones.",
+    "calorias_ingeridas": 200,
+    "intensidad": "Baja"
+  },
+  {
+    "nombre": "Ceviche de Camarón",
+    "descripcion": "Camarón marinado en jugo de limón con cilantro, cebolla y jitomate.",
+    "calorias_ingeridas": 180,
+    "intensidad": "Baja"
+  },
+  {
+    "nombre": "Lasaña Vegetariana",
+    "descripcion": "Lasaña con capas de berenjena, calabacín, espinacas y queso ricotta.",
+    "calorias_ingeridas": 600,
+    "intensidad": "Media"
+  },
+  {
+    "nombre": "Smoothie Verde",
+    "descripcion": "Batido verde con espinaca, manzana, plátano y leche de almendras.",
+    "calorias_ingeridas": 180,
+    "intensidad": "Baja"
+  },
+  {
+    "nombre": "Arroz con Pollo",
+    "descripcion": "Plato clásico de arroz con pollo, zanahorias y chícharos.",
+    "calorias_ingeridas": 450,
+    "intensidad": "Media"
+  },
+  {
+    "nombre": "Sándwich de Atún",
+    "descripcion": "Pan integral relleno con ensalada de atún, lechuga y tomate.",
+    "calorias_ingeridas": 350,
+    "intensidad": "Media"
+  },
+  {
+    "nombre": "Chilaquiles Verdes",
+    "descripcion": "Tortillas fritas con salsa verde, queso fresco y crema.",
+    "calorias_ingeridas": 500,
+    "intensidad": "Alta"
+  },
+  {
+    "nombre": "Tazón de Quinoa",
+    "descripcion": "Tazón de quinoa con aguacate, garbanzos y verduras asadas.",
+    "calorias_ingeridas": 400,
+    "intensidad": "Media"
+  },
+  {
+    "nombre": "Enchiladas de Pollo",
+    "descripcion": "Tortillas rellenas de pollo y bañadas en salsa roja, servidas con arroz.",
+    "calorias_ingeridas": 600,
+    "intensidad": "Alta"
+  },
+  {
+    "nombre": "Sushi de Salmón",
+    "descripcion": "Rollos de sushi rellenos de salmón, aguacate y pepino.",
+    "calorias_ingeridas": 300,
+    "intensidad": "Media"
+  }
+]
+
+}

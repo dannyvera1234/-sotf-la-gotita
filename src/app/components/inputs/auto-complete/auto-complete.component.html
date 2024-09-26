@@ -1,0 +1,61 @@
+<div class="relative">
+  <div class="flex gap-2">
+    <div class="relative grow">
+      <input
+        [id]="control.name"
+        [name]="control.name"
+        autocomplete="new-password"
+        [value]="getValueText() || search()"
+        (focus)="open.set(true)"
+        class="peer w-full border-b-2 border-gray-300 focus:border-secondary outline-none text-gray-600 py-2"
+        #searchQuery
+        type="text"
+        [disabled]="value"
+        (input)="search.set(searchQuery.value || ''); open.set(true)"
+        placeholder=""
+      />
+      @if (label) {
+        <label
+          [for]="control.name"
+          class="absolute left-0 -top-3.5 text-gray-400 transition-all peer-placeholder-shown:top-2 peer-placeholder-shown:text-base text-sm peer-placeholder-shown:text-gray-400 peer-focus:-top-3.5 peer-focus:text-sm peer-focus:text-secondary"
+          >{{ label }}</label
+        >
+      }
+    </div>
+    @if (value) {
+      <button type="button" class="shrink-0" (click)="writeValue(null)">
+        <img src="/assets/icons/trash-icon.svg" width="14" height="16" alt="Delete" />
+      </button>
+    }
+  </div>
+
+  <ul class="border absolute z-10 w-full bg-white" [ngClass]="{ hidden: !open() }">
+    <cdk-virtual-scroll-viewport itemSize="10" class="items" [style.height.px]="options.length * 40">
+      <button
+        (click)="writeValue(item); open.set(false)"
+        *cdkVirtualFor="let item of options"
+        class="cursor-pointer px-2 py-2 hover:bg-gray-200 w-full text-start"
+      >
+        {{ optionLabel ? item[optionLabel] : item }}
+      </button>
+
+      @if (options.length === 0) {
+        @if (createOnNotFound && search()) {
+          <button
+            class="cursor-pointer px-2 py-2 hover:bg-gray-200 w-full text-start"
+            (click)="writeValue(search()); open.set(false)"
+          >
+            {{ search() }}
+          </button>
+        } @else {
+          <span class="p-2 block">
+            {{ notFound }}
+          </span>
+        }
+      }
+    </cdk-virtual-scroll-viewport>
+  </ul>
+  @if (control.control) {
+    <!-- <app-form-error-message [ngModel]="control.control" /> -->
+  }
+</div>

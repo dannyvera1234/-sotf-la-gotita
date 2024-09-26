@@ -1,0 +1,52 @@
+{
+  "id": 1,
+  "name": "Camiseta Deportiva ",
+  "descripcion": "Camiseta transpirable y ligera para damas y caballeros. Disponible en todas las tallas y colores.",
+  "tipo": "ALQUILER",
+  "precio": 25.99,
+  "foto": null,
+  "cantidad": 10,
+  "status": "DISPONIBLE",
+  "variaciones": [
+    {
+      "id": 1,
+      "talla": "S",
+      "color": "Rojo",
+      "cantidad": 0,
+      "status": "DISPONIBLE",
+      "foto": null,
+      "nombre": "Camiseta Deportiva Roja",
+      "descripcion": "Camiseta transpirable y ligera para damas y caballeros. Disponible en todas las tallas y colores."
+    },
+    {
+      "id": 2,
+      "talla": "M",
+      "color": "Azul",
+      "cantidad": 2,
+      "status": "DISPONIBLE",
+      "foto": null,
+      "nombre": "Camiseta Deportiva Azul",
+      "descripcion": "Camiseta transpirable y ligera para damas y caballeros. Disponible en todas las tallas y colores."
+    },
+    {
+      "id": 3,
+      "talla": "L",
+      "color": "Azul",
+      "cantidad": 5,
+      "status": "ALQUILADO",
+      "foto": null,
+      "nombre": "Camiseta Deportiva Azul",
+      "descripcion": "Camiseta transpirable y ligera para damas y caballeros. Disponible en todas las tallas y colores."
+    },
+    {
+      "id": 3,
+      "talla": "L",
+      "color": "Azul",
+      "cantidad": 5,
+      "status": "ALQUILADO",
+      "foto": null,
+      "nombre": "Camiseta Deportiva Azul",
+      "descripcion": "Camiseta transpirable y ligera para damas y caballeros. Disponible en todas las tallas y colores."
+    }
+  ]
+}

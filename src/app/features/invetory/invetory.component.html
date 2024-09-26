@@ -1,0 +1,108 @@
+<div class="p-5">
+  <div class="rounded-2xl shadow bg-white p-6">
+    <nav class="flex gap-4 justify-between items-center flex-wrap md:flex-row flex-col">
+      <!-- Search -->
+      <div class="bg-stone-100 w-full md:max-w-96 flex h-11 items-center rounded-2xl ps-4 gap-4">
+        <label for="searchApp" class="relative size-4 shrink-0"
+          ><img ngSrc="/assets/icons/search.svg" alt="Search" fill
+        /></label>
+        <input type="text" id="searchApp" placeholder="buscar" class="bg-transparent grow h-full px-2" />
+      </div>
+
+      <div class="max-md:w-full">
+        <a class="flex items-center gap-2 bg-secondary text-white px-4 py-2 rounded-lg" routerLink="/inventary/create">
+          <div class="relative size-5 shrink-0"><img ngSrc="/assets/icons/add.svg" alt="Create" fill /></div>
+          Agregar
+        </a>
+      </div>
+    </nav>
+
+    <hr class="my-4" />
+    <section>
+      <div class="relative overflow-x-auto">
+        <table class="w-full text-left">
+          <thead>
+            <tr class="*:font-normal *:text-neutral-400 *:px-6 *:py-3">
+              <th scope="col">Nombre</th>
+              <th scope="col">Descripción</th>
+              <th scope="col">Tipo</th>
+              <th scope="col">Precio</th>
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+          @if (loading()) {
+            <tbody>
+              <td colspan="100%">
+                <div class="text-center py-9">
+                  <div class="loader"></div>
+                </div>
+              </td>
+            </tbody>
+          } @else {
+            @if (products() && products().length > 0) {
+              <tbody>
+                @for (inventary of products(); track inventary.id) {
+                  <tr
+                    class="bg-white border-b border-dashed border-neutral-200 *:px-6 *:py-4 *:whitespace-nowrap [&>th]:ps-0"
+                  >
+                    <th scope="row" [routerLink]="[inventary.id]" class="font-normal">
+                      <a [routerLink]="[inventary.id]">
+                        <div class="flex gap-4 items-center">
+                          <div
+                            class="size-10 bg-primary rounded-lg text-white flex items-center justify-center uppercase"
+                          >
+                            {{ inventary.name | initials }}
+                          </div>
+                          <div>
+                            <p class="font-bold">{{ inventary.name }}</p>
+                          </div>
+                        </div>
+                      </a>
+                    </th>
+                    <td>
+                      {{ inventary.descripcion }}
+                    </td>
+                    <td>{{ inventary.tipo }}</td>
+                    <td>
+                      {{ inventary.precio | currency }}
+                    </td>
+                    <td>
+                      <p
+                        class="text-center rounded-lg inline-block px-3 py-1 text-white"
+                        [ngClass]="
+                          inventary.status === 'DISPONIBLE'
+                            ? 'bg-emerald-500'
+                            : inventary.status === 'VENDIDO'
+                              ? 'bg-red-500'
+                              : 'bg-yellow-500'
+                        "
+                      >
+                        <!-- {{ config.invetario_status()[inventary.status] }} -->
+                      </p>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            } @else {
+              @defer {
+                <tbody>
+                  <td colspan="100%">
+                    <!-- <app-not-found /> -->
+                  </td>
+                </tbody>
+              }
+            }
+          }
+        </table>
+      </div>
+
+      @defer {
+        <!-- @if (application()?.pagination) {
+            <div class="mt-4">
+              <app-pagination />
+            </div>
+          } -->
+      }
+    </section>
+  </div>
+</div>

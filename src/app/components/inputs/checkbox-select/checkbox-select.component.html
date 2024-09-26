@@ -1,0 +1,78 @@
+<div class="w-full">
+  @if (inputLabel) {
+    <label [for]="control.name" [class]="inputLabelClass">{{ inputLabel }}</label>
+  }
+  <button
+    [id]="control.name"
+    [class]="inputClass"
+    class="form-control"
+    class="w-full text-start py-2 border-b-2 border-gray-300"
+    type="button"
+    (click)="open.set(!open())"
+  >
+    <div>
+      @if (allSelectedLabel && areAllSelected()) {
+        {{ allSelectedLabel }}
+      } @else {
+        @for (item of selectedOptions().slice(0, maxShowedItems ?? values.length); track item) {
+          <span class="bg-gray-400 text-white me-1 px-2 rounded-md inline-block mb-1">{{
+            labelField ? item[labelField] : item
+          }}</span>
+        } @empty {
+          <span class="text-gray-400">{{ placeholder }}</span>
+        }
+        @if (maxShowedItems && maxShowedItems < values.length) {
+          <span class="badge bg-secondary me-1">+{{ values.length - maxShowedItems }}</span>
+        }
+      }
+    </div>
+    <i class="fa-solid fa-angle-down"></i>
+  </button>
+
+  <div class="" [ngClass]="{ hidden: !open() }">
+    <div style="max-height: 300px" class="border overflow-auto">
+      <div class="">
+        @if (allSelectedLabel) {
+          <div class="py-3 px-2 position-relative">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              [id]="control.name + '_all'"
+              (change)="toggleAll()"
+              [checked]="areAllSelected()"
+            />
+            <label class="form-check-label w-100" [for]="control.name + '_all'">{{ allSelectedLabel }}</label>
+
+            <div style="left: calc(-1.5em / 2)" class="border-bottom position-absolute w-100 bottom-0"></div>
+          </div>
+        }
+        @for (option of options; track $index) {
+          <div class="flex gap-2 items-center px-2 py-1">
+            @if (!labelField) {
+              <input
+                [value]="option"
+                type="checkbox"
+                [id]="control.name + '_' + $index"
+                (change)="toggleOption(option)"
+                [checked]="isChecked(option)"
+              />
+            } @else {
+              <input
+                [value]="option[valueField]"
+                type="checkbox"
+                [id]="control.name + '_' + $index"
+                (change)="toggleOption(option)"
+                [checked]="isChecked(option)"
+              />
+            }
+            <label class="grow" [for]="control.name + '_' + $index">{{
+              labelField ? option[labelField] : option
+            }}</label>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <app-form-error-message class="w-100" [control]="control.control!" />
+</div>

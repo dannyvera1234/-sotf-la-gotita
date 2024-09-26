@@ -1,0 +1,126 @@
+<div class="p-5">
+  <div class="rounded-2xl shadow bg-white p-6">
+    <nav class="flex gap-4 justify-between items-center flex-wrap md:flex-row flex-col">
+      <!-- Search -->
+      <div class="bg-stone-100 w-full md:max-w-96 flex h-11 items-center rounded-2xl ps-4 gap-4">
+        <label for="searchApp" class="relative size-4 shrink-0"
+          ><img ngSrc="/assets/icons/search.svg" alt="Search" fill
+        /></label>
+        <input type="text" id="searchApp" placeholder="buscar" class="bg-transparent grow h-full px-2" />
+      </div>
+
+      <div class="max-md:w-full">
+        <button
+          class="flex items-center gap-2 bg-secondary text-white px-4 py-2 rounded-lg"
+          (click)="newClientModal.open()"
+        >
+          <div class="relative size-5 shrink-0"><img ngSrc="/assets/icons/add.svg" alt="Create" fill /></div>
+          Agregar
+        </button>
+      </div>
+    </nav>
+
+    <hr class="my-4" />
+    <section>
+      <div class="relative overflow-x-auto">
+        <table class="w-full text-left">
+          <thead>
+            <tr class="*:font-normal *:text-neutral-400 *:px-6 *:py-3">
+              <th scope="col">Nombre</th>
+              <th scope="col">Indetificación</th>
+              <th scope="col">Telefono</th>
+              <th scope="col">Dirección</th>
+              <th scope="col">Email</th>
+              <th scope="col">Acciones</th>
+            </tr>
+          </thead>
+          @if (loading()) {
+            <tbody>
+              <td colspan="100%">
+                <div class="text-center py-9">
+                  <div class="loader"></div>
+                </div>
+              </td>
+            </tbody>
+          } @else {
+            @if (clients(); as $client) {
+              <tbody>
+                @for (client of $client; track client.id) {
+                  <tr
+                    class="bg-white border-b border-dashed border-neutral-200 *:px-6 *:py-4 *:whitespace-nowrap [&>th]:ps-0"
+                  >
+                    <th scope="row" class="font-normal">
+                      <a [routerLink]="[client.id]">
+                        <div class="flex gap-4 items-center">
+                          <div
+                            class="size-10 bg-primary rounded-lg text-white flex items-center justify-center uppercase"
+                          >
+                            {{ client.name | initials }}
+                          </div>
+                          <div>
+                            <p class="font-bold">{{ client.name }}</p>
+                          </div>
+                        </div>
+                      </a>
+                    </th>
+                    <td>
+                      {{ client.identificacion }}
+                    </td>
+                    <td>{{ client.telefono }}</td>
+                    <td>
+                      {{ client.direccion }}
+                    </td>
+                    <td>
+                      {{ client.correo }}
+                    </td>
+                    <td>....</td>
+                  </tr>
+                }
+              </tbody>
+            } @else {
+              @defer {
+                <tbody>
+                  <td colspan="100%">
+                    <!-- <app-client-not-found /> -->
+                  </td>
+                </tbody>
+              }
+            }
+          }
+        </table>
+      </div>
+
+      @defer {
+        <!-- @if (application()?.pagination) {
+              <div class="mt-4">
+                <app-pagination />
+              </div>
+            } -->
+      }
+    </section>
+  </div>
+</div>
+
+<app-modal #newClientModal>
+  @defer {
+    <div class="h-full flex items-center">
+      <div class="bg-white w-full rounded-lg overflow-auto max-h-full">
+        <header class="p-4 flex justify-between items-center border border-b border-gray-300">
+          <h2 class="font-bold text-xl truncate">Nuevo Cliente</h2>
+          <button (click)="newClientModal.close()" class="shrink-0">
+            <img
+              ngSrc="/assets/icons/close-icon.svg"
+              width="14"
+              height="18"
+              alt="close"
+              style="filter: invert(64%) sepia(1%) saturate(370%) hue-rotate(314deg) brightness(94%) contrast(91%)"
+            />
+          </button>
+        </header>
+        <section class="p-4">
+          <!-- <app-create-client (client)="newClientModal.close()" /> -->
+        </section>
+      </div>
+    </div>
+  }
+</app-modal>

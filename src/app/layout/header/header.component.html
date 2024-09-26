@@ -1,0 +1,55 @@
+<header class="bg-white shadow-sm flex justify-between items-center border-s-fuchsia-200 h-[72px] px-4">
+  <div class="flex items-center gap-4">
+    <button
+      class="size-8 bg-[#35568F] rounded-lg transition-all"
+      (click)="toggle()"
+      [ngClass]="{ 'rotate-180': closeSidebar() }"
+    >
+      <div class="relative flex justify-center items-center">
+        <img ngSrc="assets/icons/toggle-menu-icon.svg" style="filter: invert(100%)" width="16" height="16" alt="" />
+      </div>
+    </button>
+
+    <div class="hidden lg:block">
+      <h5 class="font-bold text-xl">Bienvenido de nuevo Daniel</h5>
+
+      <p class="text-neutral-400">
+        Realice un seguimiento de su actividad de lavanderia, clientes potenciales y ofertas aquí.
+      </p>
+    </div>
+  </div>
+
+  <div class="flex items-center justify-between gap-4">
+
+    <button class="size-6 relative">
+      <img src="/assets/icons/nav_calc.svg" fill alt="" />
+    </button>
+    <a class="size-6 relative" routerLink="/applications/create">
+      <img ngSrc="/assets/icons/menu_applications.svg" style="filter: invert(100%)" fill alt="" />
+    </a>
+
+    <div class="relative hidden lg:block">
+      <button class="flex items-center bg-white border-0 p-1" (click)="dropdownsm.classList.toggle('hidden')">
+        Daniel Vera
+        <img src="/assets/icons/arrow-down.svg" class="ml-2 size-3" alt="" />
+      </button>
+    </div>
+
+    <div class="relative">
+      <button
+        (click)="dropdownsm.classList.toggle('hidden')"
+        type="button"
+        class="text-white text-center avatar rounded bg-red-600 cursor-pointer mr-5"
+        role="button"
+        style="width: 30px; height: 30px; line-height: 30px"
+      >
+        <!-- {{ user.first_name + ' ' + user.last_name | initials }} -->
+      </button>
+      <ul class="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg dropdown-menu hidden" #dropdownsm>
+        <li>
+          <a class="block px-4 py-2 hover:bg-gray-100">Cerrar Sesion</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</header>

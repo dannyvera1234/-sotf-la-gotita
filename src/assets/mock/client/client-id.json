@@ -1,0 +1,9 @@
+{
+  "id": 1,
+  "nombres": "Juan Pérez",
+  "tipoDocumento": "RUC",
+  "cedula": "1234567890",
+  "direccion": "Av. Siempre Viva 742",
+  "emails": ["juan.perez@example.com", "contacto@miempresa.com"],
+  "phones": ["4123456789", "4987654321"]
+}
