@@ -5,11 +5,14 @@ import { RouterLink } from '@angular/router';
 import { UserService } from '../../services';
 import { ParamFilter } from '../../interfaces';
 import { finalize } from 'rxjs';
+import { NgOptimizedImage } from '@angular/common';
+import { CreateUserComponent } from '../create-user';
+import { CreateClientesComponent } from "../create-clientes/create-clientes.component";
 
 @Component({
   selector: 'app-user',
   standalone: true,
-  imports: [ModalComponent , TextInitialsPipe, RouterLink],
+  imports: [ModalComponent, TextInitialsPipe, RouterLink, NgOptimizedImage, CreateUserComponent, CreateClientesComponent],
   templateUrl: './user.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush

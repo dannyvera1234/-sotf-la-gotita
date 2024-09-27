@@ -6,9 +6,9 @@ export default [
     path: '',
     component: ClientesComponent,
   },
-  // {
-  //   path: ':id',
-  //   loadComponent: () => import('./../client-details').then((m) => m.ClientDetailsComponent),
-  // },
+   {
+     path: ':id',
+     loadComponent: () => import('./../clientes-details').then((m) => m.ClientesDetailsComponent),
+   },
   { path: '**', redirectTo: '', pathMatch: 'full' },
 ] satisfies Route[];

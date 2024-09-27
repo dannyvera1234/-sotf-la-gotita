@@ -1,0 +1,97 @@
+@if (loading()) {
+  <div class="h-full text-center flex justify-center items-center">
+    <div class="loader"></div>
+  </div>
+} @else {
+  @if (client(); as $client) {
+    <div class="flex flex-col lg:flex-row gap-4 p-4">
+      <aside class="w-full lg:w-1/4 flex flex-col gap-4">
+        <div class="bg-white rounded-lg shadow p-4 py-6">
+          <header class="text-center mb-6">
+            <div
+              class="bg-blue-950 text-white rounded-lg size-20 flex items-center justify-center mb-8 mx-auto text-2xl"
+            >
+              {{ $client.nombres | initials }}
+            </div>
+            <h2 class="text-xl truncate">{{ $client.nombres }}</h2>
+          </header>
+
+          <div class="group open">
+            <div class="flex justify-between items-center">
+              <button class="flex gap-2 items-center">
+                <h3 class="text-black">Detalle</h3>
+              </button>
+              <button class="bg-gray-200 text-gray-600 py-1 px-3 rounded" (click)="clientModal.open()">Editar</button>
+            </div>
+            <hr class="my-2" />
+            <div class="mb-2 grid grid-rows-[0fr] transition-all group-[.open]:grid-rows-[1fr]">
+              <div class="overflow-hidden">
+                <div>
+                  <h4 class="mb-2">{{ congfi.tipo_documento()[$client.tipoDocumento] }}</h4>
+                  <h4 class="text-neutral-500 mb-2">{{ $client.cedula }}</h4>
+                  <div class="mb-2">
+                    <h4>Telefono</h4>
+                    @for (phone of $client.phones; track $index) {
+                      <p class="text-neutral-500">
+                        {{ phone }}
+                      </p>
+                    }
+                  </div>
+
+                  <div class="mb-2">
+                    <h4>Email</h4>
+                    @for (email of $client.emails; track $index) {
+                      <p class="text-neutral-500">{{ email }}</p>
+                    }
+                  </div>
+                </div>
+                <hr class="my-3" />
+
+                <div>
+                  <h4>Address</h4>
+                  <p class="text-neutral-500">
+                    {{ $client.direccion }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <app-modal #clientModal>
+            @defer {
+              <div class="h-full flex items-center">
+                <div class="bg-white w-full rounded-lg overflow-auto max-h-full">
+                  <header class="p-4 flex justify-between items-center border border-b border-gray-300">
+                    <h2 class="font-bold text-xl truncate">Editar Cliente</h2>
+                    <button (click)="clientModal.close()" class="shrink-0">
+                      <img
+                        ngSrc="/assets/icons/close-icon.svg"
+                        width="14"
+                        height="18"
+                        alt="close"
+                        style="
+                          filter: invert(64%) sepia(1%) saturate(370%) hue-rotate(314deg) brightness(94%) contrast(91%);
+                        "
+                      />
+                    </button>
+                  </header>
+                  <section class="p-4">
+                    <app-update-client (client)="clientModal.close()" [updateClient]="$client" />
+                  </section>
+                </div>
+              </div>
+            }
+          </app-modal>
+        </div>
+      </aside>
+
+      <main class="flex flex-col gap-4 w-full lg:w-3/4">
+        <div class="flex flex-col lg:flex-row gap-4 w-full">
+          <section class="bg-white rounded-lg shadow p-4 w-full lg:w-full">
+            <h3 class="font-bold mb-4">Applications</h3>
+          </section>
+
+        </div>
+      </main>
+    </div>
+  }
+}

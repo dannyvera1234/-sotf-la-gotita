@@ -73,7 +73,12 @@
                     <td>
                       {{ client.correo }}
                     </td>
-                    <td>....</td>
+                    <td>
+                      <div class="bg-red-500 rounded-lg p-3 inline-block cursor-pointer">
+                        <img src="assets/icons/trash-icon.svg" alt="Eliminar" class="size-4">
+                      </div>
+                    </td>
+
                   </tr>
                 }
               </tbody>
@@ -81,7 +86,7 @@
               @defer {
                 <tbody>
                   <td colspan="100%">
-                    <!-- <app-client-not-found /> -->
+                    <app-clients-not-found/>
                   </td>
                 </tbody>
               }
@@ -91,11 +96,11 @@
       </div>
 
       @defer {
-        <!-- @if (application()?.pagination) {
+        @if (clients()?.pagination) {
               <div class="mt-4">
-                <app-pagination />
+                <!-- <app-pagination /> -->
               </div>
-            } -->
+            }
       }
     </section>
   </div>
@@ -118,7 +123,7 @@
           </button>
         </header>
         <section class="p-4">
-          <!-- <app-create-client (client)="newClientModal.close()" /> -->
+          <app-create-clientes (client)="newClientModal.close()"  />
         </section>
       </div>
     </div>

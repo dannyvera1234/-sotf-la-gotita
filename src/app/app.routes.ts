@@ -15,6 +15,14 @@ export const routes: Routes & {
         },
       },
       {
+        path: 'users',
+        loadChildren: () => import('./features/user/routes'),
+        data: {
+          icon: '/assets/icons/contact.svg',
+          name: 'Usuarios',
+        },
+      },
+      {
         path: 'invetory',
         loadChildren: () => import('./features/invetory/routes'),
         data: {
@@ -22,14 +30,7 @@ export const routes: Routes & {
           name: 'Inventario',
         },
       },
-      {
-        path: 'users',
-        loadChildren: () => import('./features/user/routes'),
-        data: {
-          icon: '/assets/icons/menu_users.svg',
-          name: 'Usuarios',
-        },
-      },
+
 
       {
         path: '**',

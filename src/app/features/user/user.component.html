@@ -35,63 +35,57 @@
             </tr>
           </thead>
           @if (loading()) {
-            <tbody>
-              <td colspan="100%">
-                <div class="text-center py-9">
-                  <div class="loader"></div>
-                </div>
+          <tbody>
+            <td colspan="100%">
+              <div class="text-center py-9">
+                <div class="loader"></div>
+              </div>
+            </td>
+          </tbody>
+          } @else { @if (users(); as $users) {
+          <tbody>
+            @for (users of $users; track users.id) {
+            <tr
+              class="bg-white border-b border-dashed border-neutral-200 *:px-6 *:py-4 *:whitespace-nowrap [&>th]:ps-0"
+            >
+              <th scope="row" class="font-normal">
+                <a [routerLink]="[users.id]">
+                  <div class="flex gap-4 items-center">
+                    <div class="size-10 bg-primary rounded-lg text-white flex items-center justify-center uppercase">
+                      {{ users.nombre | initials }}
+                    </div>
+                    <div>
+                      <p class="font-bold">{{ users.nombre }}</p>
+                    </div>
+                  </div>
+                </a>
+              </th>
+              <td>
+                {{ users.identificacion }}
               </td>
-            </tbody>
-          } @else {
-            @if (users(); as $users) {
-              <tbody>
-                @for (users of $users; track users.id) {
-                  <tr
-                    class="bg-white border-b border-dashed border-neutral-200 *:px-6 *:py-4 *:whitespace-nowrap [&>th]:ps-0"
-                  >
-                    <th scope="row" class="font-normal">
-                      <a [routerLink]="[users.id]">
-                        <div class="flex gap-4 items-center">
-                          <div
-                            class="size-10 bg-primary rounded-lg text-white flex items-center justify-center uppercase"
-                          >
-                            {{ users.nombre | initials }}
-                          </div>
-                          <div>
-                            <p class="font-bold">{{ users.nombre }}</p>
-                          </div>
-                        </div>
-                      </a>
-                    </th>
-                    <td>
-                      {{ users.identificacion }}
-                    </td>
-                    <td>{{ users.telefono }}</td>
-                    <td>
-                      {{ users.direccion }}
-                    </td>
-                    <td>
-                      {{ users.correo }}
-                    </td>
-                    <td>....</td>
-                  </tr>
-                }
-              </tbody>
-            } @else {
-              @defer {
-                <tbody>
-                  <td colspan="100%">
-                    <!-- <app-users-not-found /> -->
-                  </td>
-                </tbody>
-              }
+              <td>{{ users.telefono }}</td>
+              <td>
+                {{ users.direccion }}
+              </td>
+              <td>
+                {{ users.correo }}
+              </td>
+              <td>....</td>
+            </tr>
             }
-          }
+          </tbody>
+          } @else { @defer {
+          <tbody>
+            <td colspan="100%">
+              <!-- <app-users-not-found /> -->
+            </td>
+          </tbody>
+          } } }
         </table>
       </div>
 
       @defer {
-        <!-- @if (application()?.pagination) {
+      <!-- @if (application()?.pagination) {
               <div class="mt-4">
                 <app-pagination />
               </div>
@@ -103,24 +97,24 @@
 
 <app-modal #newusersModal>
   @defer {
-    <div class="h-full flex items-center">
-      <div class="bg-white w-full rounded-lg overflow-auto max-h-full">
-        <header class="p-4 flex justify-between items-center border border-b border-gray-300">
-          <h2 class="font-bold text-xl truncate">Nuevo userse</h2>
-          <button (click)="newusersModal.close()" class="shrink-0">
-            <img
-              ngSrc="/assets/icons/close-icon.svg"
-              width="14"
-              height="18"
-              alt="close"
-              style="filter: invert(64%) sepia(1%) saturate(370%) hue-rotate(314deg) brightness(94%) contrast(91%)"
-            />
-          </button>
-        </header>
-        <section class="p-4">
-          <!-- <app-create-users (users)="newusersModal.close()" /> -->
-        </section>
-      </div>
+  <div class="h-full flex items-center">
+    <div class="bg-white w-full rounded-lg overflow-auto max-h-full">
+      <header class="p-4 flex justify-between items-center border border-b border-gray-300">
+        <h2 class="font-bold text-xl truncate">Nuevo Usuario</h2>
+        <button (click)="newusersModal.close()" class="shrink-0">
+          <img
+            ngSrc="/assets/icons/close-icon.svg"
+            width="14"
+            height="18"
+            alt="close"
+            style="filter: invert(64%) sepia(1%) saturate(370%) hue-rotate(314deg) brightness(94%) contrast(91%)"
+          />
+        </button>
+      </header>
+      <section class="p-4">
+        <app-create-user (user)="newusersModal.close()" />
+      </section>
     </div>
+  </div>
   }
 </app-modal>

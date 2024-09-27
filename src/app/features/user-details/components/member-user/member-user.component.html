@@ -1,0 +1,54 @@
+<h2 class="text-xl font-bold mb-4">Renovación de Membresía</h2>
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <div>
+      <app-custom-select
+        formControlName="tipo_membresia"
+        placeholder="Tipo de membresía"
+        [options]="tipo_membresia().values"
+        [labels]="tipo_membresia().labels"
+      />
+    </div>
+    <div>
+      <app-custom-input formControlName="fecha_inicio" placeholder="Fecha de inicio" type="date" />
+    </div>
+    <div>
+      <app-custom-input formControlName="fecha_fin" placeholder="Fecha de fin" type="date" />
+    </div>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+    <div>
+      <app-custom-input formControlName="monto" placeholder="Monto" />
+    </div>
+    <div>
+      <app-custom-select
+        formControlName="metodo_pago"
+        placeholder="Método de pago"
+        [options]="metodo_pago().values"
+        [labels]="metodo_pago().labels"
+      />
+    </div>
+  </div>
+
+  <div class="mb-6">
+    @if (!loading()) {
+      <button
+        class="w-full px-6 py-3 text-lg text-white bg-red-600 rounded-md disabled:opacity-50"
+        type="submit"
+        [disabled]="form.invalid"
+      >
+        Renovar membresía
+      </button>
+    } @else {
+      <div class="text-center">
+        <div class="loader"></div>
+      </div>
+    }
+  </div>
+
+  @defer {
+    <div class="mb-4">
+      <app-membresia [idUser]="id()" />
+    </div>
+  }
+</form>
