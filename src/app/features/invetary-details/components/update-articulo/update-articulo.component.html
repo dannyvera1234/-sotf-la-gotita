@@ -1,0 +1,45 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <div class="flex lg:flex-row flex-col gap-4">
+    <section class="mt-6 flex flex-wrap max-md:justify-center gap-4 grow">
+      <fieldset class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+        <div>
+          <app-custom-input label="Nombre Articulo" formControlName="nombre" />
+        </div>
+        <div>
+          <app-custom-select
+            formControlName="tipo_articulo"
+            placeholder="Tipo de Articulo"
+            [options]="tipo_articulo().values"
+            [labels]="tipo_articulo().labels"
+          />
+        </div>
+        <div>
+          <app-custom-input label="Cantidad" formControlName="cantidad" />
+        </div>
+        <div>
+          <app-custom-input label="Precio" formControlName="precio" />
+        </div>
+        <div class="col-span-1 md:col-span-2 mb-5">
+          <label for="descripcion" class="text-gray-400">Descripción</label>
+          <textarea
+            id="descripcion"
+            formControlName="descripcion"
+            class="w-full h-20 px-4 py-2 text-gray-700 border rounded-md focus:outline-none focus:border-gray-500 mt-2"
+          ></textarea>
+          <app-form-error-message [control]="form.controls.descripcion" />
+        </div>
+      </fieldset>
+    </section>
+  </div>
+
+  <div class="flex gap-4 justify-end mt-10 md:flex-row flex-col text-center max-md:w-full">
+    @if (!loading()) {
+    <button class="items-center gap-2 bg-zinc-200 px-4 py-2 rounded-lg md:flex" type="button" (click)="inventary.emit(null)">
+      Cancelar
+    </button>
+    <button class="bg-secondary px-4 py-2 rounded-lg text-white" type="submit">Guardar</button>
+    } @else {
+    <div class="loader"></div>
+    }
+  </div>
+</form>

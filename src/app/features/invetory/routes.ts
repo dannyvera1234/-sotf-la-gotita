@@ -6,9 +6,9 @@ export default [
     path: '',
     component: InvetoryComponent,
   },
-  // {
-  //   path: ':id',
-  //   loadComponent: () => import('./../client-details').then((m) => m.ClientDetailsComponent),
-  // },
+   {
+     path: ':id',
+     loadComponent: () => import('../invetary-details').then((m) => m.InvetaryDetailsComponent),
+   },
   { path: '**', redirectTo: '', pathMatch: 'full' },
 ] satisfies Route[];

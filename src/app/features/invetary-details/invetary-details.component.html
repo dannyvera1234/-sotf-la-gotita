@@ -1,0 +1,101 @@
+@if (loading()) {
+<div class="h-full text-center flex justify-center items-center">
+  <div class="loader"></div>
+</div>
+} @else { @if (inventario(); as $inventario) {
+<div class="flex flex-col lg:flex-row gap-4 p-4">
+  <aside class="w-full lg:w-1/4 flex flex-col gap-4">
+    <div class="bg-white rounded-lg shadow p-4 py-6">
+      <div
+        class="rounded-lg shadow p-2 text-white text-center flex-grow mb-6"
+        [ngClass]="
+          $inventario.status === 'VENDIDO'
+            ? 'bg-yellow-500'
+            : $inventario.status === 'DISPONIBLE'
+            ? 'bg-emerald-500'
+            : 'bg-red-500'
+        "
+      >
+        {{ config.invetario_status()[$inventario.status] }}
+      </div>
+      <header class="text-center mb-6"></header>
+      <header class="text-center mb-6">
+        <div class="bg-blue-950 text-white rounded-lg size-20 flex items-center justify-center mb-8 mx-auto text-2xl">
+          {{ $inventario.name | initials }}
+        </div>
+
+        <h2 class="text-xl truncate">{{ $inventario.name }}</h2>
+        <p class="text-neutral-500">{{ $inventario.tipo }}</p>
+      </header>
+
+      <div class="group open">
+        <div class="flex justify-between items-center">
+          <button class="flex gap-2 items-center">
+            <h3 class="text-black">Detalle</h3>
+          </button>
+          <button class="bg-gray-200 text-gray-600 py-1 px-3 rounded" (click)="inventarioModal.open()">Editar</button>
+        </div>
+        <hr class="my-2" />
+        <div class="mb-2 grid grid-rows-[0fr] transition-all group-[.open]:grid-rows-[1fr]">
+          <div class="overflow-hidden">
+            <div>
+              <div class="mb-2">
+                <h4>Descripción</h4>
+                <p class="text-neutral-500">{{ $inventario.descripcion }}</p>
+              </div>
+
+              <div class="mb-4">
+                <h4>Stop Total</h4>
+                <p class="text-neutral-500">{{ $inventario.cantidad }} Unidades</p>
+              </div>
+              <div class="flex items-center mb-2">
+                <div class="bg-emerald-500 rounded p-2 text-center flex-grow">
+                  <p class="text-neutral-500 text-white">{{ $inventario.precio | currency }}</p>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <app-modal #inventarioModal>
+        @defer {
+        <div class="h-full flex items-center">
+          <div class="bg-white w-full rounded-lg overflow-auto max-h-full">
+            <header class="p-4 flex justify-between items-center border border-b border-gray-300">
+              <h2 class="font-bold text-xl truncate">Editar Articulo</h2>
+              <button (click)="inventarioModal.close()" class="shrink-0">
+                <img
+                  ngSrc="/assets/icons/close-icon.svg"
+                  width="14"
+                  height="18"
+                  alt="close"
+                  style="filter: invert(64%) sepia(1%) saturate(370%) hue-rotate(314deg) brightness(94%) contrast(91%)"
+                />
+              </button>
+            </header>
+            <section class="p-4">
+              <app-update-articulo (inventary)="inventarioModal.close()" />
+            </section>
+          </div>
+        </div>
+        }
+      </app-modal>
+    </div>
+  </aside>
+
+  <main class="flex flex-col gap-4 w-full lg:w-3/4">
+    <div class="flex flex-col lg:flex-row gap-4 w-full">
+      <section class="bg-white rounded-lg shadow p-4 w-full lg:w-2/3">
+        @defer {
+        <!-- <app-variaciones [variaciones]="$inventario" /> -->
+        }
+      </section>
+      <section class="bg-white rounded-lg shadow p-4 w-full lg:w-1/3">
+        <h3 class="font-bold mb-4">Estadistica General</h3>
+      </section>
+    </div>
+  </main>
+</div>
+} }

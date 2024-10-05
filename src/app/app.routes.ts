@@ -7,8 +7,16 @@ export const routes: Routes & {
     canActivate: [],
     children: [
       {
+        path: 'pedidos',
+        loadChildren: () => import('./features/pedidos/routes'),
+        data: {
+          icon: '/assets/icons/menu_inventory.svg',
+          name: 'Nuevo Pedidos',
+        },
+      },
+      {
         path: 'clientes',
-       loadChildren: () => import('./features/clientes/routes'),
+        loadChildren: () => import('./features/clientes/routes'),
         data: {
           icon: 'assets/icons/menu_contacts.svg',
           name: 'Clientes',
@@ -26,15 +34,14 @@ export const routes: Routes & {
         path: 'invetory',
         loadChildren: () => import('./features/invetory/routes'),
         data: {
-          icon: '/assets/icons/menu_inventory.svg',
+          icon: '/assets/icons/iventory.svg',
           name: 'Inventario',
         },
       },
 
-
       {
         path: '**',
-        redirectTo: 'banks',
+        redirectTo: 'pedidos',
         pathMatch: 'full',
       },
     ],

@@ -1,0 +1,83 @@
+<form [formGroup]="form"  class="w-full">
+  <div class="p-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="mb-4">
+        <app-custom-select
+          formControlName="tipoDocumento"
+          placeholder="Tipo de documento"
+          [options]="tipo_documento().values"
+          [labels]="tipo_documento().labels"
+        />
+      </div>
+
+      <div class="mb-4">
+        <app-custom-input formControlName="cedula" [label]="cedulaLabel()" />
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <app-custom-input formControlName="nombres" label="Nombres" />
+    </div>
+    <div class="mb-4">
+      <app-custom-input formControlName="direccion" label="Direccion" />
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div formArrayName="emails">
+        @for (control of form.controls.emails.controls; track $index) {
+        <div [formGroup]="control" class="mb-5">
+          <div class="flex gap-2">
+            <app-custom-input type="email" label="Email" formControlName="email" class="grow" />
+            @if (!$first) {
+            <button (click)="removeEmail($index)" type="button">
+              <img ngSrc="/assets/icons/trash-icon.svg" width="14" height="16" alt="Delete" />
+            </button>
+            }
+          </div>
+        </div>
+        } @if (maxEmails > form.controls.emails.controls.length) {
+        <button
+          type="button"
+          (click)="addEmail()"
+          class="px-2 text-sky-600 flex items-center justify-center border border-sky-600 rounded-md text-sm"
+        >
+          Add email
+        </button>
+        }
+      </div>
+
+      <div formArrayName="phones">
+        @for (control of form.controls.phones.controls; track $index) {
+        <div [formGroup]="control" class="mb-5">
+          <div class="flex gap-2">
+            <app-custom-input formControlName="phone" class="grow" label="Teléfono" />
+            @if (!$first) {
+            <button (click)="removePhone($index)" type="button">
+              <img ngSrc="/assets/icons/trash-icon.svg" width="14" height="16" alt="Delete" />
+            </button>
+            }
+          </div>
+        </div>
+        } @if (maxPhoneNumbers > form.controls.phones.controls.length) {
+        <button
+          type="button"
+          (click)="addPhone()"
+          class="px-2 text-sky-600 flex items-center justify-center border border-sky-600 rounded-md text-sm"
+        >
+          Add phone
+        </button>
+        }
+      </div>
+    </div>
+  </div>
+  <div class="flex gap-4 justify-end mt-10 md:flex-row flex-col text-center max-md:w-full">
+    <button
+      class="items-center gap-2 bg-zinc-200 px-4 py-2 rounded-lg md:flex"
+      type="button"
+      (click)="client.emit(null)"
+    >
+      Cancelar
+    </button>
+    <button class="bg-secondary px-4 py-2 rounded-lg text-white" (click)="next()">Continuar</button>
+  </div>
+</form>

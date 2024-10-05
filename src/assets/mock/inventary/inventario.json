@@ -5,10 +5,7 @@
     "descripcion": "Guantes con agarre antideslizante",
     "tipo": "VENTA",
     "precio": 22.99,
-    "foto": null,
-    "status": "VENTA",
-    "cantidad": 3,
-    "variaciones": []
+    "cantidad": 3
   },
   {
     "id": 8,
@@ -16,10 +13,7 @@
     "descripcion": "Sudadera cómoda para uso diario",
     "tipo": "VENTA",
     "precio": 35.99,
-    "foto": null,
-    "status": "DISPONIBLE",
-    "cantidad": 12,
-    "variaciones": []
+    "cantidad": 12
   },
   {
     "id": 9,
@@ -27,10 +21,7 @@
     "descripcion": "Casco de seguridad para ciclistas",
     "tipo": "VENTA",
     "precio": 45.99,
-    "foto": null,
-    "status": "DISPONIBLE",
-    "cantidad": 5,
-    "variaciones": []
+    "cantidad": 5
   },
   {
     "id": 10,
@@ -38,10 +29,7 @@
     "descripcion": "Bicicleta de montaña con frenos de disco",
     "tipo": "VENTA",
     "precio": 150.99,
-    "foto": null,
-    "status": "ALQUILADO",
-    "cantidad": 2,
-    "variaciones": []
+    "cantidad": 2
   },
   {
     "id": 11,
@@ -49,9 +37,6 @@
     "descripcion": "Bicicleta de ruta con cambios Shimano",
     "tipo": "VENTA",
     "precio": 250.99,
-    "foto": null,
-    "status": "DISPONIBLE",
-    "cantidad": 3,
-    "variaciones": []
+    "cantidad": 3
   }
 ]
