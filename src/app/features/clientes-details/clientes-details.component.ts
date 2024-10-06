@@ -15,8 +15,11 @@ import { UpdateClientComponent } from './components';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ClientesDetailsComponent {
+  public _udateClient = signal('');
+
   @Input({ required: true }) set id(value: string) {
     this.getClient(value);
+    this._udateClient.set(value);
   }
 
   public readonly loading = signal(false);
@@ -34,6 +37,6 @@ export class ClientesDetailsComponent {
         mergeMap(() => this._clienteService.getClientes(id)),
         finalize(() => this.loading.set(false)),
       )
-      .subscribe((client) => this.client.set(client));
+      .subscribe((client) => {this.client.set(client)});
   }
 }

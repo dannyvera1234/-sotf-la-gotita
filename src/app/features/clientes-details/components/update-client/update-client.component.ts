@@ -13,7 +13,13 @@ import { ReactiveFormsModule, Validators, FormGroup, FormControl, FormBuilder } 
 import { Subject, takeUntil, of, mergeMap, finalize } from 'rxjs';
 import { CustomInputComponent, CustomSelectComponent } from '../../../../components';
 import { ClienteService } from '../../../../services';
-import { onlyLettersValidator, LaGotitaConfigService, IdentificationValidatorService, emailValidator, onlyNumbersValidator } from '../../../../util';
+import {
+  onlyLettersValidator,
+  LaGotitaConfigService,
+  IdentificationValidatorService,
+  emailValidator,
+  onlyNumbersValidator,
+} from '../../../../util';
 
 @Component({
   selector: 'app-update-client',
@@ -35,6 +41,8 @@ export class UpdateClientComponent implements OnInit {
   public readonly cedulaLabel = this.identificationService.cedulaLabel;
 
   @Input({ required: true }) updateClient!: any;
+
+  @Input({ required: true }) id!: string;
 
   private destroy$ = new Subject<void>();
 
@@ -85,30 +93,6 @@ export class UpdateClientComponent implements OnInit {
     private readonly identificationService: IdentificationValidatorService,
   ) {}
 
-  public submit(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
-
-    const updateClient = {
-      ...this.form.value,
-    };
-
-    of(this.loading.set(true))
-      .pipe(
-        mergeMap(() =>
-          this._clientService.updateClientes(this.updateClient.id, {
-            ...updateClient,
-          }),
-        ),
-        finalize(() => this.loading.set(false)),
-      )
-      .subscribe(() => {
-        this.client.emit(updateClient);
-      });
-  }
-
   removeEmail(index: number): void {
     if (index > 0) {
       this.form.controls.emails.removeAt(index);
@@ -137,5 +121,31 @@ export class UpdateClientComponent implements OnInit {
         ],
       }),
     );
+  }
+
+  public submit(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    const updateClient = {
+      ...this.form.value,
+      emails: this.form.value.emails!.map((email: any) => email.email),
+      phones: this.form.value.phones!.map((phone: any) => phone.phone),
+    };
+
+    of(this.loading.set(true))
+      .pipe(
+        mergeMap(() =>
+          this._clientService.updateClientes(this.id, {
+            ...updateClient,
+          }),
+        ),
+        finalize(() => this.loading.set(false)),
+      )
+      .subscribe(() => {
+        this.client.emit(updateClient);
+      });
   }
 }

@@ -2,9 +2,10 @@ import { ChangeDetectionStrategy, Component, computed, EventEmitter, Output, sig
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CustomInputComponent, CustomSelectComponent } from '../../components';
 import { finalize, mergeMap, of, Subject, takeUntil } from 'rxjs';
-import { emailValidator, IdentificationValidatorService, LaGotitaConfigService, ObjectId, onlyLettersValidator, onlyNumbersValidator } from '../../util';
+import { emailValidator, IdentificationValidatorService, LaGotitaConfigService, ObjectId, onlyLettersValidator, onlyNumbersValidator, SearchService } from '../../util';
 import { ClienteService } from '../../services';
 import { NgOptimizedImage } from '@angular/common';
+import { SearchModel } from '../../model';
 
 @Component({
   selector: 'app-create-clientes',
@@ -78,7 +79,6 @@ export class CreateClientesComponent {
       return;
     }
     const clientForm = {
-      id: ObjectId(),
       nombres: this.form.value.nombres!.trim(),
       tipoDocumento: this.form.value.tipoDocumento!,
       cedula: this.form.value.cedula!,
@@ -92,7 +92,10 @@ export class CreateClientesComponent {
         mergeMap(() => this._clienteService.createClientes(clientForm)),
         finalize(() => this.loading.set(false)),
       )
-      .subscribe(() => this.client.emit(clientForm));
+      .subscribe(() => {this.client.emit(clientForm)
+
+
+      });
   }
 
   removeEmail(index: number): void {

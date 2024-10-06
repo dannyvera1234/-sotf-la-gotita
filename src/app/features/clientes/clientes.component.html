@@ -35,97 +35,99 @@
             </tr>
           </thead>
           @if (loading()) {
-            <tbody>
-              <td colspan="100%">
-                <div class="text-center py-9">
-                  <div class="loader"></div>
-                </div>
+          <tbody>
+            <td colspan="100%">
+              <div class="text-center py-9">
+                <div class="loader"></div>
+              </div>
+            </td>
+          </tbody>
+          } @else { @if (clients(); as $client) {
+          <tbody>
+            @for (client of $client; track client.id) {
+            <tr
+              class="bg-white border-b border-dashed border-neutral-200 *:px-6 *:py-4 *:whitespace-nowrap [&>th]:ps-0"
+            >
+              <th scope="row" class="font-normal">
+                <a [routerLink]="[client.id]">
+                  <div class="flex gap-4 items-center">
+                    <div class="size-10 bg-primary rounded-lg text-white flex items-center justify-center uppercase">
+                      {{ client.nombres | initials }}
+                    </div>
+                    <div>
+                      <p class="font-bold">{{ client.nombres }}</p>
+                    </div>
+                  </div>
+                </a>
+              </th>
+              <td>
+                {{ client.cedula }}
               </td>
-            </tbody>
-          } @else {
-            @if (clients(); as $client) {
-              <tbody>
-                @for (client of $client; track client.id) {
-                  <tr
-                    class="bg-white border-b border-dashed border-neutral-200 *:px-6 *:py-4 *:whitespace-nowrap [&>th]:ps-0"
-                  >
-                    <th scope="row" class="font-normal">
-                      <a [routerLink]="[client.id]">
-                        <div class="flex gap-4 items-center">
-                          <div
-                            class="size-10 bg-primary rounded-lg text-white flex items-center justify-center uppercase"
-                          >
-                            {{ client.name | initials }}
-                          </div>
-                          <div>
-                            <p class="font-bold">{{ client.name }}</p>
-                          </div>
-                        </div>
-                      </a>
-                    </th>
-                    <td>
-                      {{ client.identificacion }}
-                    </td>
-                    <td>{{ client.telefono }}</td>
-                    <td>
-                      {{ client.direccion }}
-                    </td>
-                    <td>
-                      {{ client.correo }}
-                    </td>
-                    <td>
-                      <div class="bg-red-500 rounded-lg p-3 inline-block cursor-pointer">
-                        <img src="assets/icons/trash-icon.svg" alt="Eliminar" class="size-4">
-                      </div>
-                    </td>
 
-                  </tr>
+              <td>
+                @for (item of client.phones; track $index) {
+                <p>
+                  {{ item }}
+                </p>
                 }
-              </tbody>
-            } @else {
-              @defer {
-                <tbody>
-                  <td colspan="100%">
-                    <app-clients-not-found/>
-                  </td>
-                </tbody>
-              }
+              </td>
+              <td>
+                {{ client.direccion }}
+              </td>
+
+              <td>
+                @for (email of client.emails; track $index) {
+                <p>{{ email }}</p>
+                }
+              </td>
+              <td>
+                <button class="bg-red-500 rounded-lg p-3 inline-block cursor-pointer" (click)="deleteClient(client.id)">
+                  <img src="assets/icons/trash-icon.svg" alt="Eliminar" class="size-4" />
+                </button>
+              </td>
+            </tr>
             }
-          }
+          </tbody>
+          } @else { @defer {
+          <tbody>
+            <td colspan="100%">
+              <app-clients-not-found />
+            </td>
+          </tbody>
+          } } }
         </table>
       </div>
 
-      @defer {
-        @if (clients()?.pagination) {
-              <div class="mt-4">
-                <!-- <app-pagination /> -->
-              </div>
-            }
-      }
+      @defer { @if (clients()?.pagination) {
+      <div class="mt-4">
+        <!-- <app-pagination /> -->
+      </div>
+      } }
     </section>
   </div>
 </div>
 
 <app-modal #newClientModal>
   @defer {
-    <div class="h-full flex items-center">
-      <div class="bg-white w-full rounded-lg overflow-auto max-h-full">
-        <header class="p-4 flex justify-between items-center border border-b border-gray-300">
-          <h2 class="font-bold text-xl truncate">Nuevo Cliente</h2>
-          <button (click)="newClientModal.close()" class="shrink-0">
-            <img
-              ngSrc="/assets/icons/close-icon.svg"
-              width="14"
-              height="18"
-              alt="close"
-              style="filter: invert(64%) sepia(1%) saturate(370%) hue-rotate(314deg) brightness(94%) contrast(91%)"
-            />
-          </button>
-        </header>
-        <section class="p-4">
-          <app-create-clientes (client)="newClientModal.close()"  />
-        </section>
-      </div>
+  <div class="h-full flex items-center">
+    <div class="bg-white w-full rounded-lg overflow-auto max-h-full">
+      <header class="p-4 flex justify-between items-center border border-b border-gray-300">
+        <h2 class="font-bold text-xl truncate">Nuevo Cliente</h2>
+        <button (click)="newClientModal.close()" class="shrink-0">
+          <img
+            ngSrc="/assets/icons/close-icon.svg"
+            width="14"
+            height="18"
+            alt="close"
+            style="filter: invert(64%) sepia(1%) saturate(370%) hue-rotate(314deg) brightness(94%) contrast(91%)"
+          />
+        </button>
+      </header>
+      <section class="p-4">
+        <app-create-clientes (client)="newClientModal.close()" />
+      </section>
     </div>
+  </div>
   }
 </app-modal>
+

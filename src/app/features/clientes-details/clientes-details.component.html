@@ -75,7 +75,9 @@
                     </button>
                   </header>
                   <section class="p-4">
-                    <app-update-client (client)="clientModal.close()" [updateClient]="$client" />
+                    <app-update-client (client)="clientModal.close()" [updateClient]="client()"
+                      [id]="_udateClient()"
+                    />
                   </section>
                 </div>
               </div>

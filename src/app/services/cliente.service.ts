@@ -29,24 +29,25 @@ export class ClienteService {
   }
 
   async getClientes(id: string): Promise<any> {
-    // return this._http.get(`assets/mock/client/client-id.json?id=${id}`).pipe(delay(2000));
     const docRef = this._getDocRef(id);
     const documentData = await getDoc(docRef);
-    return documentData.data();
+   return documentData.data();
   }
 
-  updateClientes(id: string, updateClient: Partial<any>): void {
+  updateClientes(id: string, updateClient: Partial<any>): Promise<void> {
     const docRef = this._getDocRef(id);
-    updateDoc(docRef, {
+    return updateDoc(docRef, {
       ...updateClient,
+      id: id,
       updated: Date.now(),
     });
   }
 
-  deleteClientes(id: string): void {
+  deleteClientes(id: string): Promise<void> {
     const docRef = this._getDocRef(id);
-   deleteDoc(docRef);
+    return deleteDoc(docRef);
   }
+
 
   createClientes(createClient: Partial<any>): Promise<DocumentReference<DocumentData, DocumentData>> {
     return addDoc(this._collectionName, {
@@ -56,9 +57,9 @@ export class ClienteService {
     });
   }
 
-  allClientes(paramFilter: ParamFilter) {
-    // return this._http.post('assets/mock/client/client.json', paramFilter).pipe(delay(2000));
-    const quertyFn = query(this._collectionName, orderBy('created', 'desc'));
-    return collectionData(quertyFn, { idField: 'id' }) as Observable<any[]>;
+  allClientes(): Observable<any[]> {
+    const queryFn = query(this._collectionName, orderBy('created', 'desc'));
+    return collectionData(queryFn, { idField: 'id' });
   }
+
 }
