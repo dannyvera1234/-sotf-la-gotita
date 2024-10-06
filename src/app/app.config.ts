@@ -3,6 +3,8 @@ import { provideRouter, withComponentInputBinding, withRouterConfig, withViewTra
 
 import { routes } from './app.routes';
 import { provideHttpClient, withInterceptorsFromDi, withInterceptors } from '@angular/common/http';
+import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { environment } from '../environment/environment';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -13,6 +15,7 @@ export const appConfig: ApplicationConfig = {
       withComponentInputBinding(),
       withViewTransitions(),
     ),
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideHttpClient(withInterceptorsFromDi(), withInterceptors([])),
   ],
-    };
+};
