@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, Input, signal, ViewChild } from '@angular/core';
-import { finalize } from 'rxjs';
+import { finalize, mergeMap, of } from 'rxjs';
 import { LaGotitaConfigService } from '../../util';
 import { InvetoryService } from '../../services';
 import { CurrencyPipe, NgClass } from '@angular/common';
@@ -18,6 +18,7 @@ import { UpdateArticuloComponent } from './components';
 export class InvetaryDetailsComponent {
   @Input({ required: true }) set id(value: string) {
     this.getInventario(value);
+    console.log(value);
   }
 
   public readonly loading = signal(true);
@@ -27,10 +28,13 @@ export class InvetaryDetailsComponent {
   constructor(private readonly invetary: InvetoryService, public readonly config: LaGotitaConfigService) {}
 
   private getInventario(id: string): void {
-    this.loading.set(true);
-    this.invetary
-      .getInventaryById(id)
-      .pipe(finalize(() => this.loading.set(false)))
-      .subscribe((inventary) => this.inventario.set(inventary));
+    of(this.loading.set(true))
+      .pipe(
+        mergeMap(() => this.invetary.getInventaryById(id)),
+        finalize(() => this.loading.set(false)),
+      )
+      .subscribe((inventary) => {this.inventario.set(inventary)
+        console.log(inventary);
+      });
   }
 }

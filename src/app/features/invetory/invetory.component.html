@@ -58,10 +58,10 @@
                 <a [routerLink]="[inventary.id]">
                   <div class="flex gap-4 items-center">
                     <div class="size-10 bg-primary rounded-lg text-white flex items-center justify-center uppercase">
-                      {{ inventary.name | initials }}
+                      {{ inventary.nombre | initials }}
                     </div>
                     <div>
-                      <p class="font-bold">{{ inventary.name }}</p>
+                      <p class="font-bold">{{ inventary.nombre }}</p>
                     </div>
                   </div>
                 </a>
@@ -71,15 +71,16 @@
               </td>
               <td>
                 <div
-                  class="flex items-center gap-2 justify-center rounded-lg px-3 py-1 text-white"
-                  [ngClass]="inventary.cantidad > 0 ? 'bg-emerald-500' : 'bg-red-500'"
-                >
-                  {{ inventary.cantidad }}
-                </div>
+                class="flex items-center gap-2 justify-center rounded-lg px-2 py-1 text-white w-20"
+                [ngClass]="inventary.cantidad > 0 ? 'bg-emerald-500' : 'bg-red-500'"
+              >
+                {{ inventary.cantidad }}
+              </div>
+
               </td>
-              <td>{{ inventary.tipo }}</td>
+              <td>{{ inventary.tipo_articulo }}</td>
               <td>
-                {{ inventary.precio | currency }}
+                {{ inventary.precio | currency }} C/U
               </td>
               <td>
                 <div class="bg-red-500 rounded-lg p-3 inline-block cursor-pointer">

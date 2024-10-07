@@ -7,7 +7,7 @@ import { CreateInventoryComponent } from '../create-inventory';
 import { SearchService } from '../../util';
 import { WithSearchable } from '../../util/mixins';
 import { InvetoryService } from '../../services';
-import { finalize } from 'rxjs';
+import { finalize, take } from 'rxjs';
 
 @Component({
   selector: 'app-invetory',
@@ -47,12 +47,15 @@ export class InvetoryComponent extends WithSearchable implements OnInit {
 
   private searchBanks(): void {
     this.loading.set(true);
-    this.inventaryService
-      .searchInventary(this.searchService.search().copyWith({ sortBy: '+created_at' }))
-      .pipe(finalize(() => this.loading.set(false)))
+    this.inventaryService.searchInventary()
+      .pipe(
+        take(1),
+        finalize(() => this.loading.set(false)))
       .subscribe((inventary) => {
-        this.searchService.pagination.set(inventary.pagination);
+        console.log(inventary);
         this.products.set(inventary);
       });
   }
+
+
 }
