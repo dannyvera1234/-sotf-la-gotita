@@ -1,13 +1,14 @@
-import { ChangeDetectionStrategy, Component, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TextInitialsPipe } from '../../pipes';
 import { CurrencyPipe, NgClass, NgOptimizedImage } from '@angular/common';
 import { ModalComponent } from '../../components';
 import { CreateInventoryComponent } from '../create-inventory';
-import { SearchService } from '../../util';
+import { LaGotitaConfigService, SearchService } from '../../util';
 import { WithSearchable } from '../../util/mixins';
 import { InvetoryService } from '../../services';
-import { finalize, take } from 'rxjs';
+import { finalize, mergeMap, of, take } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-invetory',
@@ -41,8 +42,23 @@ export class InvetoryComponent extends WithSearchable implements OnInit {
     this.searchBanks();
   }
 
-  constructor(private readonly inventaryService: InvetoryService) {
+  constructor(private readonly inventaryService: InvetoryService,
+    public readonly config: LaGotitaConfigService,
+    private readonly destroyRef: DestroyRef
+  ) {
     super();
+  }
+
+  public deleteInvetario(id: string): void {
+    of(this.loading.set(true))
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        mergeMap(() => this.inventaryService.deleteInvetario(id)),
+        finalize(() => this.loading.set(false)),
+      )
+      .subscribe(() => {
+        this.searchBanks();
+      });
   }
 
   private searchBanks(): void {

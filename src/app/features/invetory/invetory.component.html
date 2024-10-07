@@ -71,21 +71,20 @@
               </td>
               <td>
                 <div
-                class="flex items-center gap-2 justify-center rounded-lg px-2 py-1 text-white w-20"
-                [ngClass]="inventary.cantidad > 0 ? 'bg-emerald-500' : 'bg-red-500'"
-              >
-                {{ inventary.cantidad }}
-              </div>
-
-              </td>
-              <td>{{ inventary.tipo_articulo }}</td>
-              <td>
-                {{ inventary.precio | currency }} C/U
-              </td>
-              <td>
-                <div class="bg-red-500 rounded-lg p-3 inline-block cursor-pointer">
-                  <img src="assets/icons/trash-icon.svg" alt="Eliminar" class="size-4 ">
+                  class="flex items-center gap-2 justify-center rounded-lg px-2 py-1 text-white w-20"
+                  [ngClass]="inventary.cantidad > 0 ? 'bg-emerald-500' : 'bg-red-500'"
+                >
+                  {{ inventary.cantidad }}
                 </div>
+              </td>
+              <td>{{ config.tipo_articulo()[inventary.tipo_articulo] }}</td>
+              <td>{{ inventary.precio | currency }} C/U</td>
+              <td>
+                <button
+                  (click)="deleteInvetario(inventary.id)"
+                class="bg-red-500 rounded-lg p-3 inline-block cursor-pointer">
+                  <img src="assets/icons/trash-icon.svg" alt="Eliminar" class="size-4" />
+                </button>
               </td>
             </tr>
             }

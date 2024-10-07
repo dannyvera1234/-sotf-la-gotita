@@ -18,7 +18,7 @@ import { UpdateArticuloComponent } from './components';
 export class InvetaryDetailsComponent {
   @Input({ required: true }) set id(value: string) {
     this.getInventario(value);
-    console.log(value);
+
   }
 
   public readonly loading = signal(true);

@@ -34,7 +34,7 @@ export class InvetoryService {
   // }
 
   private _getDocRef(id: string) {
-    return doc(this._firestore, APP_CLIENTES.COLLECTION_NAME, id);
+    return doc(this._firestore, APP_INVETARIOS.COLLECTION_NAME, id);
   }
 
   async getInventaryById(id: string): Promise<any> {
@@ -52,7 +52,7 @@ export class InvetoryService {
     });
   }
 
-  deleteClientes(id: string): Promise<void> {
+  deleteInvetario(id: string): Promise<void> {
     const docRef = this._getDocRef(id);
     return deleteDoc(docRef);
   }
