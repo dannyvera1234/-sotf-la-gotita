@@ -14,16 +14,6 @@ export class LaGotitaConfigService {
 
   constructor() {}
 
-  public variacion_status = signal<Record<string, string>>({
-    DISPONIBLE: 'Disponible',
-    ALQUILADO: 'Alquilado',
-  });
-
-  public invetario_status = signal<Record<string, string>>({
-    DISPONIBLE: 'Disponible',
-    ALQUILADO: 'Alquilado',
-    VENDIDO: 'Vendido',
-  });
 
   public tipo_membresia = signal<Record<string, string>>({
     MEMBRESIA_BASICA: 'Membresía Básica',
@@ -44,9 +34,8 @@ export class LaGotitaConfigService {
   });
 
   public tipo_articulo = signal<Record<string, string>>({
-    SERVICIO: 'Servicio',
-    ALQUILER: 'Alquiler',
-    VENTA: 'Venta',
-  });
+    PRODUCTO_DE_LAVADO: 'Producto de lavado',
+    ELECTRODOMESTICO_DE_LAVADO: 'Electrodomestico de lavado',
+  });
 }
 
