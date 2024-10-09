@@ -1,11 +1,19 @@
-import { NgOptimizedImage } from "@angular/common";
-import { Component, ChangeDetectionStrategy, OnInit, signal, Output, EventEmitter, computed } from "@angular/core";
-import { ReactiveFormsModule, FormsModule, FormBuilder, Validators } from "@angular/forms";
-import { of, mergeMap, finalize } from "rxjs";
-import { CustomInputComponent, CustomSelectComponent, FormErrorMessageComponent } from "../../../../components";
-import { InvetoryService } from "../../../../services";
-import { LaGotitaConfigService, onlyLettersValidator, onlyNumbersValidator } from "../../../../util";
-
+import { NgOptimizedImage } from '@angular/common';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  OnInit,
+  signal,
+  Output,
+  EventEmitter,
+  computed,
+  Input,
+} from '@angular/core';
+import { ReactiveFormsModule, FormsModule, FormBuilder, Validators } from '@angular/forms';
+import { of, mergeMap, finalize } from 'rxjs';
+import { CustomInputComponent, CustomSelectComponent, FormErrorMessageComponent } from '../../../../components';
+import { InvetoryService } from '../../../../services';
+import { LaGotitaConfigService, onlyLettersValidator, onlyNumbersValidator } from '../../../../util';
 
 @Component({
   selector: 'app-update-articulo',
@@ -23,6 +31,10 @@ import { LaGotitaConfigService, onlyLettersValidator, onlyNumbersValidator } fro
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UpdateArticuloComponent implements OnInit {
+  @Input({ required: true }) updateInventario!: any;
+
+  @Input({ required: true }) id!: string;
+
   public readonly loading = signal(false);
 
   @Output() inventary = new EventEmitter<any | null>();
@@ -45,14 +57,18 @@ export class UpdateArticuloComponent implements OnInit {
     private readonly _inventaryService: InvetoryService,
   ) {}
   ngOnInit(): void {
-    throw new Error("Method not implemented.");
+    this.syncForm();
+  }
+
+  syncForm(): void {
+    this.form.patchValue(this.updateInventario);
   }
 
   public readonly form = this._fb.group({
     nombre: ['', [Validators.required, onlyLettersValidator()]],
     descripcion: ['', [Validators.required]],
-    cantidad: ['', [Validators.required, onlyNumbersValidator()]],
-    precio: ['', [Validators.required, onlyNumbersValidator()]],
+    cantidad: [0, [Validators.required, onlyNumbersValidator()]],
+    precio: [0, [Validators.required, onlyNumbersValidator()]],
     tipo_articulo: ['', [Validators.required]],
   });
 
@@ -62,15 +78,23 @@ export class UpdateArticuloComponent implements OnInit {
       return;
     }
 
-    const userForm = this.form.value;
+    const userForm = {
+      nombre: this.form.controls.nombre.value,
+      descripcion: this.form.controls.descripcion.value,
+      cantidad: Number(this.form.controls.cantidad.value),
+      precio: Number(this.form.controls.precio.value),
+      tipo_articulo: this.form.controls.tipo_articulo.value,
+    };
 
     of(this.loading.set(true))
       .pipe(
-        mergeMap(() => this._inventaryService.createProducto(userForm)),
+        mergeMap(() =>
+          this._inventaryService.updateInventario(this.id, {
+            ...userForm,
+          }),
+        ),
         finalize(() => this.loading.set(false)),
       )
-      .subscribe(() => {
-        this.inventary.emit(userForm);
-      });
+      .subscribe(()=> this.inventary.emit(userForm));
   }
 }

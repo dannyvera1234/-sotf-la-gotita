@@ -18,8 +18,10 @@ import { UpdateArticuloComponent } from './components';
 export class InvetaryDetailsComponent {
   @Input({ required: true }) set id(value: string) {
     this.getInventario(value);
-
+    this._udateInvetario.set(value);
   }
+
+  public _udateInvetario = signal('');
 
   public readonly loading = signal(true);
 
@@ -33,7 +35,8 @@ export class InvetaryDetailsComponent {
         mergeMap(() => this.invetary.getInventaryById(id)),
         finalize(() => this.loading.set(false)),
       )
-      .subscribe((inventary) => {this.inventario.set(inventary)
+      .subscribe((inventary) => {
+        this.inventario.set(inventary);
         console.log(inventary);
       });
   }
