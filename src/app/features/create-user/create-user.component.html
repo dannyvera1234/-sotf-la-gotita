@@ -74,7 +74,7 @@
   </div>
 
   <div class="flex gap-4 justify-end mt-10 md:flex-row flex-col text-center max-md:w-full">
-    @if (loading()) {
+    @if (!loading()) {
     <button class="items-center gap-2 bg-zinc-200 px-4 py-2 rounded-lg md:flex" type="button" (click)="user.emit(null)">
       Cancelar
     </button>

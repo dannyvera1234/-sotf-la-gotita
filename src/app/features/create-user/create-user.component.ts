@@ -82,33 +82,7 @@ export class CreateUserComponent {
     phones: this._fb.array<FormGroup<{ phone: FormControl<any | null> }>>([], [Validators.required]),
   });
 
-  public submit(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
-    const userForm = {
-      id: ObjectId(),
-      nombre: this.form.value.nombre!.trim(),
-      tipoDocumento: this.form.value.tipoDocumento!,
-      cedula: Number(this.form.value.cedula!),
-      establecimiento: this.form.value.establecimiento!.trim(),
-      direccion: this.form.value.direccion!.trim(),
-      password: this.form.value.password!.trim(),
-      emails: this.form.value.emails!.map((email) => email!.email!.trim().toLowerCase()),
-      phones: this.form.value.phones!.map((phone) => phone.phone),
-    } as User;
 
-    of(this.loading.set(true))
-      .pipe(
-        mergeMap(() => this.userService.createUser(userForm)),
-        finalize(() => this.loading.set(false)),
-      )
-      .subscribe(() => {
-        this.user.emit(userForm);
-        this.form.reset();
-      });
-  }
 
   removeEmail(index: number): void {
     if (index > 0) {
@@ -139,5 +113,33 @@ export class CreateUserComponent {
         ],
       }),
     );
+  }
+
+  public submit(){
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+    const userForm = {
+      nombre: this.form.value.nombre!.trim(),
+      tipoDocumento: this.form.value.tipoDocumento!,
+      cedula: Number(this.form.value.cedula!),
+      establecimiento: this.form.value.establecimiento!.trim(),
+      direccion: this.form.value.direccion!.trim(),
+      password: this.form.value.password!.trim(),
+      emails: this.form.value.emails!.map((email) => email!.email!.trim().toLowerCase()),
+      phones: this.form.value.phones!.map((phone) => phone.phone),
+      estado: true,
+    } as User;
+
+    of(this.loading.set(true))
+      .pipe(
+        mergeMap(() => this.userService.createUser(userForm)),
+        finalize(() => this.loading.set(false)),
+      )
+      .subscribe(() => {
+        this.user.emit(userForm);
+        this.form.reset();
+      });
   }
 }

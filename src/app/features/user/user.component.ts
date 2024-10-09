@@ -4,46 +4,59 @@ import { TextInitialsPipe } from '../../pipes';
 import { RouterLink } from '@angular/router';
 import { UserService } from '../../services';
 import { ParamFilter } from '../../interfaces';
-import { finalize } from 'rxjs';
+import { finalize, mergeMap, of, take } from 'rxjs';
 import { NgOptimizedImage } from '@angular/common';
 import { CreateUserComponent } from '../create-user';
-import { CreateClientesComponent } from "../create-clientes/create-clientes.component";
+import { CreateClientesComponent } from '../create-clientes/create-clientes.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-user',
   standalone: true,
-  imports: [ModalComponent, TextInitialsPipe, RouterLink, NgOptimizedImage, CreateUserComponent, CreateClientesComponent],
+  imports: [
+    ModalComponent,
+    TextInitialsPipe,
+    RouterLink,
+    NgOptimizedImage,
+    CreateUserComponent,
+    CreateClientesComponent,
+  ],
   templateUrl: './user.component.html',
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserComponent {
-public readonly loading = signal(true);
+  public readonly loading = signal(true);
 
-public readonly users = signal<any | null>(null);
+  public readonly users = signal<any | null>(null);
 
-constructor(private readonly userService: UserService) {
-  this.getUsers();
-}
-
-public getUsers(paramFilter?: ParamFilter) {
-  let filter: ParamFilter = {
-    filter: 'SI',
-    page: 0,
-    size: 2,
-    // PAGE_DEFAULT
-  };
-  if (paramFilter) {
-    filter = paramFilter;
+  constructor(private readonly userService: UserService) {
+    this.getUsers();
   }
-  this.loading.set(true);
-  this.userService
-    .allUsers(filter)
-    .pipe(finalize(() => this.loading.set(false)))
-    .subscribe((client) =>
-      this.users.set(client)
 
-    );
-}
+  public deleteUser(id: string): void {
+    of(this.loading.set(true))
+      .pipe(
+        take(1),
+        mergeMap(() => this.userService.deleteUser(id)),
+        finalize(() => this.loading.set(false)),
+      )
+      .subscribe(() => {
+        this.getUsers();
+      });
+  }
 
+  public getUsers(): void {
+    this.loading.set(true);
+    this.userService
+      .allUsers()
+      .pipe(
+        take(1),
+        finalize(() => this.loading.set(false)),
+      )
+      .subscribe((client) => {
+        this.users.set(client);
+
+      });
+  }
 }

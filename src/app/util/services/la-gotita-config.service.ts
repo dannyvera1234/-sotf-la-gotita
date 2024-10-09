@@ -14,6 +14,11 @@ export class LaGotitaConfigService {
 
   constructor() {}
 
+  public statusUser = signal<Record<string, string>>({
+    true: 'Activo',
+    false: 'Inactivo',
+  });
+
 
   public tipo_membresia = signal<Record<string, string>>({
     MEMBRESIA_BASICA: 'Membresía Básica',

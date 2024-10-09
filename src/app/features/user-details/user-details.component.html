@@ -25,9 +25,9 @@
         </a>
         <div
           class="text-white p-2 rounded-md text-center mb-6"
-          [ngClass]="user.estado === 'Activo' ? 'bg-emerald-500' : 'bg-red-500'"
+          [ngClass]="user.estado === 'Activo' ? 'bg-red-500' : 'bg-emerald-500'"
         >
-          {{ user.estado }}
+          {{ congfi.statusUser()[ user.estado]  }}
         </div>
 
         <div class="flex justify-between items-center">
@@ -108,7 +108,9 @@
           </button>
         </header>
         <section class="p-4">
-          <app-update-user [updateUser]="user" (user)="updateUserModal.close()" />
+          <app-update-user [updateUser]="user" (user)="updateUserModal.close()"
+          [id]="_udateUser()"
+          />
         </section>
       </div>
     </div>
@@ -118,7 +120,7 @@
     <div class="flex flex-col lg:flex-row gap-4 w-full">
       <section class="bg-white rounded-lg shadow p-4 w-full">
         @defer {
-        <app-member-user [idUser]="user.id" />
+        <app-member-user [idUser]="_udateUser()" />
         }
       </section>
     </div>

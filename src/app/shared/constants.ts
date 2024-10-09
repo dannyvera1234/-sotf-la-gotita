@@ -5,3 +5,7 @@ export const APP_CLIENTES = {
 export const APP_INVETARIOS = {
   COLLECTION_NAME: 'inventarios',
 }
+
+export const APP_USERS = {
+  COLLECTION_NAME: 'users',
+}

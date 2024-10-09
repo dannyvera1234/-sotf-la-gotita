@@ -37,7 +37,7 @@ export class InvetaryDetailsComponent {
       )
       .subscribe((inventary) => {
         this.inventario.set(inventary);
-        console.log(inventary);
+
       });
   }
 }

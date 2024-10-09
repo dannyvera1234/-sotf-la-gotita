@@ -8,4 +8,5 @@ export interface User {
   password: string;
   phones: string[];
   emails: string[];
+  estado: boolean;
 }

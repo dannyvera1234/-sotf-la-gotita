@@ -68,7 +68,7 @@ export class InvetoryComponent extends WithSearchable implements OnInit {
         take(1),
         finalize(() => this.loading.set(false)))
       .subscribe((inventary) => {
-        console.log(inventary);
+
         this.products.set(inventary);
       });
   }

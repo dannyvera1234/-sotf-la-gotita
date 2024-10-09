@@ -27,6 +27,7 @@
           <thead>
             <tr class="*:font-normal *:text-neutral-400 *:px-6 *:py-3">
               <th scope="col">Nombre</th>
+              <th scope="col">Establecimiento</th>
               <th scope="col">Indetificación</th>
               <th scope="col">Telefono</th>
               <th scope="col">Dirección</th>
@@ -61,26 +62,38 @@
                 </a>
               </th>
               <td>
-                {{ users.identificacion }}
+                {{ users.establecimiento }}
               </td>
-              <td>{{ users.telefono }}</td>
+
+              <td>
+                {{ users.cedula }}
+              </td>
+              <td>
+                @for (item of users.phones; track $index) {
+                <p>
+                  {{ item }}
+                </p>
+                }
+              </td>
               <td>
                 {{ users.direccion }}
               </td>
               <td>
-                {{ users.correo }}
+                @for (item of users.emails; track $index) {
+                <p>
+                  {{ item }}
+                </p>
+                }
               </td>
-              <td>....</td>
+              <td>
+                <button class="bg-red-500 rounded-lg p-3 inline-block cursor-pointer" (click)="deleteUser(users.id)">
+                  <img src="assets/icons/trash-icon.svg" alt="Eliminar" class="size-4" />
+                </button>
+              </td>
             </tr>
             }
           </tbody>
-          } @else { @defer {
-          <tbody>
-            <td colspan="100%">
-              <!-- <app-users-not-found /> -->
-            </td>
-          </tbody>
-          } } }
+          } }
         </table>
       </div>
 

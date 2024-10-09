@@ -28,6 +28,8 @@ import { emailValidator, IdentificationValidatorService, LaGotitaConfigService, 
 export class UpdateUserComponent implements OnInit {
   @Input({ required: true }) updateUser!: any;
 
+  @Input({ required: true }) id!: string;
+
   public readonly loading = signal(false);
 
   public readonly maxPhoneNumbers = this.config.maxPhoneNumbers;
@@ -110,7 +112,7 @@ export class UpdateUserComponent implements OnInit {
     of(this.loading.set(true))
       .pipe(
         mergeMap(() =>
-          this.userService.updateClient(this.updateUser.id, {
+          this.userService.updateUser(this.id, {
             ...userForm,
           }),
         ),

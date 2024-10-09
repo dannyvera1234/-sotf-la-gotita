@@ -32,7 +32,7 @@
         </thead>
         @if (listMembresia(); as $listMembresia) {
           <tbody>
-            @for (item of $listMembresia.membresias; track $index) {
+            @for (item of $listMembresia; track $index) {
               <tr
                 class="bg-white border-b border-dashed border-neutral-200 *:px-6 *:py-4 *:whitespace-nowrap [&>th]:ps-0"
               >
@@ -44,7 +44,7 @@
                 </td>
                 <td>{{ item.fecha_fin }}</td>
                 <td>
-                  {{ item.precio | currency }}
+                  {{ item.monto | currency }}
                 </td>
                 <td>
                   {{ config.metodo_pago()[item.metodo_pago] }}

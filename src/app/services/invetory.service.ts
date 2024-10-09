@@ -23,7 +23,7 @@ export class InvetoryService {
   }
 
   updateInventario(id: string, updateInventario: Partial<any>): Promise<void> {
-    console.log('updateInventario', { updateInventario, id });
+
     const docRef = this._getDocRef(id);
     return updateDoc(docRef, {
       ...updateInventario,

@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, computed, Input, signal } from '@an
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CustomInputComponent, CustomSelectComponent } from '../../../../components';
 import { MembresiaComponent } from '../membresia';
-import { finalize, mergeMap, of } from 'rxjs';
+import { finalize, mergeMap, of, window as rxjsWindow } from 'rxjs';
 import { LaGotitaConfigService, ObjectId, onlyNumbersValidator } from '../../../../util';
 import { CreateMembresia } from '../../../../interfaces';
 
@@ -73,12 +73,13 @@ export class MemberUserComponent {
       return;
     }
     const memberFrom = {
-      id: ObjectId(),
+
       tipo_membresia: this.form.value.tipo_membresia!,
       metodo_pago: this.form.value.metodo_pago!,
       monto: Number(this.form.value.monto!),
       fecha_fin: this.form.value.fecha_fin!,
       fecha_inicio: this.form.value.fecha_inicio!,
+      status: true,
     } as CreateMembresia;
 
     of(this.loading.set(true))
@@ -86,9 +87,15 @@ export class MemberUserComponent {
         mergeMap(() => this.userService.createMembresia(this.userId(), memberFrom)),
         finalize(() => {
           this.loading.set(false);
-          // this.form.reset();
         }),
       )
-      .subscribe();
+      .subscribe(
+        () => {
+          const currentLocation = window.location;
+          currentLocation.reload();
+
+        }
+
+      );
   }
 }

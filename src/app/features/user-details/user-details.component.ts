@@ -18,7 +18,12 @@ import { MemberUserComponent, UpdateUserComponent } from './components';
 export class UserDetailsComponent {
   @Input({ required: true }) set id(value: string) {
     this.getUser(value);
+    this._udateUser.set(value);
+
   }
+
+  public _udateUser = signal('');
+
   public readonly loading = signal(true);
 
   public readonly user = signal<any | null>(null);
@@ -31,9 +36,11 @@ export class UserDetailsComponent {
   public getUser(id: string): void {
     of(this.loading.set(true))
       .pipe(
-        mergeMap(() => this.userService.getApplication(id)),
+        mergeMap(() => this.userService.getUserById(id)),
         finalize(() => this.loading.set(false)),
       )
-      .subscribe((user) => this.user.set(user));
+      .subscribe((user) => {this.user.set(user)
+
+      });
   }
 }
