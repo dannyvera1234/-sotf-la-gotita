@@ -40,7 +40,7 @@ export class UserDetailsComponent {
         finalize(() => this.loading.set(false)),
       )
       .subscribe((user) => {this.user.set(user)
-
+        console.log(user);
       });
   }
 }

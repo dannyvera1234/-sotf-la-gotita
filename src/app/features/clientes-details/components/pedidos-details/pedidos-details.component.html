@@ -1,0 +1,7 @@
+@if (loading()) {
+<div class="h-full text-center flex justify-center items-center">
+  <div class="loader"></div>
+</div>
+} @else { @if (pedidos(); as pedido) {
+{{ pedidos() | json }}
+} }

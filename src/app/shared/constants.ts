@@ -9,3 +9,11 @@ export const APP_INVETARIOS = {
 export const APP_USERS = {
   COLLECTION_NAME: 'users',
 }
+
+export const APP_TIPO_PRENDA = {
+  COLLECTION_NAME: 'tipoPrenda',
+}
+
+export const APP_PEDIDOS = {
+  COLLECTION_NAME: 'pedidos',
+}

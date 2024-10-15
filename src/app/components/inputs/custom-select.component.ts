@@ -1,15 +1,15 @@
 import { NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, signal } from '@angular/core';
 import { ControlValueAccessor, FormsModule, NgControl } from '@angular/forms';
+import { FormErrorMessageComponent } from '.';
+import { InputErrorLocatorService } from '../../util';
 
 
-import { FormErrorMessageComponent } from './form-error-message.component';
-import { InputErrorLocatorService } from '../../util/services';
 
 @Component({
   selector: 'app-custom-select',
   standalone: true,
-  imports: [NgClass, FormErrorMessageComponent, FormsModule, FormErrorMessageComponent],
+  imports: [NgClass, FormErrorMessageComponent, FormsModule],
   template: `
     @if (label) {
       <label
@@ -61,7 +61,7 @@ export class CustomSelectComponent implements ControlValueAccessor, OnInit {
 
   constructor(
     public control: NgControl,
-     public readonly errorLocator: InputErrorLocatorService,
+    public readonly errorLocator: InputErrorLocatorService,
     public readonly _cd: ChangeDetectorRef,
   ) {
     this.control.valueAccessor = this;

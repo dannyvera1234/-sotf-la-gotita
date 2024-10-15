@@ -2,7 +2,14 @@ import { ChangeDetectionStrategy, Component, computed, EventEmitter, Output, sig
 import { FormBuilder, Validators, FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Subject, takeUntil, of, mergeMap, finalize } from 'rxjs';
 import { ClienteService } from '../../../../../../services';
-import { LaGotitaConfigService, IdentificationValidatorService, onlyLettersValidator, onlyNumbersValidator, ObjectId, emailValidator } from '../../../../../../util';
+import {
+  LaGotitaConfigService,
+  IdentificationValidatorService,
+  onlyLettersValidator,
+  onlyNumbersValidator,
+  ObjectId,
+  emailValidator,
+} from '../../../../../../util';
 import { CustomInputComponent, CustomSelectComponent } from '../../../../../../components';
 import { NgOptimizedImage } from '@angular/common';
 import { CreatePedidoService } from '../../../create-pedido.service';
@@ -13,7 +20,7 @@ import { CreatePedidoService } from '../../../create-pedido.service';
   imports: [CustomInputComponent, CustomSelectComponent, ReactiveFormsModule, NgOptimizedImage],
   templateUrl: './new-cliente.component.html',
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NewClienteComponent {
   public readonly loading = signal(false);
@@ -23,6 +30,8 @@ export class NewClienteComponent {
   public readonly maxEmails = this.config.maxEmails;
 
   public readonly cedulaLabel = this.identificationService.cedulaLabel;
+
+  public readonly form = this.createPedido.form.controls.step_1;
 
   private destroy$ = new Subject<void>();
 
@@ -44,7 +53,7 @@ export class NewClienteComponent {
     private readonly _fb: FormBuilder,
     private readonly config: LaGotitaConfigService,
     private readonly identificationService: IdentificationValidatorService,
-    private readonly createPedido : CreatePedidoService,
+    private readonly createPedido: CreatePedidoService,
   ) {}
 
   ngOnInit(): void {
@@ -63,18 +72,11 @@ export class NewClienteComponent {
     });
   }
 
-  public form = this._fb.group({
-    nombres: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(50), onlyLettersValidator()]],
-    tipoDocumento: ['', [Validators.required]],
-    cedula: ['', [Validators.required, onlyNumbersValidator(), Validators.minLength(10), Validators.maxLength(13)]],
-    direccion: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(50)]],
-    emails: this._fb.array<FormGroup<{ email: FormControl<string | null> }>>([], [Validators.required]),
-    phones: this._fb.array<FormGroup<{ phone: FormControl<any | null> }>>([], [Validators.required]),
-
-  });
-
   public next(): void {
-
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
     this.createPedido.next();
   }
 

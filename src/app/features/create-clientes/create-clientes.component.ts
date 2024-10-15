@@ -3,9 +3,8 @@ import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } 
 import { CustomInputComponent, CustomSelectComponent } from '../../components';
 import { finalize, mergeMap, of, Subject, takeUntil } from 'rxjs';
 import { emailValidator, IdentificationValidatorService, LaGotitaConfigService, ObjectId, onlyLettersValidator, onlyNumbersValidator, SearchService } from '../../util';
-import { ClienteService } from '../../services';
+import { PedidosService } from '../../services';
 import { NgOptimizedImage } from '@angular/common';
-import { SearchModel } from '../../model';
 
 @Component({
   selector: 'app-create-clientes',
@@ -43,7 +42,7 @@ export class CreateClientesComponent {
   constructor(
     private readonly _fb: FormBuilder,
     private readonly config: LaGotitaConfigService,
-    private readonly _clienteService: ClienteService,
+    private readonly _pedidoService: PedidosService,
     private readonly identificationService: IdentificationValidatorService,
   ) {}
 
@@ -89,7 +88,7 @@ export class CreateClientesComponent {
 
     of(this.loading.set(true))
       .pipe(
-        mergeMap(() => this._clienteService.createClientes(clientForm)),
+        mergeMap(() => this._pedidoService.createCliente(clientForm)),
         finalize(() => this.loading.set(false)),
       )
       .subscribe(() => {this.client.emit(clientForm)

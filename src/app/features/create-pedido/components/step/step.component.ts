@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CreatePedidoService } from '../create-pedido.service';
 import { NgClass, NgOptimizedImage } from '@angular/common';
-import { NewClienteComponent, NewPedidoComponent } from './components';
+import {  NewClienteComponent, NewPedidoComponent } from './components';
 
 @Component({
   selector: 'app-step',
   standalone: true,
-  imports: [NgClass, NgOptimizedImage, NewPedidoComponent, NewClienteComponent],
+  imports: [NgClass, NgOptimizedImage, NewPedidoComponent, NewClienteComponent, ],
   templateUrl: './step.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush

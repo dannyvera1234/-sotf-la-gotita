@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, delay, of, tap, map } from 'rxjs';
-import { ParamFilter } from '../interfaces';
+import { Observable } from 'rxjs';
 import {
   addDoc,
   collection,
@@ -13,6 +12,7 @@ import {
   getDoc,
   orderBy,
   query,
+  setDoc,
   updateDoc,
 } from '@angular/fire/firestore';
 import { APP_CLIENTES } from '../shared/constants';
@@ -31,7 +31,7 @@ export class ClienteService {
   async getClientes(id: string): Promise<any> {
     const docRef = this._getDocRef(id);
     const documentData = await getDoc(docRef);
-   return documentData.data();
+    return documentData.data();
   }
 
   updateClientes(id: string, updateClient: Partial<any>): Promise<void> {
@@ -49,17 +49,9 @@ export class ClienteService {
   }
 
 
-  createClientes(createClient: Partial<any>): Promise<DocumentReference<DocumentData, DocumentData>> {
-    return addDoc(this._collectionName, {
-      ...createClient,
-      created: Date.now(),
-      updated: Date.now(),
-    });
-  }
 
   allClientes(): Observable<any[]> {
     const queryFn = query(this._collectionName, orderBy('created', 'desc'));
     return collectionData(queryFn, { idField: 'id' });
   }
-
 }

@@ -4,12 +4,12 @@ import { LaGotitaConfigService } from '../../util';
 import { ClienteService } from '../../services';
 import { TextInitialsPipe } from '../../pipes';
 import { ModalComponent } from '../../components';
-import { UpdateClientComponent } from './components';
+import { PedidosDetailsComponent, UpdateClientComponent } from './components';
 
 @Component({
   selector: 'app-clientes-details',
   standalone: true,
-  imports: [TextInitialsPipe, ModalComponent, UpdateClientComponent],
+  imports: [TextInitialsPipe, ModalComponent, UpdateClientComponent, PedidosDetailsComponent],
   templateUrl: './clientes-details.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush
