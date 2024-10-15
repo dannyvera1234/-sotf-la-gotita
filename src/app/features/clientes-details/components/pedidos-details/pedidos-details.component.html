@@ -2,6 +2,139 @@
 <div class="h-full text-center flex justify-center items-center">
   <div class="loader"></div>
 </div>
-} @else { @if (pedidos(); as pedido) {
-{{ pedidos() | json }}
-} }
+} @else {
+
+  @if (pedidos() && pedidos()!.length > 0) {
+
+<!-- Tarjeta de Pedido -->
+@for (item of pedidos(); track $index) {
+
+<!-- Título -->
+<div class="mb-10 text-center">
+  <h2 class="text-4xl font-extrabold mb-2 tracking-wide">Historial del Pedido</h2>
+  <p class="text-lg font-medium opacity-75">Revisa el proceso del pedido</p>
+</div>
+
+<!-- Fila de Historial de Pedido -->
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+  <!-- Evento: Fecha de Ingreso -->
+  <div class="bg-white p-6 rounded-xl shadow-lg">
+    <div class="flex items-center mb-4">
+      <div class="w-8 h-8 bg-indigo-500 rounded-full text-white flex items-center justify-center">
+        <img src="/assets/icons/fecha.svg" alt="Fecha Ingreso" class="w-5 h-5 opacity-90" />
+      </div>
+      <p class="font-semibold text-indigo-600 ml-3">Fecha de Ingreso</p>
+    </div>
+    <p class="text-gray-600">{{ item.fecha_ingreso }}</p>
+  </div>
+
+  <!-- Evento: Tiempo de Lavado -->
+  <div class="bg-white p-6 rounded-xl shadow-lg">
+    <div class="flex items-center mb-4">
+      <div class="w-8 h-8 bg-indigo-500 rounded-full text-white flex items-center justify-center">
+        <img src="/assets/icons/time-icon.svg" alt="Tiempo Lavado" class="w-5 h-5 opacity-90" />
+      </div>
+      <p class="font-semibold text-indigo-600 ml-3">Tiempo de Lavado</p>
+    </div>
+    <p class="text-gray-600">{{ item.tiempoLavado }} minutos</p>
+  </div>
+
+  <!-- Evento: Descripción -->
+  <div class="bg-white p-6 rounded-xl shadow-lg">
+    <div class="flex items-center mb-4">
+      <div class="w-8 h-8 bg-indigo-500 rounded-full text-white flex items-center justify-center">
+        <img src="/assets/icons/desc-icon.svg" alt="Descripción" class="w-5 h-5 opacity-90" />
+      </div>
+      <p class="font-semibold text-indigo-600 ml-3">Descripción</p>
+    </div>
+    <p class="text-gray-600">{{ item.descripcion }}</p>
+  </div>
+
+  <!-- Evento: Fecha de Entrega -->
+  <div class="bg-white p-6 rounded-xl shadow-lg">
+    <div class="flex items-center mb-4">
+      <div class="w-8 h-8 bg-indigo-500 rounded-full text-white flex items-center justify-center">
+        <img src="/assets/icons/fecha.svg" alt="Fecha Ingreso" class="w-5 h-5 opacity-90" />
+      </div>
+      <p class="font-semibold text-indigo-600 ml-3">Fecha de Entrega</p>
+    </div>
+    <p class="text-gray-600">{{ item.fecha_entrega | customDate }}</p>
+  </div>
+
+  <!-- Evento: Estado -->
+  <div class="bg-white p-6 rounded-xl shadow-lg">
+    <div class="flex items-center mb-4">
+      <div class="w-8 h-8 bg-indigo-500 rounded-full text-white flex items-center justify-center">
+        <img src="/assets/icons/status-icon.svg" alt="Estado" class="w-5 h-5 opacity-90" />
+      </div>
+      <p class="font-semibold text-indigo-600 ml-3">Estado del Pedido</p>
+    </div>
+    <p class="text-gray-600" [ngClass]="{ 'text-green-600': item.estado, 'text-red-600': !item.estado }">
+      {{ item.estado ? 'Completado' : 'Pendiente' }}
+    </p>
+  </div>
+
+  <!-- Evento: Tipo de Prenda -->
+  <div class="bg-white p-6 rounded-xl shadow-lg">
+    <div class="flex items-center mb-4">
+      <div class="w-8 h-8 bg-indigo-500 rounded-full text-white flex items-center justify-center">
+        <img src="/assets/icons/shirt-icon.svg" alt="Tipo Prenda" class="w-5 h-5 opacity-90" />
+      </div>
+      <p class="font-semibold text-indigo-600 ml-3">Tipo de Prenda</p>
+    </div>
+    <ul class="list-inside list-disc mt-2 text-gray-600">
+      @for (prenda of item.tipoPrenda; track $index) {
+      <li>{{ prenda.name }}</li>
+      }
+    </ul>
+  </div>
+
+  <!-- Evento: Peso de la Prenda -->
+  <div class="bg-white p-6 rounded-xl shadow-lg">
+    <div class="flex items-center mb-4">
+      <div class="w-8 h-8 bg-indigo-500 rounded-full text-white flex items-center justify-center">
+        <img src="/assets/icons/weight-icon.svg" alt="Peso Prenda" class="w-5 h-5 opacity-90" />
+      </div>
+      <p class="font-semibold text-indigo-600 ml-3">Peso de la Prenda</p>
+    </div>
+    <p class="text-gray-600">{{ item.pesoPrenda }} libras</p>
+  </div>
+
+  <!-- Evento: Total -->
+  <div class="bg-white p-6 rounded-xl shadow-lg">
+    <div class="flex items-center mb-4">
+      <div class="w-8 h-8 bg-indigo-500 rounded-full text-white flex items-center justify-center">
+        <img src="/assets/icons/money-icon.svg" alt="Total" class="w-5 h-5 opacity-90" />
+      </div>
+      <p class="font-semibold text-indigo-600 ml-3">Total</p>
+    </div>
+    <p class="text-gray-600">${{ item.total }}</p>
+  </div>
+</div>
+
+}
+
+
+} @else  {
+  <div class="text-center py-4 max-w-2xl mx-auto">
+    <div class="bg-slate-50 py-4 mb-5 rounded-xl">
+      <img
+        ngSrc="/assets/icons/no-contacts-found.svg"
+        alt="Nothing found"
+        width="242"
+        height="242"
+        priority
+        class="mx-auto"
+      />
+    </div>
+    <h3 class="text-2xl font-bold">
+      No se encontraron pedidos
+    </h3>
+    <p class="text-balance">
+      No se han encontrado pedidos con estos términos de búsqueda, intenta ajustar los filtros, o registra un nuevo pedido.
+    </p>
+  </div>
+}
+
+
+}

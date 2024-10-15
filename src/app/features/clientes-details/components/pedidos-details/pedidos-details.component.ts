@@ -1,12 +1,14 @@
 import { ChangeDetectionStrategy, Component, Input, signal } from '@angular/core';
 import { PedidosService } from '../../../../services';
-import { JsonPipe } from '@angular/common';
+import {  JsonPipe, NgClass, NgOptimizedImage } from '@angular/common';
 import { finalize, mergeMap, of } from 'rxjs';
+import { LaGotitaConfigService } from '../../../../util';
+import { CustomDatePipe } from '../../../../pipes';
 
 @Component({
   selector: 'app-pedidos-details',
   standalone: true,
-  imports: [JsonPipe],
+  imports: [JsonPipe, NgClass, CustomDatePipe, NgOptimizedImage],
   templateUrl: './pedidos-details.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -16,11 +18,15 @@ export class PedidosDetailsComponent {
     this.getPedidos(value);
   }
 
+
+
   public readonly pedidos = signal<any | null>(null);
 
   public readonly loading = signal(false);
 
-  constructor(private readonly pedidosService: PedidosService) {}
+  constructor(private readonly pedidosService: PedidosService,
+    public readonly config: LaGotitaConfigService
+  ) {}
 
   getPedidos(id: string): void {
     of(this.loading.set(true))
@@ -29,6 +35,7 @@ export class PedidosDetailsComponent {
         finalize(() => this.loading.set(false)),
       )
       .subscribe((pedidos) => {
+        console.log(pedidos);
         this.pedidos.set(pedidos);
       });
   }
