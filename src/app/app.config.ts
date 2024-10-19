@@ -6,6 +6,7 @@ import { provideHttpClient, withInterceptorsFromDi, withInterceptors } from '@an
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { environment } from '../environment/environment';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { getAuth, provideAuth } from '@angular/fire/auth';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,6 +18,7 @@ export const appConfig: ApplicationConfig = {
       withViewTransitions(),
     ),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
     provideHttpClient(withInterceptorsFromDi(), withInterceptors([])),
   ],

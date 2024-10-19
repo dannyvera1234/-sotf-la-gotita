@@ -50,8 +50,9 @@ export class LaGotitaConfigService {
   });
 
   public statusUser = signal<Record<string, string>>({
-    true: 'Activo',
-    false: 'Inactivo',
+    PROCESO: 'En Proceso',
+    PENDIENTE: 'Pendiente',
+    ENTREGAR: 'Entregar',
   });
 
   public tipo_membresia = signal<Record<string, string>>({

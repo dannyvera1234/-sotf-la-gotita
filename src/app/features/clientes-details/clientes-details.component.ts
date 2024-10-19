@@ -4,12 +4,15 @@ import { LaGotitaConfigService } from '../../util';
 import { ClienteService } from '../../services';
 import { TextInitialsPipe } from '../../pipes';
 import { ModalComponent } from '../../components';
-import { PedidosDetailsComponent, UpdateClientComponent } from './components';
+import { CreatePedidoComponent, PedidosDetailsComponent, UpdateClientComponent } from './components';
+import { NgClass, NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-clientes-details',
   standalone: true,
-  imports: [TextInitialsPipe, ModalComponent, UpdateClientComponent, PedidosDetailsComponent],
+  imports: [TextInitialsPipe, ModalComponent, UpdateClientComponent, PedidosDetailsComponent, NgOptimizedImage, NgClass,
+    CreatePedidoComponent
+  ],
   templateUrl: './clientes-details.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -26,6 +29,8 @@ export class ClientesDetailsComponent {
 
   public readonly client = signal<any | null>(null);
 
+
+
   constructor(
     private readonly _clienteService: ClienteService,
     public readonly congfi: LaGotitaConfigService,
@@ -37,6 +42,9 @@ export class ClientesDetailsComponent {
         mergeMap(() => this._clienteService.getClientes(id)),
         finalize(() => this.loading.set(false)),
       )
-      .subscribe((client) => {this.client.set(client)});
+      .subscribe((client) => {this.client.set(client)
+
+
+      });
   }
 }

@@ -1,7 +1,13 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './guards/auth.guard';
 export const routes: Routes & {
   data?: any & { icon?: string; name?: string };
 } = [
+  // { path: '', redirectTo: 'login', pathMatch: 'full' },
+  // {
+  //   path: 'login',
+  //   loadChildren: () => import('./features/login/routes'),
+  // },
   {
     path: '',
     canActivate: [],
