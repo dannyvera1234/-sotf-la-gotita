@@ -42,9 +42,10 @@
               </div>
             </td>
           </tbody>
-          } @else { @if (clients(); as $client) {
+          } @else {
+             @if (clients() && clients()!.length > 0) {
           <tbody>
-            @for (client of $client; track client.id) {
+            @for (client of clients(); track client.id) {
             <tr
               class="bg-white border-b border-dashed border-neutral-200 *:px-6 *:py-4 *:whitespace-nowrap [&>th]:ps-0"
             >
@@ -98,14 +99,13 @@
         </table>
       </div>
 
-      @defer { @if (clients()?.pagination) {
-      <div class="mt-4">
-        <!-- <app-pagination /> -->
-      </div>
-      } }
+
     </section>
   </div>
 </div>
+
+
+
 
 <app-modal #newClientModal>
   @defer {

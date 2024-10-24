@@ -1,8 +1,8 @@
-<div>
+
   <div class="flex mt-6 gap-12">
     <div class="p-5 max-lg:hidden">
-      <ul>
-        @for (step of createPedidoService.steps; track $index) {
+    <ul>
+      @for (step of createPedidoService.steps; track $index) {
         <li>
           <div class="flex items-center gap-4">
             <div
@@ -11,27 +11,38 @@
             >
               {{ $index + 1 }}
             </div>
-            <span class="whitespace-nowrap">{{ step }}</span>
+            <span>{{ step }}</span>
           </div>
           @if (!$last) {
-          <div class="w-px h-7 ml-5 border border-dashed border-neutral-200"></div>
+            <div class="w-px h-7 ml-5 border border-dashed border-neutral-200"></div>
           }
         </li>
-        }
-      </ul>
-    </div>
+      }
+    </ul>
+  </div>
 
-    <div class="w-full p-5">
-      @if (!createPedidoService.created()) { @if (!createPedidoService.submitting()) { @switch
-      (createPedidoService.currentStep()) { @case (0) {
-      <app-new-cliente />
-      } @case (1) {
-      <app-new-pedido />
-      } } } @else {
-      <div class="flex justify-center items-center h-full">
-        <div class="loader"></div>
-      </div>
-      } }
-    </div>
+  <div class="w-full p-5">
+    @if (!createPedidoService.created()) {
+      @if (!createPedidoService.submitting()) {
+        @switch (createPedidoService.currentStep()) {
+          @case (0) {
+            <app-new-cliente (client)="client.emit(null)"  />
+          }
+          @case (1) {
+            <app-new-pedido />
+          }
+
+        }
+      } @else {
+        <div class="flex justify-center items-center h-full">
+          <div class="loader"></div>
+        </div>
+      }
+    } @else {
+      @defer {
+       <app-pedido-created/>
+      }
+    }
   </div>
 </div>
+

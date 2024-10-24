@@ -3,12 +3,11 @@ import { ModalComponent } from '../../components';
 import { TextInitialsPipe } from '../../pipes';
 import { RouterLink } from '@angular/router';
 import { UserService } from '../../services';
-import { ParamFilter } from '../../interfaces';
 import { finalize, mergeMap, of, take } from 'rxjs';
 import { NgOptimizedImage } from '@angular/common';
 import { CreateUserComponent } from '../create-user';
 import { CreateClientesComponent } from '../create-clientes/create-clientes.component';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NotUserFoundComponent } from './components';
 
 @Component({
   selector: 'app-user',
@@ -20,6 +19,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     NgOptimizedImage,
     CreateUserComponent,
     CreateClientesComponent,
+    NotUserFoundComponent,
   ],
   templateUrl: './user.component.html',
   styles: ``,

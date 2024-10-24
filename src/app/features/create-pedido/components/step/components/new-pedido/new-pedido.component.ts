@@ -30,6 +30,8 @@ export class NewPedidoComponent {
 
   public readonly today = signal('');
 
+  // public readonly loading =
+
   public readonly metodo_pago = computed<{ values: string[]; labels: string[] }>(() => {
     return Object.entries(this.config.metodo_pago()).reduce(
       (prev, [value, key]) => {

@@ -37,10 +37,37 @@ export class CreatePedidoService {
       fecha_entrega: [Date.now(), [Validators.required]],
       tiempoLavado: ['', [Validators.required, Validators.min(1)]],
       total: [null, [Validators.required, Validators.min(1)]],
-      descripcion: ['', [Validators.minLength(5), Validators.maxLength(50)]],
-      estado: [false],
+      descripcion: ['', [Validators.maxLength(50)]],
+      estado: ['PENDIENTE'],
     }),
   });
+
+  public reset() {
+    this.currentStep.set(0);
+    this.created.set(false);
+    this.form.reset();
+    this.form.controls.step_1.setValue({
+      nombres: '',
+      tipoDocumento: '',
+      cedula: '',
+      direccion: '',
+      emails: [],
+      phones: [],
+    });
+    this.form.controls.step_2.setValue({
+      tipoPago: '',
+      tipoPrenda: '',
+      pesoPrenda: 0,
+      codigo: 'COD-01',
+      fecha_ingreso: Date.now(),
+      fecha_entrega: Date.now(),
+      tiempoLavado: '',
+      total: null,
+      descripcion: '',
+      estado: 'PENDIENTE',
+    });
+    this.form.updateValueAndValidity();
+  }
 
   public prev(): void {
     this.currentStep.set(Math.max(this.currentStep() - 1, 0));
@@ -98,10 +125,23 @@ export class CreatePedidoService {
       const clienteDocRef = await this.clienteService.createCliente(cliente);
 
       await this.clienteService.createPedido(pedido, clienteDocRef.id);
-
+      this.submitting.set(false);
       this.created.set(true);
     } catch (error) {
       console.error('Error al crear cliente o pedido:', error);
     }
   }
+
+
+  // private submit(): void {
+  //   this.submitting.set(true);
+
+  //   this.bankService
+  //     .createBank(this.mapBankForm(), this.files())
+  //     .pipe(finalize(() => this.submitting.set(false)))
+  //     .subscribe(() => {
+  //       this.created.set(true);
+  //       this.searchService.search.set(SearchModel.EMPTY);
+  //     });
+  // }
 }

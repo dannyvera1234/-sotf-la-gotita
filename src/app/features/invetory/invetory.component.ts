@@ -9,6 +9,7 @@ import { WithSearchable } from '../../util/mixins';
 import { InvetoryService } from '../../services';
 import { finalize, mergeMap, of, take } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NotInvetaryFoundComponent } from './components';
 
 @Component({
   selector: 'app-invetory',
@@ -21,6 +22,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     NgOptimizedImage,
     ModalComponent,
     CreateInventoryComponent,
+    NotInvetaryFoundComponent,
   ],
   templateUrl: './invetory.component.html',
   styles: ``,
