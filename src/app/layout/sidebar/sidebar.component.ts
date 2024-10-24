@@ -17,9 +17,17 @@ export class SidebarComponent {
 
   constructor(private readonly sidebar: SidebarService) {}
 
-  routes = routes[0].children!.filter((route) => route?.data && route?.data['name'] && route?.data['icon']);
+  public readonly routes = routes[2].children!.filter((route) => {
+    return (
+      route?.data &&
+      route?.data['name'] &&
+      route?.data['icon']
+    );
+
+  });
 
   public toggle(): void {
     this.sidebar.closeSidebar.set(!this.sidebar.closeSidebar());
   }
+
 }

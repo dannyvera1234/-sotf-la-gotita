@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, Inject } from '@angular/c
 import { NgOptimizedImage, NgClass, DOCUMENT } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { SidebarService } from '../../util/services';
+import { AuthService } from '../../services';
 
 @Component({
   selector: 'app-header',
@@ -17,6 +18,7 @@ export class HeaderComponent {
   constructor(
     private readonly sidebar: SidebarService,
     @Inject(DOCUMENT) public document: Document,
+    public auth: AuthService,
   ) {}
 
   public toggle(): void {

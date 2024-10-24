@@ -44,10 +44,11 @@
         style="width: 30px; height: 30px; line-height: 30px"
       >
         <!-- {{ user.first_name + ' ' + user.last_name | initials }} -->
-      </button>
+      </button >
       <ul class="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg dropdown-menu hidden" #dropdownsm>
         <li>
-          <a class="block px-4 py-2 hover:bg-gray-100">Cerrar Sesion</a>
+          <a class="block px-4 py-2 hover:bg-gray-100 cursor-pointer" (click)="auth.logout()"
+          >Cerrar Sesion</a>
         </li>
       </ul>
     </div>
