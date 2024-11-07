@@ -1,0 +1,36 @@
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+  <div class="bg-blue-500 hover:bg-blue-600 shadow-lg rounded-lg p-4 text-white transition duration-300 relative">
+    <div class="absolute top-2 right-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2C10.89 2 10 2.89 10 4V4.73C6.12 5.21 3 8.68 3 12.5 3 17.09 6.91 21 12 21s9-4.41 9-9.5C21 8.68 17.88 5.21 14 4.73V4c0-1.11-.89-2-2-2zM12 12c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z"/>
+      </svg>
+    </div>
+    <h3 class="text-md font-bold">Clientes</h3>
+    <p class="text-xl font-semibold">{{ totalClientes() }}</p>
+    <p class="text-xs mt-1">Número total de clientes registrados.</p>
+  </div>
+
+  <div class="bg-green-500 hover:bg-green-600 shadow-lg rounded-lg p-4 text-white transition duration-300 relative">
+    <div class="absolute top-2 right-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 3h18v18H3z"/>
+        <path d="M4 10h16M4 14h16"/>
+      </svg>
+    </div>
+    <h3 class="text-md font-bold">Productos</h3>
+    <p class="text-xl font-semibold">{{ totalProductos() }}</p>
+    <p class="text-xs mt-1">Número total de productos disponibles.</p>
+  </div>
+
+  <div class="bg-yellow-500 hover:bg-yellow-600 shadow-lg rounded-lg p-4 text-white transition duration-300 relative">
+    <div class="absolute top-2 right-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 3h18v18H3z"/>
+        <path d="M3 9h18M3 15h18"/>
+      </svg>
+    </div>
+    <h3 class="text-md font-bold">Pedidos</h3>
+    <p class="text-xl font-semibold">{{ totalPedidos() }}</p>
+    <p class="text-xs mt-1">Número total de pedidos por entregar.</p>
+  </div>
+</div>

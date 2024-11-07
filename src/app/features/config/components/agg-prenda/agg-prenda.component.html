@@ -1,0 +1,26 @@
+<form [formGroup]="form" (ngSubmit)="submit()" class="w-full">
+  <div class="p-6">
+    <div class="mb-4">
+      <app-custom-input formControlName="nombre_prenda" label="Nombres De Prenda" />
+    </div>
+    <div class="mb-4">
+      <app-custom-input formControlName="precio" label="Precio Por Unidad"  />
+    </div>
+
+    <div class="mb-4">
+      <app-custom-input formControlName="tiempo_lavado" label="Tiempo De Lavado" />
+    </div>
+    <div class="flex gap-4 justify-end mt-10 md:flex-row flex-col text-center max-md:w-full">
+      @if (!loading()) {
+      <button class="items-center gap-2 bg-zinc-200 px-4 py-2 rounded-lg md:flex" type="button"
+      (click)="prenda.emit(null)"
+      >
+        Cancelar
+      </button>
+      <button class="bg-secondary px-4 py-2 rounded-lg text-white" type="submit">Guardar</button>
+      } @else {
+      <div class="loader"></div>
+      }
+    </div>
+  </div>
+</form>

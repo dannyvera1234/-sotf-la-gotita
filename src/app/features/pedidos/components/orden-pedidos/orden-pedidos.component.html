@@ -1,0 +1,56 @@
+@if(loading()) {
+<div class="h-full text-center flex justify-center items-center">
+  <div class="loader"></div>
+</div>
+
+}@else { @if (pedidosClientes() && pedidosClientes().length > 0){
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1">
+  @for (item of pedidosClientes(); track $index) {
+  <div
+    class="p-6 rounded-lg shadow-lg transition-all duration-300 bg-gray-100 hover:bg-gray-200 cursor-pointer max-w-lg mb-2"
+    (click)="toggleExpand($index)"
+    [style.maxHeight]="expandedIndex() === $index ? 'none' : '160px'"
+    style="overflow: hidden"
+  >
+    <div class="flex justify-between items-center">
+      <p class="font-bold truncate">{{ item.nombres }}</p>
+      <div class="flex space-x-2">
+        <button>
+          <img src="/assets/icons/check-icon.svg" class="size-4" alt="Check" />
+        </button>
+      </div>
+    </div>
+
+    <p class="text-sm text-gray-700 mb-2">
+      <li>{{ item.direccion }}</li>
+      <li>
+        Teléfonos: @for (phone of item.phones; track $index) {
+        <p class="text-neutral-500 truncate">{{ phone }}</p>
+        }
+      </li>
+      <li>
+        Emails: @for (email of item.emails; track $index) {
+        <p class="text-neutral-500 truncate">{{ email }}</p>
+        }
+      </li>
+      @for (item of item.pedidos; track $index) {
+      <span>
+        <li class="text-sm">{{ item.descripcion }}</li>
+      </span>
+      }
+    </p>
+
+    <p class="text-sm mb-0" [ngClass]="{ 'line-clamp-3': expandedIndex() !== $index }"></p>
+  </div>
+  }
+</div>
+
+}@else {
+
+<div class="text-center py-4 max-w-2xl mx-auto">
+  <div class="bg-slate-50 py-4 mb-5 rounded-xl">
+    <img src="/assets/icons/no-contacts-found.svg" class="mx-auto" alt="Not Found" />
+    <p class="text-lg font-bold text-center mt-4">No se encontraron pedidos.</p>
+  </div>
+</div>
+} }

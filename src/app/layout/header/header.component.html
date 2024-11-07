@@ -21,17 +21,15 @@
 
   <div class="flex items-center justify-between gap-4">
 
-    <button class="size-6 relative">
-      <img src="/assets/icons/nav_calc.svg" fill alt="" />
+    <button class="size-6 relative" [routerLink]="'/dashboard/config'">
+      <img src="/assets/icons/config.svg" fill alt="" />
     </button>
-    <a class="size-6 relative" routerLink="/applications/create">
-      <img ngSrc="/assets/icons/menu_applications.svg" style="filter: invert(100%)" fill alt="" />
-    </a>
+
 
     <div class="relative hidden lg:block">
-      <button class="flex items-center bg-white border-0 p-1" (click)="dropdownsm.classList.toggle('hidden')">
+      <button class="flex items-center bg-white border-0 p-1" (click)="dropdownsm.classList.toggle('hidden')"
+        >
         Daniel Vera
-        <img src="/assets/icons/arrow-down.svg" class="ml-2 size-3" alt="" />
       </button>
     </div>
 

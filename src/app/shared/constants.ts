@@ -17,3 +17,7 @@ export const APP_TIPO_PRENDA = {
 export const APP_PEDIDOS = {
   COLLECTION_NAME: 'pedidos',
 }
+
+export const APP_CONFIG = {
+  COLLECTION_NAME: 'config',
+}

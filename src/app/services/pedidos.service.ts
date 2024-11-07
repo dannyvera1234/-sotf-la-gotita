@@ -13,7 +13,6 @@ import {
   updateDoc,
 } from '@angular/fire/firestore';
 import { APP_CLIENTES, APP_PEDIDOS } from '../shared/constants';
-import { User } from '../interfaces';
 import { from, Observable } from 'rxjs';
 
 @Injectable({
@@ -68,5 +67,43 @@ export class PedidosService {
     } catch (error) {
       throw error;
     }
+  }
+
+
+  getClientesConPedidos(): Observable<any[]> {
+    return from(
+      (async () => {
+        try {
+          const clientesCollectionRef = collection(this._firestore, 'clientes');
+          const clientesSnapshot = await getDocs(clientesCollectionRef);
+
+          const clientesConPedidos = await Promise.all(
+            clientesSnapshot.docs.map(async (clienteDoc) => {
+              const clienteData = {
+                id: clienteDoc.id,
+                ...clienteDoc.data(),
+              };
+
+              const pedidosCollectionRef = collection(this._firestore, `clientes/${clienteDoc.id}/pedidos`);
+              const pedidosQuerySnapshot = await getDocs(pedidosCollectionRef);
+
+              const pedidos = pedidosQuerySnapshot.docs.map((pedidoDoc) => ({
+                id: pedidoDoc.id,
+                ...pedidoDoc.data(),
+              }));
+
+              return {
+                ...clienteData,
+                pedidos: pedidos,
+              };
+            })
+          );
+
+          return clientesConPedidos;
+        } catch (error) {
+          throw error;
+        }
+      })()
+    );
   }
 }

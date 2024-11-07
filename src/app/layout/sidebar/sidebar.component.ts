@@ -21,7 +21,8 @@ export class SidebarComponent {
     return (
       route?.data &&
       route?.data['name'] &&
-      route?.data['icon']
+      route?.data['icon'] &&
+      !route?.data['hideInMenu']
     );
 
   });

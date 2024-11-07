@@ -1,0 +1,127 @@
+<!-- configuration.component.html -->
+<div class="max-w-8xl mx-auto p-6">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-3">
+    <!-- Configuración de Usuarios -->
+    <div class="relative p-6 bg-white border border-gray-200 rounded-lg shadow hover:shadow-lg transition-shadow">
+      <h2 class="text-xl font-semibold text-gray-700 mb-2">Lista de Prendas</h2>
+      <p class="text-gray-600 mt-6 mb-4">Administración de información de prendas, precio y tiempo.</p>
+
+      <button class="absolute top-5 right-4 px-4 py-2 bg-secondary text-white rounded-lg" (click)="addPrenda.open()">
+        Agregar Prenda
+      </button>
+
+      <section>
+        <div class="relative overflow-x-auto">
+          <table class="w-full text-left">
+            <thead>
+              <tr class="*:font-normal *:text-neutral-400 *:px-6 *:py-3">
+                <th scope="col">Nombre</th>
+                <th scope="col">Precio</th>
+                <th scope="col">Tiempo</th>
+                <th scope="col">Accion</th>
+              </tr>
+            </thead>
+            @if (loading()) {
+            <tbody>
+              <td colspan="100%">
+                <div class="text-center py-9">
+                  <div class="loader"></div>
+                </div>
+              </td>
+            </tbody>
+            } @else { @if (prenda() && prenda().length > 0) {
+            <tbody>
+              @for (inventary of prenda(); track inventary.id) {
+              <tr
+                class="bg-white border-b border-dashed border-neutral-200 *:px-6 *:py-4 *:whitespace-nowrap [&>th]:ps-0"
+              >
+                <th scope="row" class="font-normal">
+                  <a>
+                    <div class="flex gap-4 items-center">
+                      <div class="size-10 bg-primary rounded-lg text-white flex items-center justify-center uppercase">
+                        {{ inventary.nombre_prenda | initials }}
+                      </div>
+                      <div>
+                        <p class="font-bold">{{ inventary.nombre_prenda }}</p>
+                      </div>
+                    </div>
+                  </a>
+                </th>
+                <td>{{ inventary.precio | currency }} C/U</td>
+                <td>{{ inventary.tiempo_lavado }} Min</td>
+                <td>
+                  <button
+                    (click)="deletePenda(inventary.id)"
+                    class="bg-red-500 rounded-lg p-3 inline-block cursor-pointer"
+                  >
+                    <img src="assets/icons/trash-icon.svg" alt="Eliminar" class="size-4" />
+                  </button>
+                </td>
+              </tr>
+              }
+            </tbody>
+            } @else { @defer {
+            <tbody>
+              <td colspan="100%">
+                <div class="text-center py-4 max-w-2xl mx-auto">
+                  <div class="bg-slate-50 py-4 mb-5 rounded-xl">
+                    <img
+                      ngSrc="/assets/icons/no-contacts-found.svg"
+                      alt="Nothing found"
+                      width="242"
+                      height="242"
+                      priority
+                      class="mx-auto"
+                    />
+                  </div>
+                  <h3 class="text-2xl font-bold">Prendas no encontrados</h3>
+                  <p class="text-balance">No se encontraron prendas en el registrada.</p>
+                </div>
+              </td>
+            </tbody>
+            } } }
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- Configuración de Clientes -->
+    <div class="p-6 bg-white border border-gray-200 rounded-lg shadow hover:shadow-lg transition-shadow">
+      <h2 class="text-xl font-semibold text-gray-700 mb-2">Clientes</h2>
+      <p class="text-gray-600 mb-4">Administración de información de clientes.</p>
+      <button
+        class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded focus:outline-none"
+        routerLink="/clientes"
+      >
+        Configurar Clientes
+      </button>
+    </div>
+  </div>
+</div>
+
+<app-modal #addPrenda>
+  @defer {
+  <div class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+    <div class="bg-white w-full max-w-2xl rounded-lg overflow-auto">
+      <header class="p-4 flex justify-between items-center border-b border-gray-300">
+        <h2 class="font-bold text-xl truncate">Agregar Pedido</h2>
+        <button (click)="addPrenda.close()" class="shrink-0">
+          <img
+            ngSrc="/assets/icons/close-icon.svg"
+            width="14"
+            height="18"
+            alt="close"
+            style="filter: invert(64%) sepia(1%) saturate(370%) hue-rotate(314deg) brightness(94%) contrast(91%)"
+          />
+        </button>
+      </header>
+      <section>
+        <app-agg-prenda
+        (prenda)="addPrenda.close()"
+        (prenda)="$event && aggPrenda($event)"
+        />
+      </section>
+    </div>
+  </div>
+  }
+</app-modal>

@@ -1,31 +1,18 @@
 import { ChangeDetectionStrategy, Component, computed, EventEmitter, Output, signal } from '@angular/core';
-import { CreatePedidoService } from '../../../create-pedido.service';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import {
-  CheckboxSelectComponent,
-  CustomInputComponent,
-  CustomSelectComponent,
-  SelectIndustriesComponent,
-} from '../../../../../../components';
-import { LaGotitaConfigService } from '../../../../../../util';
-import { NgOptimizedImage } from '@angular/common';
+import { CustomInputComponent, CustomSelectComponent, SelectIndustriesComponent } from '../../../../components';
+import { ReactiveFormsModule } from '@angular/forms';
+import { LaGotitaConfigService } from '../../../../util';
+import { CreatePedidoService } from '../create-pedido.service';
 
 @Component({
-  selector: 'app-new-pedido',
+  selector: 'app-pedidos',
   standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    CustomSelectComponent,
-    CustomInputComponent,
-    NgOptimizedImage,
-    CheckboxSelectComponent,
-    SelectIndustriesComponent,
-  ],
-  templateUrl: './new-pedido.component.html',
+  imports: [CustomInputComponent, ReactiveFormsModule, CustomSelectComponent, SelectIndustriesComponent],
+  templateUrl: './pedidos.component.html',
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NewPedidoComponent {
+export class PedidosComponent {
   public readonly form = this.createPedido.form.controls.step_2;
 
   public readonly today = signal('');
@@ -72,3 +59,5 @@ export class NewPedidoComponent {
     this.createPedido.next();
   }
 }
+
+

@@ -7,7 +7,7 @@ import { AuthService } from '../../services';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [NgClass, RouterLink, NgOptimizedImage],
+  imports: [NgClass, RouterLink, NgOptimizedImage, RouterLink],
   templateUrl: './header.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,

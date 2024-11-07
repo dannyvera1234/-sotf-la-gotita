@@ -72,7 +72,35 @@
         </button>
       </header>
       <section class="p-4">
-        <app-buscar-cliente />
+        <app-buscar-cliente
+          (clienteSelected)="prueba($event)"
+          (clienteSelected)="buscarCliente.close()"
+          (clienteSelected)="newPedidos.open()"
+        />
+      </section>
+    </div>
+  </div>
+  }
+</app-modal>
+
+<app-modal #newPedidos>
+  @defer {
+  <div class="h-full flex items-center">
+    <div class="bg-white w-full rounded-lg overflow-auto max-h-full">
+      <header class="p-4 flex justify-between items-center border border-b border-gray-300">
+        <h2 class="font-bold text-xl truncate">Buscar Cliente</h2>
+        <button (click)="newPedidos.close()" class="shrink-0">
+          <img
+            ngSrc="/assets/icons/close-icon.svg"
+            width="14"
+            height="18"
+            alt="close"
+            style="filter: invert(64%) sepia(1%) saturate(370%) hue-rotate(314deg) brightness(94%) contrast(91%)"
+          />
+        </button>
+      </header>
+      <section class="p-4">
+        <app-pedidos/>
       </section>
     </div>
   </div>

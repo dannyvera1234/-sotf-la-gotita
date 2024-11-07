@@ -1,0 +1,51 @@
+import { ChangeDetectionStrategy, Component, EventEmitter, Output, signal } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CustomInputComponent } from '../../../../components';
+import { finalize, mergeMap, of } from 'rxjs';
+import { ConfigService } from '../../../../services';
+import { onlyLettersValidator, onlyNumbersDecimalsValidator, onlyNumbersValidator } from '../../../../util';
+
+@Component({
+  selector: 'app-agg-prenda',
+  standalone: true,
+  imports: [ReactiveFormsModule, CustomInputComponent],
+  templateUrl: './agg-prenda.component.html',
+  styles: ``,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class AggPrendaComponent {
+  public readonly loading = signal(false);
+
+  @Output() prenda = new EventEmitter<any | null>();
+
+  constructor(private readonly _fb: FormBuilder, private readonly configService: ConfigService) {}
+
+  public readonly form = this._fb.group({
+    nombre_prenda: ['', [Validators.required, onlyLettersValidator()]],
+    precio: [0, [Validators.required, onlyNumbersDecimalsValidator()]],
+    tiempo_lavado: [0, [Validators.required, onlyNumbersValidator() ]],
+  });
+
+  submit(): void {
+    const prenda = {
+      nombre_prenda: this.form.controls.nombre_prenda.value,
+      precio: this.form.controls.precio.value,
+      tiempo_lavado: this.form.controls.tiempo_lavado.value,
+    };
+
+    of(this.loading.set(true))
+      .pipe(
+        mergeMap(() => this.configService.createPrenda(prenda)),
+        finalize(() => this.loading.set(false)),
+      )
+      .subscribe((data) => {
+        this.prenda.emit(data);
+        this.form.reset();
+        this.form.setValue({
+          nombre_prenda: '',
+          precio: 0,
+          tiempo_lavado: 0,
+        });
+      });
+  }
+}

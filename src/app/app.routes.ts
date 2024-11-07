@@ -23,7 +23,7 @@ export const routes: Routes & {
         path: 'pedidos',
         loadChildren: () => import('./features/pedidos/routes'),
         data: {
-          icon: '/assets/icons/menu_inventory.svg',
+          icon: '/assets/icons/edit.svg',
           name: 'Nuevo Pedidos',
         },
       },
@@ -51,6 +51,15 @@ export const routes: Routes & {
           name: 'Inventario',
         },
       },
+      {
+        path: 'config',
+        loadChildren: () => import('./features/config/routes'),
+        data: {
+          icon: '/assets/icons/settings.svg',
+          name: 'Configuración',
+          hideInMenu: true,
+        },
+      },
 
       {
         path: '**',
@@ -58,5 +67,7 @@ export const routes: Routes & {
         pathMatch: 'full',
       },
     ],
+
   },
+
 ];
