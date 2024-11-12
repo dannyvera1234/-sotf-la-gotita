@@ -16,7 +16,7 @@ import { TextInitialsPipe } from '../../pipes';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConfigComponent {
-  public readonly loading = signal(true);
+  public readonly loading = signal(false);
 
   public readonly prenda = signal<any | null>(null);
 

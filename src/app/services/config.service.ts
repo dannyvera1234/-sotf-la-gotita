@@ -1,19 +1,36 @@
 import { Injectable } from '@angular/core';
 import { APP_CONFIG } from '../shared/constants';
-import { addDoc, collection, collectionData, deleteDoc, doc, DocumentData, DocumentReference, Firestore, orderBy, query, setDoc } from '@angular/fire/firestore';
+import {
+  addDoc,
+  collection,
+  collectionData,
+  deleteDoc,
+  doc,
+  DocumentData,
+  DocumentReference,
+  Firestore,
+  orderBy,
+  query,
+  setDoc,
+} from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ConfigService {
-
   private readonly _collectionName = collection(this._firestore, APP_CONFIG.COLLECTION_NAME);
 
   constructor(private readonly _firestore: Firestore) {}
 
   createPrenda(createPrenda: Partial<any>): Promise<any> {
-    const docRef = doc(collection(this._firestore, 'prendas')); // Crea una referencia al nuevo documento
+    const docRef = doc(
+      collection(
+        this._firestore,
+
+        APP_CONFIG.COLLECTION_NAME,
+      ),
+    ); // Crea una referencia al nuevo documento
     return setDoc(docRef, {
       ...createPrenda,
       created: Date.now(),
@@ -24,14 +41,12 @@ export class ConfigService {
     });
   }
 
-
   private _getDocRef(id: string) {
     return doc(this._firestore, APP_CONFIG.COLLECTION_NAME, id);
   }
 
   allPedidos(): Observable<any[]> {
-    const queryFn = query(this._collectionName, orderBy('created', 'desc'));
-    return collectionData(queryFn, { idField: 'id' });
+    return collectionData(query(this._collectionName, orderBy('created', 'desc')), { idField: 'id' });
   }
 
   deletePrenda(id: string): Promise<void> {
@@ -48,5 +63,4 @@ export class ConfigService {
         console.error('Error al eliminar el documento: ', error);
       });
   }
-
 }

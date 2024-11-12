@@ -29,9 +29,10 @@
                 </div>
               </td>
             </tbody>
-            } @else { @if (prenda() && prenda().length > 0) {
-            <tbody>
-              @for (inventary of prenda(); track inventary.id) {
+            } @else {
+              @if (prenda() && prenda().length > 0) {
+              <tbody>
+              @for (inventary of prenda(); track $index) {
               <tr
                 class="bg-white border-b border-dashed border-neutral-200 *:px-6 *:py-4 *:whitespace-nowrap [&>th]:ps-0"
               >
@@ -51,16 +52,17 @@
                 <td>{{ inventary.tiempo_lavado }} Min</td>
                 <td>
                   <button
-                    (click)="deletePenda(inventary.id)"
-                    class="bg-red-500 rounded-lg p-3 inline-block cursor-pointer"
+                  class="bg-red-500 rounded-lg p-3 inline-block cursor-pointer"
+                  (click)="deletePenda(inventary.id)"
                   >
                     <img src="assets/icons/trash-icon.svg" alt="Eliminar" class="size-4" />
                   </button>
                 </td>
               </tr>
-              }
-            </tbody>
-            } @else { @defer {
+            }
+          </tbody>
+          }
+            @else { @defer {
             <tbody>
               <td colspan="100%">
                 <div class="text-center py-4 max-w-2xl mx-auto">
