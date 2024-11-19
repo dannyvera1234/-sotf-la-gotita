@@ -31,6 +31,7 @@ export class AggPrendaComponent {
       nombre_prenda: this.form.controls.nombre_prenda.value,
       precio: this.form.controls.precio.value,
       tiempo_lavado: this.form.controls.tiempo_lavado.value,
+      cantidad: 1
     };
 
     of(this.loading.set(true))

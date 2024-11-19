@@ -1,9 +1,7 @@
-import { ClienteService } from './../../../services/cliente.service';
 import { Injectable, signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { onlyLettersValidator, onlyNumbersValidator } from '../../../util';
 import { PedidosService } from '../../../services';
-import { switchMap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +15,7 @@ export class CreatePedidoService {
 
   public readonly created = signal(false);
 
-  constructor(private readonly _fb: FormBuilder, private readonly clienteService: PedidosService) {}
+  constructor(public readonly _fb: FormBuilder, private readonly clienteService: PedidosService) {}
 
   public form = this._fb.group({
     step_1: this._fb.group({
@@ -29,16 +27,22 @@ export class CreatePedidoService {
       phones: this._fb.array<FormGroup<{ phone: FormControl<any | null> }>>([], [Validators.required]),
     }),
     step_2: this._fb.group({
+      estado: ['PENDIENTE'],
+      codigo: [{ value: 'COD-01', disabled: true }],
       tipoPago: ['', [Validators.required]],
-      tipoPrenda: ['', [Validators.required]],
-      pesoPrenda: [0, [Validators.required, Validators.min(1)]],
-      codigo: [{ value: 'COD-01', disabled: true }, [Validators.required, Validators.min(1)]],
+      prendas: this._fb.array([
+        this._fb.group({
+          nombre_prenda: ['', [Validators.required]],
+          cantidad: [0],
+          tiempo_lavado: [0],
+          precio: [0],
+        }),
+      ]),
       fecha_ingreso: [Date.now(), [Validators.required]],
       fecha_entrega: [Date.now(), [Validators.required]],
-      tiempoLavado: ['', [Validators.required, Validators.min(1)]],
-      total: [null, [Validators.required, Validators.min(1)]],
       descripcion: ['', [Validators.maxLength(50)]],
-      estado: ['PENDIENTE'],
+      descuento: [0],
+      total_tiempo_lavado: [{ value: 0, disabled: true }],
     }),
   });
 
@@ -55,16 +59,16 @@ export class CreatePedidoService {
       phones: [],
     });
     this.form.controls.step_2.setValue({
-      tipoPago: '',
-      tipoPrenda: '',
-      pesoPrenda: 0,
+      estado: 'PENDIENTE',
       codigo: 'COD-01',
+      tipoPago: '',
+      prendas: [],
       fecha_ingreso: Date.now(),
       fecha_entrega: Date.now(),
-      tiempoLavado: '',
-      total: null,
       descripcion: '',
-      estado: 'PENDIENTE',
+      descuento: 0,
+
+      total_tiempo_lavado: 0,
     });
     this.form.updateValueAndValidity();
   }
@@ -98,13 +102,9 @@ export class CreatePedidoService {
     const step2 = this.form.controls.step_2.value;
     return {
       tipoPago: step2.tipoPago,
-      tipoPrenda: step2.tipoPrenda,
-      pesoPrenda: step2.pesoPrenda,
-      // // codigo: step2.codigo,
+
       fecha_ingreso: step2.fecha_ingreso,
       fecha_entrega: step2.fecha_entrega,
-      tiempoLavado: step2.tiempoLavado,
-      total: step2.total,
       descripcion: step2.descripcion,
       estado: step2.estado,
     };
@@ -131,7 +131,6 @@ export class CreatePedidoService {
       console.error('Error al crear cliente o pedido:', error);
     }
   }
-
 
   // private submit(): void {
   //   this.submitting.set(true);

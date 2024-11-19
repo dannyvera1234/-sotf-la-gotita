@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, EventEmitter, Input, Outp
 import { LaGotitaConfigService } from '../../../../util';
 import { CustomInputComponent, CustomSelectComponent, SelectIndustriesComponent } from '../../../../components';
 import { NgOptimizedImage } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize, mergeMap, of } from 'rxjs';
 import { PedidosService } from '../../../../services';
 
@@ -62,16 +62,22 @@ export class CreatePedidoComponent {
   }
 
   public form = this._fb.group({
+    estado: ['PENDIENTE'],
+    codigo: [{ value: 'COD-01', disabled: true }],
     tipoPago: ['', [Validators.required]],
-    tipoPrenda: ['', [Validators.required]],
-    pesoPrenda: [0, [Validators.required, Validators.min(1)]],
-    codigo: [{ value: 'COD-01', disabled: true }, [Validators.required, Validators.min(1)]],
+    prendas: this._fb.array([
+      this._fb.group({
+        nombre_prenda: ['', [Validators.required]],
+        cantidad: [0],
+        tiempo_lavado: [0],
+        precio: [0],
+      }),
+    ]),
     fecha_ingreso: [Date.now(), [Validators.required]],
     fecha_entrega: [Date.now(), [Validators.required]],
-    tiempoLavado: ['', [Validators.required, Validators.min(1)]],
-    total: [null, [Validators.required, Validators.min(1)]],
     descripcion: ['', [Validators.maxLength(50)]],
-    estado: ['PENDIENTE'],
+    descuento: [0],
+    total_tiempo_lavado: [{ value: 0, disabled: true }],
   });
 
   public submit(): void {
@@ -81,20 +87,90 @@ export class CreatePedidoComponent {
     }
 
     const pedido = {
-      tipoPago: this.form.controls.tipoPago.value,
-      tipoPrenda: this.form.controls.tipoPrenda.value,
-      pesoPrenda: this.form.controls.pesoPrenda.value,
-      // // codigo: step2.codigo,
-      fecha_ingreso: this.form.controls.fecha_ingreso.value,
-      fecha_entrega: this.form.controls.fecha_entrega.value,
-      tiempoLavado: this.form.controls.tiempoLavado.value,
-      total: this.form.controls.total.value,
-      descripcion: this.form.controls.descripcion.value,
-      estado: this.form.controls.estado.value,
+
     };
 
     this.newPedidos.emit({
       ...pedido,
     });
   }
+
+  public readonly pedidos = signal<any[]>([]);
+
+
+  get prendas() {
+    return this.form.get('prendas') as FormArray;
+  }
+
+    onPedidoSelect(event: Event, index: number) {
+      const selectedPrendaId = (event.target as HTMLSelectElement).value;
+      const pedidoSeleccionado = this.pedidos().find((pedido) => pedido.id === selectedPrendaId);
+      if (pedidoSeleccionado) {
+        const prenda = this.prendas.at(index) as FormGroup;
+        prenda.patchValue({
+          nombre_prenda: pedidoSeleccionado.nombre_prenda,
+          cantidad: pedidoSeleccionado.cantidad,
+          tiempo_lavado: pedidoSeleccionado.tiempo_lavado,
+          precio: pedidoSeleccionado.precio,
+        });
+      }
+    }
+
+    onCantidadChange(event: Event, index: number) {
+      const prenda = this.prendas.at(index);
+
+      const cantidad = Number((event.target as HTMLInputElement).value);
+      const precioUnidad = prenda.get('precio')?.value || 0;
+      const tiempoUnidad = prenda.get('tiempo_lavado')?.value || 0;
+
+      const nuevoPrecio = precioUnidad * cantidad;
+      const nuevoTiempo = tiempoUnidad * cantidad;
+
+      prenda.patchValue({
+        precio: nuevoPrecio,
+        tiempo_lavado: nuevoTiempo,
+      });
+
+    }
+
+    addPrenda() {
+      const prendaGroup = this._fb.group({
+        nombre_prenda: ['', [Validators.required]],
+        cantidad: [0],
+        tiempo_lavado: [0],
+        precio: [0],
+      });
+
+      this.prendas.push(prendaGroup);
+    }
+
+
+
+    calcularTotal() {
+      let total = 0;
+
+      // Recorrer todas las prendas en el FormArray y sumar el precio * cantidad
+      this.prendas.controls.forEach((prenda) => {
+        const cantidad = prenda.get('cantidad')?.value || 0;
+        const precio = prenda.get('precio')?.value || 0;
+
+        total += cantidad * precio; // Se multiplica por cantidad
+      });
+
+      return total;
+    }
+
+    calcularTiempo(){
+      let tiempo = 0;
+
+      this.prendas.controls.forEach((prenda)=>{
+        const tiempo_lavado = prenda.get('tiempo_lavado')?.value || 0;
+        tiempo += tiempo_lavado;
+        return tiempo;
+      })
+    }
+
+    deletePrenda(index: number) {
+      this.prendas.removeAt(index);
+    }
 }
