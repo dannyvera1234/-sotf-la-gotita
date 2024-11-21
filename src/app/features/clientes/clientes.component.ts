@@ -55,4 +55,9 @@ export class ClientesComponent {
       )
       .subscribe((client) => this.clients.set(client));
   }
+
+  public addClient(client: any): void {
+    console.log(client);
+    this.clients.set([...this.clients(), client]);
+  }
 }

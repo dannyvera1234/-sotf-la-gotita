@@ -18,7 +18,6 @@ import { NotUserFoundComponent } from './components';
     RouterLink,
     NgOptimizedImage,
     CreateUserComponent,
-    CreateClientesComponent,
     NotUserFoundComponent,
   ],
   templateUrl: './user.component.html',
@@ -58,5 +57,9 @@ export class UserComponent {
         this.users.set(client);
 
       });
+  }
+
+  addUser(user: any): void {
+    this.users.set([...this.users(), user]);
   }
 }

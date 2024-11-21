@@ -64,8 +64,8 @@ export class CreateInventoryComponent {
         mergeMap(() => this._inventaryService.createProducto(userForm)),
         finalize(() => this.loading.set(false)),
       )
-      .subscribe(() => {
-        this.inventary.emit(userForm);
+      .subscribe((data) => {
+        this.inventary.emit(data);
       });
   }
 }

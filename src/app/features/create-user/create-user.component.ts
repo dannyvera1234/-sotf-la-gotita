@@ -137,8 +137,8 @@ export class CreateUserComponent {
         mergeMap(() => this.userService.createUser(userForm)),
         finalize(() => this.loading.set(false)),
       )
-      .subscribe(() => {
-        this.user.emit(userForm);
+      .subscribe((data) => {
+        this.user.emit(data);
         this.form.reset();
       });
   }

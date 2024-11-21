@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {  Observable } from 'rxjs';
 
-import { addDoc, collection, collectionData, deleteDoc, doc, DocumentData, DocumentReference, Firestore, getDoc, orderBy, query, updateDoc } from '@angular/fire/firestore';
+import { addDoc, collection, collectionData, deleteDoc, doc, DocumentData, DocumentReference, Firestore, getDoc, orderBy, query, setDoc, updateDoc } from '@angular/fire/firestore';
 import { APP_INVETARIOS } from '../shared/constants';
 
 @Injectable({
@@ -38,11 +38,22 @@ export class InvetoryService {
   }
 
 
-  createProducto(createClient: Partial<any>): Promise<DocumentReference<DocumentData, DocumentData>> {
-    return addDoc(this._collectionName, {
-      ...createClient,
+
+  createProducto(createProducto: Partial<any>): Promise<any> {
+    const docRef = doc(
+      collection(
+        this._firestore,
+
+        APP_INVETARIOS.COLLECTION_NAME,
+      ),
+    ); // Crea una referencia al nuevo documento
+    return setDoc(docRef, {
+      ...createProducto,
       created: Date.now(),
       updated: Date.now(),
+    }).then(() => {
+      // Devuelve los datos de la prenda junto con el id generado por Firebase
+      return { id: docRef.id, ...createProducto }; // Incluye el id generado por Firebase
     });
   }
 

@@ -124,7 +124,9 @@
         </button>
       </header>
       <section class="p-4">
-        <app-create-clientes (client)="newClientModal.close()" />
+        <app-create-clientes (client)="newClientModal.close()"
+          (client)="$event && addClient($event)"
+        />
       </section>
     </div>
   </div>

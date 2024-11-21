@@ -44,9 +44,10 @@ export class InvetoryComponent extends WithSearchable implements OnInit {
     this.searchBanks();
   }
 
-  constructor(private readonly inventaryService: InvetoryService,
+  constructor(
+    private readonly inventaryService: InvetoryService,
     public readonly config: LaGotitaConfigService,
-    private readonly destroyRef: DestroyRef
+    private readonly destroyRef: DestroyRef,
   ) {
     super();
   }
@@ -65,15 +66,18 @@ export class InvetoryComponent extends WithSearchable implements OnInit {
 
   private searchBanks(): void {
     this.loading.set(true);
-    this.inventaryService.searchInventary()
+    this.inventaryService
+      .searchInventary()
       .pipe(
         take(1),
-        finalize(() => this.loading.set(false)))
+        finalize(() => this.loading.set(false)),
+      )
       .subscribe((inventary) => {
-
         this.products.set(inventary);
       });
   }
 
-
+  public addInventary(inventary: any): void {
+    this.products.set([...this.products(), inventary]);
+  }
 }

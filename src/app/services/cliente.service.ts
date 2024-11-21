@@ -43,9 +43,20 @@ export class ClienteService {
     });
   }
 
+
   deleteClientes(id: string): Promise<void> {
+    if (!id) {
+      return Promise.reject('ID de prenda no válido');
+    }
+
     const docRef = this._getDocRef(id);
-    return deleteDoc(docRef);
+    return deleteDoc(docRef)
+      .then(() => {
+        console.log('Documento eliminado con éxito');
+      })
+      .catch((error) => {
+        console.error('Error al eliminar el documento: ', error);
+      });
   }
 
 

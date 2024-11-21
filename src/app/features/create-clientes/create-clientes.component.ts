@@ -2,7 +2,15 @@ import { ChangeDetectionStrategy, Component, computed, EventEmitter, Output, sig
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CustomInputComponent, CustomSelectComponent } from '../../components';
 import { finalize, mergeMap, of, Subject, takeUntil } from 'rxjs';
-import { emailValidator, IdentificationValidatorService, LaGotitaConfigService, ObjectId, onlyLettersValidator, onlyNumbersValidator, SearchService } from '../../util';
+import {
+  emailValidator,
+  IdentificationValidatorService,
+  LaGotitaConfigService,
+  ObjectId,
+  onlyLettersValidator,
+  onlyNumbersValidator,
+  SearchService,
+} from '../../util';
 import { PedidosService } from '../../services';
 import { NgOptimizedImage } from '@angular/common';
 
@@ -12,7 +20,7 @@ import { NgOptimizedImage } from '@angular/common';
   imports: [ReactiveFormsModule, CustomSelectComponent, CustomInputComponent, NgOptimizedImage],
   templateUrl: './create-clientes.component.html',
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateClientesComponent {
   public readonly loading = signal(false);
@@ -69,7 +77,6 @@ export class CreateClientesComponent {
     direccion: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(50)]],
     emails: this._fb.array<FormGroup<{ email: FormControl<string | null> }>>([], [Validators.required]),
     phones: this._fb.array<FormGroup<{ phone: FormControl<any | null> }>>([], [Validators.required]),
-
   });
 
   public submit(): void {
@@ -91,9 +98,9 @@ export class CreateClientesComponent {
         mergeMap(() => this._pedidoService.createCliente(clientForm)),
         finalize(() => this.loading.set(false)),
       )
-      .subscribe(() => {this.client.emit(clientForm)
-
-
+      .subscribe((data) => {
+        this.client.emit(data);
+        this.form.reset();
       });
   }
 

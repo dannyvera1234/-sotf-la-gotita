@@ -23,11 +23,23 @@ export class PedidosService {
 
   private readonly _collectionCliente = collection(this._firestore, APP_CLIENTES.COLLECTION_NAME);
 
-  createCliente(createClient: Partial<any>): Promise<DocumentReference<DocumentData>> {
-    return addDoc(this._collectionCliente, {
+
+
+  createCliente(createClient: Partial<any>): Promise<any> {
+    const docRef = doc(
+      collection(
+        this._firestore,
+
+        APP_CLIENTES.COLLECTION_NAME,
+      ),
+    ); // Crea una referencia al nuevo documento
+    return setDoc(docRef, {
       ...createClient,
       created: Date.now(),
       updated: Date.now(),
+    }).then(() => {
+      // Devuelve los datos de la prenda junto con el id generado por Firebase
+      return { id: docRef.id, ...createClient }; // Incluye el id generado por Firebase
     });
   }
 

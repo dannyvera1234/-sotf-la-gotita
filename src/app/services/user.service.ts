@@ -16,6 +16,7 @@ import {
   getDoc,
   updateDoc,
   getDocs,
+  setDoc,
 } from '@angular/fire/firestore';
 import { APP_USERS } from '../shared/constants';
 
@@ -41,11 +42,23 @@ export class UserService {
     return deleteDoc(docRef);
   }
 
-  createUser(createClient: Partial<User>): Promise<DocumentReference<DocumentData, DocumentData>> {
-    return addDoc(this._collectionName, {
-      ...createClient,
+
+
+  createUser(createUser: Partial<any>): Promise<any> {
+    const docRef = doc(
+      collection(
+        this._firestore,
+
+        APP_USERS.COLLECTION_NAME,
+      ),
+    ); // Crea una referencia al nuevo documento
+    return setDoc(docRef, {
+      ...createUser,
       created: Date.now(),
       updated: Date.now(),
+    }).then(() => {
+      // Devuelve los datos de la prenda junto con el id generado por Firebase
+      return { id: docRef.id, ...createUser }; // Incluye el id generado por Firebase
     });
   }
 

@@ -10,8 +10,7 @@ import { NgClass, NgOptimizedImage } from '@angular/common';
 @Component({
   selector: 'app-clientes-details',
   standalone: true,
-  imports: [TextInitialsPipe, ModalComponent, UpdateClientComponent, PedidosDetailsComponent, NgOptimizedImage, NgClass,
-    CreatePedidoComponent
+  imports: [TextInitialsPipe, ModalComponent, UpdateClientComponent, PedidosDetailsComponent, NgOptimizedImage
   ],
   templateUrl: './clientes-details.component.html',
   styles: ``,

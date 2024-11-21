@@ -126,7 +126,9 @@
         </button>
       </header>
       <section class="p-4">
-        <app-create-user (user)="newusersModal.close()" />
+        <app-create-user (user)="newusersModal.close()"
+          (user)="$event && addUser($event)"
+        />
       </section>
     </div>
   </div>

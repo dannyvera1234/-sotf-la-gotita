@@ -158,12 +158,11 @@ export class NewPedidoComponent implements OnInit {
     calcularTotal() {
       let total = 0;
 
-      // Recorrer todas las prendas en el FormArray y sumar el precio * cantidad
       this.prendas.controls.forEach((prenda) => {
         const cantidad = prenda.get('cantidad')?.value || 0;
         const precio = prenda.get('precio')?.value || 0;
 
-        total += cantidad * precio; // Se multiplica por cantidad
+        total += cantidad * precio;
       });
 
       return total;
