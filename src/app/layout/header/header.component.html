@@ -11,8 +11,9 @@
     </button>
 
     <div class="hidden lg:block">
-      <h5 class="font-bold text-xl">Bienvenido de nuevo </h5>
-
+      @if (auth.userData; as user ) {
+      <h5 class="font-bold text-xl">Bienvenido de nuevo {{user.userData.nombre}} </h5>
+    }
       <p class="text-neutral-400">
         Realice un seguimiento de su actividad de lavanderia, clientes potenciales y ofertas aquí.
       </p>
@@ -25,10 +26,11 @@
       <img src="/assets/icons/config.svg" fill alt="" />
     </button>
 
-
+    @if (auth.userData; as user ) {
     <div class="relative hidden lg:block">
       <button class="flex items-center bg-white border-0 p-1" (click)="dropdownsm.classList.toggle('hidden')"
         >
+        {{ user.userData.nombre  }}
       </button>
     </div>
 
@@ -40,7 +42,7 @@
         role="button"
         style="width: 30px; height: 30px; line-height: 30px"
       >
-        <!-- {{ user.first_name + ' ' + user.last_name | initials }} -->
+        {{ user.userData.nombre | initials }}
       </button >
       <ul class="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg dropdown-menu hidden" #dropdownsm>
         <li>
@@ -49,5 +51,6 @@
         </li>
       </ul>
     </div>
+  }
   </div>
 </header>

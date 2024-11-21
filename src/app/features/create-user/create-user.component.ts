@@ -56,9 +56,7 @@ export class CreateUserComponent {
   ) {}
 
   ngOnInit(): void {
-    if (this.form.controls.emails.length === 0) {
-      this.addEmail();
-    }
+
 
     if (this.form.controls.phones.length === 0) {
       this.addPhone();
@@ -78,25 +76,14 @@ export class CreateUserComponent {
     establecimiento: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]],
     direccion: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(50)]],
     password: ['', [Validators.required, Validators.minLength(8), passwordValidator()]],
-    emails: this._fb.array<FormGroup<{ email: FormControl<string | null> }>>([], [Validators.required]),
+    email:['', [Validators.required, emailValidator()]],
     phones: this._fb.array<FormGroup<{ phone: FormControl<any | null> }>>([], [Validators.required]),
   });
 
 
 
-  removeEmail(index: number): void {
-    if (index > 0) {
-      this.form.controls.emails.removeAt(index);
-    }
-  }
 
-  public addEmail(): void {
-    this.form.controls.emails.push(
-      this._fb.group({
-        email: ['', [Validators.required, emailValidator()]],
-      }),
-    );
-  }
+
 
   removePhone(index: number): void {
     if (index > 0) {
@@ -127,10 +114,10 @@ export class CreateUserComponent {
       establecimiento: this.form.value.establecimiento!.trim(),
       direccion: this.form.value.direccion!.trim(),
       password: this.form.value.password!.trim(),
-      emails: this.form.value.emails!.map((email) => email!.email!.trim().toLowerCase()),
+      email: this.form.value.email!.trim(),
       phones: this.form.value.phones!.map((phone) => phone.phone),
       estado: true,
-    } as User;
+    } as any;
 
     of(this.loading.set(true))
       .pipe(

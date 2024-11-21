@@ -19,6 +19,7 @@ import {
   setDoc,
 } from '@angular/fire/firestore';
 import { APP_USERS } from '../shared/constants';
+import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
 
 @Injectable({
   providedIn: 'root',
@@ -43,23 +44,49 @@ export class UserService {
   }
 
 
-
   createUser(createUser: Partial<any>): Promise<any> {
-    const docRef = doc(
-      collection(
-        this._firestore,
+    const auth = getAuth();
 
-        APP_USERS.COLLECTION_NAME,
-      ),
-    ); // Crea una referencia al nuevo documento
-    return setDoc(docRef, {
-      ...createUser,
-      created: Date.now(),
-      updated: Date.now(),
-    }).then(() => {
-      // Devuelve los datos de la prenda junto con el id generado por Firebase
-      return { id: docRef.id, ...createUser }; // Incluye el id generado por Firebase
-    });
+    // Desestructurar los datos de usuario
+    const { email, password, ...additionalData } = createUser;
+
+    if (!email || !password) {
+      return Promise.reject(new Error('Email y password son requeridos.'));
+    }
+
+    return createUserWithEmailAndPassword(auth, email, password)
+      .then(async (userCredential) => {
+        const userId = userCredential.user.uid; // Obtienes el UID de Firebase Authentication
+
+        // Crear referencia en Firestore con el mismo UID
+        const docRef = doc(this._firestore, 'users', userId); // Usamos el UID de la autenticación como ID del documento
+
+        // Guardar los datos adicionales en Firestore
+        await setDoc(docRef, {
+          ...additionalData,
+          email, // Agregar email también en la base de datos
+          created: Date.now(),
+          updated: Date.now(),
+        });
+
+        // Ahora obtener los datos del usuario desde Firestore
+        const userDoc = await getDoc(docRef);
+
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          console.log('Datos del usuario creados:', userData);
+
+          // Retornar los datos del usuario con su id
+          return { id: userId, ...userData };
+        } else {
+          console.log('No se encontraron datos adicionales para el usuario.');
+          return { id: userId, userData: null };
+        }
+      })
+      .catch((error) => {
+        console.error('Error al crear usuario:', error);
+        throw error;
+      });
   }
 
   async getUserById(id: string): Promise<any> {

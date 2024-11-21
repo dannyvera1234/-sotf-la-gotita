@@ -80,11 +80,7 @@
                 {{ users.direccion }}
               </td>
               <td>
-                @for (item of users.emails; track $index) {
-                <p>
-                  {{ item }}
-                </p>
-                }
+                {{ users.email }}
               </td>
               <td>
                 <button class="bg-red-500 rounded-lg p-3 inline-block cursor-pointer" (click)="deleteUser(users.id)">

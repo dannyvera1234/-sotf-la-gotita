@@ -3,11 +3,12 @@ import { NgOptimizedImage, NgClass, DOCUMENT } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { SidebarService } from '../../util/services';
 import { AuthService } from '../../services';
+import { TextInitialsPipe } from '../../pipes';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [NgClass, RouterLink, NgOptimizedImage, RouterLink],
+  imports: [NgClass, RouterLink, NgOptimizedImage, RouterLink, TextInitialsPipe],
   templateUrl: './header.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
