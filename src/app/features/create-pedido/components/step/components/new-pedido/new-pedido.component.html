@@ -41,7 +41,6 @@
           id="pedidoSelect"
           class="block w-full bg-white border border-gray-300 rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:ring focus:border-sky-500"
           (change)="onPedidoSelect($event, $index)"
-          formControlName="nombre_prenda"
         >
           <option value="" disabled selected>Seleccionar</option>
           @for (pedido of pedidos(); track $index) {
@@ -67,12 +66,13 @@
             formGroupName="cantidad"
             [value]="prenda.value.cantidad"
             [min]="0"
+            (keydown.enter)="$event.preventDefault()"
             (change)="onCantidadChange($event, $index)"
             />
         </div>
       </div>
       <div class="mb-4">
-        <label class="block text-gray-700 text-sm font-bold mb-2" for="precio"> Precio Unidad </label>
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="precio"> Precio </label>
         <div class="relative">
           <input
             id="precio"
@@ -80,6 +80,7 @@
             class="w-full bg-gray-100 border border-gray-300 rounded-md py-2 px-3 text-gray-700 cursor-not-allowed pr-8"
             formGroupName="precio"
             [value]="prenda.value.precio"
+            (keydown.enter)="$event.preventDefault()"
             readonly
           />
           <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
@@ -94,6 +95,7 @@
             class="w-full bg-gray-100 border border-gray-300 rounded-md py-2 px-3 text-gray-700 cursor-not-allowed pr-8"
             formGroupName="tiempo_lavado"
             [value]="prenda.value.tiempo_lavado"
+            (keydown.enter)="$event.preventDefault()"
             disabled
           />
           <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">min</span>
@@ -124,11 +126,15 @@
   </div>
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
     <div class="mb-4">
-      <app-custom-input formControlName="fecha_ingreso" label="Fecha ingreso" type="date" [min]="today()" />
+      <app-custom-input formControlName="fecha_ingreso" label="Fecha ingreso" type="date" [min]="today()"
+      (keydown.enter)="$event.preventDefault()"
+      />
     </div>
 
     <div class="mb-4">
-      <app-custom-input formControlName="fecha_entrega" label="Fecha retiro" type="date" [min]="today()" />
+      <app-custom-input formControlName="fecha_entrega" label="Fecha retiro" type="date" [min]="today()"
+      (keydown.enter)="$event.preventDefault()"
+      />
     </div>
 
     <div class="mb-4">
@@ -153,18 +159,15 @@
   </div>
 
   <div class="mt-8 mb-4 flex justify-end gap-4">
-    <div class="w-full md:w-1/6">
+    <div class=" md:w-1/6 ">
       <label class="block text-gray-700 text-sm font-bold mb-2" for="descuento">Total Tiempo Lavado</label>
-      <div class="relative">
-        <input
-          id="descuento"
-          class="shadow appearance-none border-2 border-red-500 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:border-red-700 focus:ring-2 focus:ring-red-300 pr-12"
-          type="number"
-        [value]="calcularTiempo()"
-            />
-        <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">Min</span>
+      <div class="relative mt-5">
+        <span   class="shadow appearance-none border-2 border-red-500 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:border-red-700 focus:ring-2 focus:ring-red-300 pr-12">
+          {{ calcularTiempo() }}
+        </span>
       </div>
     </div>
+
     <div class="w-full md:w-1/6">
       <label class="block text-gray-700 text-sm font-bold mb-2" for="descuento">Descuento</label>
       <div class="relative">
@@ -173,6 +176,7 @@
           class="shadow appearance-none border-2 border-red-500 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:border-red-700 focus:ring-2 focus:ring-red-300 pr-12"
           type="number"
           formControlName="descuento"
+          (keydown.enter)="$event.preventDefault()"
           placeholder="Descuento"
         />
         <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">%</span>
@@ -185,7 +189,7 @@
         id="total"
         class="shadow appearance-none border-2 border-red-500 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:border-red-700 focus:ring-2 focus:ring-red-300"
         type="number"
-
+        (keydown.enter)="$event.preventDefault()"
         placeholder="Total a pagar"
         [value]="calcularTotal()"
       />
