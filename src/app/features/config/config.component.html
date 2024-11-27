@@ -29,9 +29,8 @@
                 </div>
               </td>
             </tbody>
-            } @else {
-              @if (prenda() && prenda().length > 0) {
-              <tbody>
+            } @else { @if (prenda() && prenda().length > 0) {
+            <tbody>
               @for (inventary of prenda(); track $index) {
               <tr
                 class="bg-white border-b border-dashed border-neutral-200 *:px-6 *:py-4 *:whitespace-nowrap [&>th]:ps-0"
@@ -52,17 +51,16 @@
                 <td>{{ inventary.tiempo_lavado }} Min</td>
                 <td>
                   <button
-                  class="bg-red-500 rounded-lg p-3 inline-block cursor-pointer"
-                  (click)="deletePenda(inventary.id)"
+                    class="bg-red-500 rounded-lg p-3 inline-block cursor-pointer"
+                    (click)="deletePrenda.open(); dataFlotante.set(inventary.id)"
                   >
                     <img src="assets/icons/trash-icon.svg" alt="Eliminar" class="size-4" />
                   </button>
                 </td>
               </tr>
-            }
-          </tbody>
-          }
-            @else { @defer {
+              }
+            </tbody>
+            } @else { @defer {
             <tbody>
               <td colspan="100%">
                 <div class="text-center py-4 max-w-2xl mx-auto">
@@ -118,11 +116,54 @@
         </button>
       </header>
       <section>
-        <app-agg-prenda
-        (prenda)="addPrenda.close()"
-        (prenda)="$event && aggPrenda($event)"
-        />
+        <app-agg-prenda (prenda)="addPrenda.close()" (prenda)="$event && aggPrenda($event)" />
       </section>
+    </div>
+  </div>
+  }
+</app-modal>
+
+<app-modal #deletePrenda>
+  @defer {
+  <div class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+    <div class="bg-white w-full max-w-2xl rounded-lg overflow-auto">
+      <header class="p-4 flex justify-between items-center border border-b border-gray-300">
+        <h2 class="font-bold text-xl truncate">Eliminar Prenda</h2>
+        <button (click)="deletePrenda.close()" class="shrink-0">
+          <img
+            ngSrc="/assets/icons/close-icon.svg"
+            width="14"
+            height="18"
+            alt="close"
+            style="filter: invert(64%) sepia(1%) saturate(370%) hue-rotate(314deg) brightness(94%) contrast(91%)"
+          />
+        </button>
+      </header>
+      @if (dataFlotante(); as prenda) {
+
+      <section class="p-4">
+        <div class="text-center p-6">
+          <div class="flex justify-center">
+            <div class="p-4 bg-red-100 rounded-full">
+              <img src="/assets/icons/info.svg" alt="" class="size-12" />
+            </div>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 mt-4">¿Estás seguro de que deseas eliminar este prenda?</h3>
+          <p class="text-gray-500 mt-2">Una vez eliminado, no podrás recuperar los datos.</p>
+          <div class="mt-6 flex flex-col md:flex-row justify-center gap-4">
+            <button class="bg-gray-200 text-gray-600 px-4 py-2 rounded-md" (click)="deletePrenda.close()">
+              Cancelar
+            </button>
+            <button
+              class="bg-red-600 text-white px-4 py-2 rounded-md"
+              (click)="deletePenda(prenda); deletePrenda.close()"
+            >
+              Eliminar
+            </button>
+          </div>
+        </div>
+      </section>
+      }
     </div>
   </div>
   }

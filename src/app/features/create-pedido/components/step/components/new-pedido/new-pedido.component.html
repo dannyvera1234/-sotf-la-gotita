@@ -159,12 +159,17 @@
   </div>
 
   <div class="mt-8 mb-4 flex justify-end gap-4">
-    <div class=" md:w-1/6 ">
-      <label class="block text-gray-700 text-sm font-bold mb-2" for="descuento">Total Tiempo Lavado</label>
-      <div class="relative mt-5">
-        <span   class="shadow appearance-none border-2 border-red-500 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:border-red-700 focus:ring-2 focus:ring-red-300 pr-12">
-          {{ calcularTiempo() }}
-        </span>
+    <div class="md:w-1/6">
+      <label class="block text-gray-700 text-sm font-bold mb-2" for="tiempo_total">Total Tiempo Lavado</label>
+      <div class="relative">
+        <input
+          id="tiempo_total"
+          class="shadow appearance-none border-2 border-red-500 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:border-red-700 focus:ring-2 focus:ring-red-300 pr-12"
+          type="text"
+          [value]="calcularTiempo()"
+          formControlName="tiempo_total"
+          readonly
+        />
       </div>
     </div>
 
@@ -184,27 +189,31 @@
     </div>
 
     <div class="w-full md:w-1/3">
-      <label class="block text-gray-700 text-sm font-bold mb-2" for="total"> Total a pagar </label>
+      <label class="block text-gray-700 text-sm font-bold mb-2" for="total">Total a pagar</label>
       <input
         id="total"
         class="shadow appearance-none border-2 border-red-500 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:border-red-700 focus:ring-2 focus:ring-red-300"
         type="number"
         (keydown.enter)="$event.preventDefault()"
         placeholder="Total a pagar"
+        formControlName="total"
         [value]="calcularTotal()"
+        readonly
       />
     </div>
   </div>
 
+
   <div class="flex gap-4 justify-end mt-10 md:flex-row flex-col text-center max-md:w-full">
-    <!-- @if (!loading()) { -->
-    <button class="items-center gap-2 bg-zinc-200 px-4 py-2 rounded-lg md:flex" type="button">
-      <!-- (click)="createPedido.prev(); nextStep.emit()" -->
+    @if (!loading()) {
+    <button class="items-center gap-2 bg-zinc-200 px-4 py-2 rounded-lg md:flex" type="button"
+    (click)="createPedido.prev(); nextStep.emit()"
+    >
       Cancelar
     </button>
     <button class="bg-secondary px-4 py-2 rounded-lg text-white" (click)="next()">Guardar</button>
-    <!-- } @else { -->
-    <!-- <div class="loader"></div> -->
-    <!-- } -->
+    } @else {
+    <div class="loader"></div>
+    }
   </div>
 </form>

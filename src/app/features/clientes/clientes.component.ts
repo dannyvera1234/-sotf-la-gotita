@@ -29,6 +29,8 @@ export class ClientesComponent {
 
   public readonly clients = signal<any | null>(null);
 
+  public readonly dataFlotante = signal<string>('');
+
   constructor(private readonly clientService: ClienteService, private readonly destroyRef: DestroyRef) {
     this.getClientes();
   }

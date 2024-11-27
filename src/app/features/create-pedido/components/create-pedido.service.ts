@@ -42,7 +42,8 @@ export class CreatePedidoService {
       fecha_entrega: [new Date(), [Validators.required]],
       descripcion: ['', [Validators.maxLength(50)]],
       descuento: [0],
-      total_tiempo_lavado: [{ value: 0, disabled: true }],
+      total: [{ value: '', disabled: true }],
+      tiempo_total: [{ value: '', disabled: true }],
     }),
   });
 
@@ -67,8 +68,8 @@ export class CreatePedidoService {
       fecha_entrega: new Date(),
       descripcion: '',
       descuento: 0,
-
-      total_tiempo_lavado: 0,
+      total: '',
+      tiempo_total: '',
     });
     this.form.updateValueAndValidity();
   }
@@ -98,49 +99,51 @@ export class CreatePedidoService {
     };
   }
 
+
   private mapPedidoForm(): any {
     const step2 = this.form.controls.step_2.value;
     return {
       tipoPago: step2.tipoPago,
-
+      prendas: step2.prendas?.map((prenda) => ({
+        nombre_prenda: prenda.nombre_prenda,
+        cantidad: prenda.cantidad,
+        tiempo_lavado: prenda.tiempo_lavado || '0',
+        precio: prenda.precio,
+      })),
       fecha_ingreso: step2.fecha_ingreso,
       fecha_entrega: step2.fecha_entrega,
       descripcion: step2.descripcion,
       estado: step2.estado,
+      descuento: step2.descuento,
+      tiempo_total_lavado: this.tiempoTotal,
+      total: this.totalPedido,
+
     };
   }
 
+  public totalPedido = '0';
+
+  public tiempoTotal = '0';
   private async submit(): Promise<void> {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
+     if (this.form.invalid) {
+       this.form.markAllAsTouched();
+       return;
+     }
 
-    this.submitting.set(true);
+     this.submitting.set(true);
 
-    const cliente = this.mapClienteForm();
-    const pedido = this.mapPedidoForm();
+     const cliente = this.mapClienteForm();
+     const pedido = this.mapPedidoForm();
 
-    try {
-      const clienteDocRef = await this.clienteService.createCliente(cliente);
+     try {
+       const clienteDocRef = await this.clienteService.createCliente(cliente);
 
-      await this.clienteService.createPedido(pedido, clienteDocRef.id);
-      this.submitting.set(false);
-      this.created.set(true);
-    } catch (error) {
-      console.error('Error al crear cliente o pedido:', error);
-    }
+       await this.clienteService.createPedido(pedido, clienteDocRef.id);
+       this.submitting.set(false);
+       this.created.set(true);
+     } catch (error) {
+       console.error('Error al crear cliente o pedido:', error);
+     }
   }
 
-  // private submit(): void {
-  //   this.submitting.set(true);
-
-  //   this.bankService
-  //     .createBank(this.mapBankForm(), this.files())
-  //     .pipe(finalize(() => this.submitting.set(false)))
-  //     .subscribe(() => {
-  //       this.created.set(true);
-  //       this.searchService.search.set(SearchModel.EMPTY);
-  //     });
-  // }
 }

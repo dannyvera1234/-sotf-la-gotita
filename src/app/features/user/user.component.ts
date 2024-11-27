@@ -27,13 +27,15 @@ import { NotUserFoundComponent } from './components';
 export class UserComponent {
   public readonly loading = signal(true);
 
+  public readonly dataFlotante = signal<string>('');
+
   public readonly users = signal<any | null>(null);
 
   constructor(private readonly userService: UserService) {
     this.getUsers();
   }
 
-  public deleteUser(id: string): void {
+  public deleteUsuario(id: string): void {
     of(this.loading.set(true))
       .pipe(
         take(1),

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { ModalComponent } from '../../components';
 import { NgOptimizedImage } from '@angular/common';
 import { StepComponent } from './components/step';
@@ -15,8 +15,10 @@ import { PedidosComponent } from './components/pedidos';
 })
 export class CreatePedidoComponent {
 
+  public readonly idCliente = signal<string>('');
 
-  prueba(data: any) {
-    console.log('prueba', data);
+
+  dataCliente(data: any) {
+    this.idCliente.set(data.id);
   }
 }

@@ -81,7 +81,7 @@
               <td>{{ inventary.precio | currency }} C/U</td>
               <td>
                 <button
-                  (click)="deleteInvetario(inventary.id)"
+                  (click)="deleteInventario.open(); dataFlotante.set(inventary.id)"
                 class="bg-red-500 rounded-lg p-3 inline-block cursor-pointer">
                   <img src="assets/icons/trash-icon.svg" alt="Eliminar" class="size-4" />
                 </button>
@@ -124,6 +124,47 @@
         (inventary)="$event && addInventary($event)"
         />
       </section>
+    </div>
+  </div>
+  }
+</app-modal>
+<app-modal #deleteInventario>
+  @defer {
+  <div class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+    <div class="bg-white w-full max-w-2xl rounded-lg overflow-auto">
+      <header class="p-4 flex justify-between items-center border border-b border-gray-300">
+        <h2 class="font-bold text-xl truncate">Eliminar Producto</h2>
+        <button (click)="deleteInventario.close()" class="shrink-0">
+          <img
+            ngSrc="/assets/icons/close-icon.svg"
+            width="14"
+            height="18"
+            alt="close"
+            style="filter: invert(64%) sepia(1%) saturate(370%) hue-rotate(314deg) brightness(94%) contrast(91%)"
+          />
+        </button>
+      </header>
+      @if (dataFlotante(); as idProducto) {
+
+        <section class="p-4">
+          <div class="text-center p-6">
+            <div class="flex justify-center">
+              <div class="p-4 bg-red-100 rounded-full">
+              <img src="/assets/icons/info.svg" alt="" class="size-12" />
+            </div>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 mt-4">¿Estás seguro de que deseas eliminar este producto?</h3>
+          <p class="text-gray-500 mt-2">Una vez eliminado, no podrás recuperar los datos.</p>
+          <div class="mt-6 flex flex-col md:flex-row justify-center gap-4">
+            <button class="bg-gray-200 text-gray-600 px-4 py-2 rounded-md" (click)="deleteInventario.close()">
+              Cancelar
+            </button>
+            <button class="bg-red-600 text-white px-4 py-2 rounded-md"
+            (click)="deleteInvetario(idProducto); deleteInventario.close()">Eliminar</button>
+          </div>
+        </div>
+      </section>
+    }
     </div>
   </div>
   }

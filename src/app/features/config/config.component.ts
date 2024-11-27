@@ -20,6 +20,8 @@ export class ConfigComponent {
 
   public readonly prenda = signal<any | null>(null);
 
+  public readonly dataFlotante= signal<string>('');
+
   constructor(private readonly configService: ConfigService) {
     this.getPrendas();
   }

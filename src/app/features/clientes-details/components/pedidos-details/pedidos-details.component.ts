@@ -10,7 +10,7 @@ import { CreatePedidoComponent } from '../create-pedido';
 @Component({
   selector: 'app-pedidos-details',
   standalone: true,
-  imports: [JsonPipe, NgClass, CustomDatePipe, NgOptimizedImage, ModalComponent, CreatePedidoComponent],
+  imports: [ NgClass, CustomDatePipe, NgOptimizedImage, ModalComponent, CreatePedidoComponent],
   templateUrl: './pedidos-details.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,

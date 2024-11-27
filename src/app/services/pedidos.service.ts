@@ -26,6 +26,7 @@ export class PedidosService {
 
 
   createCliente(createClient: Partial<any>): Promise<any> {
+    console.log('createClient', createClient);
     const docRef = doc(
       collection(
         this._firestore,
@@ -39,11 +40,13 @@ export class PedidosService {
       updated: Date.now(),
     }).then(() => {
       // Devuelve los datos de la prenda junto con el id generado por Firebase
+      console
       return { id: docRef.id, ...createClient }; // Incluye el id generado por Firebase
     });
   }
 
   createPedido(pedido: Partial<any>, idCliente: string): Promise<DocumentReference<DocumentData>> {
+    console.log('pedido', pedido);
     const pedidosCollectionRef = collection(this._firestore, `clientes/${idCliente}/pedidos`);
     return addDoc(pedidosCollectionRef, {
       ...pedido,

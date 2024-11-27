@@ -36,6 +36,8 @@ export class InvetoryComponent extends WithSearchable implements OnInit {
 
   public readonly products = signal<any | null>(null);
 
+  public readonly dataFlotante = signal<string>('');
+
   ngOnInit(): void {
     this.searchBanks();
   }

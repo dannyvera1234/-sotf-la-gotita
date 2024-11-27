@@ -70,11 +70,13 @@ export class NewPedidoComponent implements OnInit {
   }
   ngOnInit(): void {}
 
+
   public next(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
+    console.log('Formulario válido:', this.form.value);
     this.createPedido.next();
   }
 
@@ -153,38 +155,43 @@ export class NewPedidoComponent implements OnInit {
 
     this.prendas.push(prendaGroup);
   }
+  calcularTotal(): string {
+    const total = this.prendas.controls.reduce((acc, prenda) => {
+      const precio = parseFloat(prenda.get('precio')?.value) || 0;
+      return acc + precio;
+    }, 0);
 
-  calcularTotal() {
-    let total = 0;
+    const totalRedondeado = total.toFixed(2);
 
-    // Itera sobre todas las prendas en el FormArray
-    this.prendas.controls.forEach((prenda) => {
-      const precio = prenda.get('precio')?.value || 0;
+    // Actualiza el total en el servicio
+    this.createPedido.totalPedido =totalRedondeado;
 
-      // Acumula el total sumando el precio de cada prenda
-      total += parseFloat(precio); // Asegúrate de que el precio se trata como un número
-    });
-
-    // Redondear el total a 2 decimales
-    return total.toFixed(2); // Devuelve el total como string con 2 decimales
+    return totalRedondeado;
   }
 
-  calcularTiempo() {
+  calcularTiempo(): string {
     let tiempoTotal = 0;
 
-    // Sumar todo el tiempo de las prendas
+    // Sumar el tiempo de lavado de cada prenda
     this.prendas.controls.forEach((prenda) => {
-      const tiempo_lavado = prenda.get('tiempo_lavado')?.value || 0;
-      tiempoTotal += tiempo_lavado;
+      const tiempoLavado = +prenda.get('tiempo_lavado')?.value || 0; // Asegurarse de que sea un número
+      tiempoTotal += tiempoLavado;
     });
 
-    // Convertir el tiempo total de minutos a horas y minutos
-    const horas = Math.floor(tiempoTotal / 60); // Calcula las horas
-    const minutos = tiempoTotal % 60; // Los minutos restantes
+    // Convertir a horas y minutos
+    const horas = Math.floor(tiempoTotal / 60);
+    const minutos = tiempoTotal % 60;
 
-    // Retornar el total en formato "Xh Ym"
+
+    this.createPedido.tiempoTotal = `${horas}h ${minutos}m`;
+    // Formatear el resultado
     return `${horas}h ${minutos}m`;
   }
+
+
+
+
+
 
   deletePrenda(index: number) {
     this.prendas.removeAt(index);
