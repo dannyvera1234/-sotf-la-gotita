@@ -6,11 +6,12 @@ import { LaGotitaConfigService } from '../../../../util';
 import { CustomDatePipe } from '../../../../pipes';
 import { ModalComponent } from '../../../../components';
 import { CreatePedidoComponent } from '../create-pedido';
+import { EditPedidoComponent } from '../edit-pedido';
 
 @Component({
   selector: 'app-pedidos-details',
   standalone: true,
-  imports: [ NgClass, CustomDatePipe, NgOptimizedImage, ModalComponent, CreatePedidoComponent],
+  imports: [NgClass, CustomDatePipe, NgOptimizedImage, ModalComponent, CreatePedidoComponent, EditPedidoComponent],
   templateUrl: './pedidos-details.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -20,6 +21,10 @@ export class PedidosDetailsComponent {
     this.getPedidos(value);
     this.idCliente.set(value);
   }
+
+  public readonly viewing = signal<any | null>(null);
+
+  public readonly viewingPedido = signal<string | null>(null);
 
   public readonly idCliente = signal('');
 
@@ -48,9 +53,12 @@ export class PedidosDetailsComponent {
         finalize(() => this.loading.set(false)),
       )
       .subscribe((pedidos) => {
-        this.pedidos.set(pedidos);
+        // Filtrar los pedidos que no están finalizados
+        const pedidosFiltrados = pedidos.filter(pedido => pedido.estado !== 'FINALIZADO');
+        this.pedidos.set(pedidosFiltrados);
       });
   }
+
 
   removePedido(): void {
     of(this.loading.set(true))
@@ -63,7 +71,7 @@ export class PedidosDetailsComponent {
       });
   }
 
-  updatePedido(pedido: any): void {
+  createProducto(pedido: any): void {
     of(this.loading.set(true))
       .pipe(
         mergeMap(() => this.pedidosService.createPedido(pedido, this.idCliente())),
@@ -74,17 +82,28 @@ export class PedidosDetailsComponent {
       });
   }
 
-  finalizarPedido(pedidoId: string): void {
-    const cambios = { estado: 'FINALIZADO', updated: Date.now() };
-
-    this.pedidosService.updatePedido(pedidoId, cambios)
-      .then(() => {
-        console.log('Pedido finalizado correctamente');
-      })
-      .catch(error => {
-        console.error('Error al finalizar el pedido:', error);
+  updatePedido(pedido: any): void {
+    of(this.loading.set(true))
+      .pipe(
+        mergeMap(() => this.pedidosService.updatePedido(this.idCliente(), pedido.id, pedido)),
+        finalize(() => this.loading.set(false)),
+      )
+      .subscribe(() => {
+        this.getPedidos(this.idCliente());
       });
   }
 
+  finalizarPedido( pedidoid: string): void {
+    const cambios = { estado: 'FINALIZADO', updated: Date.now() };
+
+     of(this.loading.set(true))
+      .pipe(
+        mergeMap(() => this.pedidosService.updatePedido(this.idCliente(), pedidoid, cambios)),
+        finalize(() => this.loading.set(false)),
+      )
+      .subscribe(() => {
+        this.getPedidos(this.idCliente());
+      });
+  }
 
 }

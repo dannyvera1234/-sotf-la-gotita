@@ -41,6 +41,7 @@
           id="pedidoSelect"
           class="block w-full bg-white border border-gray-300 rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:ring focus:border-sky-500"
           (change)="onPedidoSelect($event, $index)"
+          formArrayName="nombre_prenda"
         >
           <option value="" disabled selected>Seleccionar</option>
           @for (pedido of pedidos(); track $index) {
@@ -214,7 +215,7 @@
     <button
       class="items-center gap-2 bg-zinc-200 px-4 py-2 rounded-lg md:flex"
       type="button"
-      (click)="newPedidos.emit(null)"
+      (click)="editPedido.emit(null)"
     >
       Cancelar
     </button>

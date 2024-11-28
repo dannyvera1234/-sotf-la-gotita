@@ -48,14 +48,16 @@
       <button class="absolute top-4 right-4" (click)="deletePedido.open(); setPedidoId(item.id)">
         <img src="/assets/icons/trash-icon.svg" width="14" height="16" alt="Delete" />
       </button>
-      <button class="absolute top-4 right-10" (click)="finalizarPedido(item)">
+      <button class="absolute top-4 right-10" (click)="editPedido.open(); viewing.set(item)">
+        <img src="/assets/icons/edit-copy.svg" class="size-4" alt="Delete" />
+      </button>
+      <button class="absolute top-4 right-16" (click)="entregarPedido.open(); viewingPedido.set(item.id)">
         <img src="/assets/icons/check-icon.svg" class="size-4" alt="Delete" />
       </button>
     </div>
     }
   </div>
-  }
-  @else {
+  } @else {
   <div class="text-center py-4 max-w-2xl mx-auto">
     <div class="bg-slate-50 py-4 mb-5 rounded-xl">
       <img
@@ -105,9 +107,9 @@
           <button class="bg-gray-200 text-gray-600 px-4 py-2 rounded-md" (click)="deletePedido.close()">
             Cancelar
           </button>
-          <button class="bg-red-600 text-white px-4 py-2 rounded-md"
-            (click)="deletePedido.close(); removePedido()"
-          >Eliminar</button>
+          <button class="bg-red-600 text-white px-4 py-2 rounded-md" (click)="deletePedido.close(); removePedido()">
+            Eliminar
+          </button>
         </div>
       </div>
     </div>
@@ -135,9 +137,79 @@
         <app-create-pedido
           [id]="idCliente()"
           (newPedidos)="createPedido.close()"
-          (newPedidos)="$event && updatePedido($event)"
+          (newPedidos)="$event && createProducto($event)"
         />
       </section>
+    </div>
+  </div>
+  }
+</app-modal>
+
+<app-modal #editPedido>
+  @defer {
+  <div class="h-full flex items-center">
+    <div class="bg-white w-full rounded-lg overflow-auto max-h-full">
+      <header class="p-4 flex justify-between items-center border border-b border-gray-300">
+        <h2 class="font-bold text-xl truncate">Editar Pedido</h2>
+        <button (click)="editPedido.close()" class="shrink-0">
+          <img
+            ngSrc="/assets/icons/close-icon.svg"
+            width="14"
+            height="18"
+            alt="close"
+            style="filter: invert(64%) sepia(1%) saturate(370%) hue-rotate(314deg) brightness(94%) contrast(91%)"
+          />
+        </button>
+      </header>
+      <section class="p-4">
+        @if (viewing(); as editPedidos ) {
+        <app-edit-pedido
+          [editarPedido]="editPedidos"
+          (editPedido)="editPedido.close()"
+          (editPedido)="$event && updatePedido($event); viewing.set(null)"
+        />
+        }
+      </section>
+    </div>
+  </div>
+  }
+</app-modal>
+
+<app-modal #entregarPedido>
+  @defer {
+  <div class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+    <div class="bg-white w-full max-w-2xl rounded-lg overflow-auto">
+      <header class="p-4 flex justify-between items-center border-b border-gray-300">
+        <h2 class="font-bold text-xl truncate">Entregar Pedido</h2>
+        <button (click)="entregarPedido.close()" class="shrink-0">
+          <img
+            ngSrc="/assets/icons/close-icon.svg"
+            width="14"
+            height="18"
+            alt="close"
+            style="filter: invert(64%) sepia(1%) saturate(370%) hue-rotate(314deg) brightness(94%) contrast(91%)"
+          />
+        </button>
+      </header>
+      @if (viewingPedido(); as pedidoId ) {
+      <div class="text-center p-6">
+        <div class="flex justify-center">
+          <div class="p-4 bg-red-100 rounded-full">
+            <img src="/assets/icons/info.svg" alt="" class="size-12" />
+          </div>
+        </div>
+        <h3 class="text-lg font-semibold text-gray-900 mt-4">¿Estás seguro de que deseas entregar este pedido?</h3>
+        <p class="text-gray-500 mt-2">Una vez entregado, no podrás recuperar este pedido.</p>
+        <div class="mt-6 flex flex-col md:flex-row justify-center gap-4">
+          <button class="bg-gray-200 text-gray-600 px-4 py-2 rounded-md" (click)="entregarPedido.close()">
+            Cancelar
+          </button>
+          <button class="bg-red-600 text-white px-4 py-2 rounded-md" (click)="finalizarPedido(pedidoId); entregarPedido.close()"  >
+            Entregar
+          </button>
+        </div>
+      </div>
+    }
     </div>
   </div>
   }

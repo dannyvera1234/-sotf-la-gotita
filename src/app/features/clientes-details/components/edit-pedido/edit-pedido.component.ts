@@ -1,27 +1,26 @@
-import { ChangeDetectionStrategy, Component, computed, EventEmitter, Input, Output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, EventEmitter, Input, OnInit, Output, signal } from '@angular/core';
+import { FormBuilder, Validators, FormArray, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { take, finalize } from 'rxjs';
+import { PedidosService, ConfigService } from '../../../../services';
 import { LaGotitaConfigService } from '../../../../util';
-import { CustomInputComponent, CustomSelectComponent, SelectIndustriesComponent } from '../../../../components';
-import { NgOptimizedImage } from '@angular/common';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { finalize, take } from 'rxjs';
-import { ConfigService, PedidosService } from '../../../../services';
+import { CustomInputComponent, CustomSelectComponent } from '../../../../components';
 
 @Component({
-  selector: 'app-create-pedido',
+  selector: 'app-edit-pedido',
   standalone: true,
-  imports: [CustomSelectComponent, NgOptimizedImage, CustomInputComponent, ReactiveFormsModule],
-  templateUrl: './create-pedido.component.html',
+  imports: [ReactiveFormsModule, CustomInputComponent, CustomSelectComponent],
+  templateUrl: './edit-pedido.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CreatePedidoComponent {
-  @Input({ required: true }) id!: string;
+export class EditPedidoComponent implements OnInit {
+  @Input({ required: true }) editarPedido!: any;
 
   public readonly today = signal('');
 
   public readonly loading = signal(false);
 
-  @Output() newPedidos = new EventEmitter<any | null>();
+  @Output() editPedido = new EventEmitter<any | null>();
 
   public readonly metodo_pago = computed<{ values: string[]; labels: string[] }>(() => {
     return Object.entries(this.config.metodo_pago()).reduce(
@@ -55,6 +54,13 @@ export class CreatePedidoComponent {
     const currentDate = new Date();
     this.today.set(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`);
     this.listPedido();
+
+
+  }
+  ngOnInit(): void {
+     this.form.patchValue({
+      ...this.editarPedido,
+     });
   }
 
   public form = this._fb.group({
@@ -85,11 +91,11 @@ export class CreatePedidoComponent {
 
     const pedido = {
       ...this.form.value,
-      };
+    };
 
-
-    this.newPedidos.emit({
+    this.editPedido.emit({
       ...pedido,
+      id: this.editarPedido.id,
     });
   }
 

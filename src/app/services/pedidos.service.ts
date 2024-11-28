@@ -55,13 +55,15 @@ export class PedidosService {
     });
   }
 
-  updatePedido(pedidoId: string, cambios: Partial<any>): Promise<void> {
-    const pedidoRef =   doc(this._firestore, `${APP_PEDIDOS.COLLECTION_NAME}/${pedidoId}`);
+  updatePedido(idCliente: string, pedidoId: string, cambios: Partial<any>): Promise<void> {
+    const pedidoRef = doc(this._firestore, `${APP_CLIENTES.COLLECTION_NAME}/${idCliente}/pedidos/${pedidoId}`);
     return updateDoc(pedidoRef, {
       ...cambios,
       updated: Date.now(),
     });
   }
+
+
 
   removePedido(idCliente: string, idPedido: string): Promise<void> {
     const pedidoDocRef = doc(this._firestore, `clientes/${idCliente}/pedidos/${idPedido}`);
