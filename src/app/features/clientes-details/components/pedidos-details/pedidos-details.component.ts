@@ -53,7 +53,6 @@ export class PedidosDetailsComponent {
         finalize(() => this.loading.set(false)),
       )
       .subscribe((pedidos) => {
-        // Filtrar los pedidos que no están finalizados
         const pedidosFiltrados = pedidos.filter(pedido => pedido.estado !== 'FINALIZADO');
         this.pedidos.set(pedidosFiltrados);
       });

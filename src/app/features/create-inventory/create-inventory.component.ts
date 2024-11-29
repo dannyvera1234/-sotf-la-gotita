@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, EventEmitter, Output, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CustomInputComponent, CustomSelectComponent, FormErrorMessageComponent } from '../../components';
-import { LaGotitaConfigService, onlyLettersValidator, onlyNumbersValidator } from '../../util';
+import { LaGotitaConfigService, onlyLettersValidator, onlyNumbersDecimalsValidator, onlyNumbersValidator } from '../../util';
 import { NgOptimizedImage } from '@angular/common';
 import { InvetoryService } from '../../services';
 import { of, mergeMap, finalize } from 'rxjs';
@@ -47,7 +47,7 @@ export class CreateInventoryComponent {
     nombre: ['', [Validators.required, onlyLettersValidator()]],
     descripcion: ['', [Validators.required]],
     cantidad: ['', [Validators.required, onlyNumbersValidator()]],
-    precio: ['', [Validators.required, onlyNumbersValidator()]],
+    precio: ['', [Validators.required, onlyNumbersDecimalsValidator()]],
     tipo_articulo: ['', [Validators.required]],
   });
 
@@ -66,6 +66,14 @@ export class CreateInventoryComponent {
       )
       .subscribe((data) => {
         this.inventary.emit(data);
+        this.form.reset();
+        this.form.patchValue({
+          nombre: '',
+          descripcion: '',
+          cantidad: '',
+          precio: '',
+          tipo_articulo: '',
+         });
       });
   }
 }

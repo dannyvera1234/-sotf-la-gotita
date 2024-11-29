@@ -14,16 +14,24 @@
           (keyup.enter)="this.searchService.updateQuery(search)"
         />
       </div>
+      <div class="flex items-center gap-4 max-md:w-full">
+        <button
+          class="flex items-center gap-2 bg-blue-900 text-white px-4 py-2 rounded-lg"
+          (click)="generatePDF()"
+        >
+          <img src="/assets/icons/pdf.svg" alt="PDF" class="w-5 h-5" />
+        </button>
 
-      <div class="max-md:w-full">
         <button
           class="flex items-center gap-2 bg-secondary text-white px-4 py-2 rounded-lg"
           (click)="newInventary.open()"
         >
-          <div class="relative size-5 shrink-0"><img ngSrc="/assets/icons/add.svg" alt="Create" fill /></div>
+          <img src="/assets/icons/add.svg" alt="Create" class="w-5 h-5" />
           Agregar
         </button>
       </div>
+
+
     </nav>
 
     <hr class="my-4" />
@@ -36,7 +44,7 @@
               <th scope="col">Descripción</th>
               <th scope="col">Cantidad</th>
               <th scope="col">Tipo</th>
-              <th scope="col">Precio</th>
+              <th scope="col">Precio Unitario</th>
               <th scope="col">Accion</th>
             </tr>
           </thead>
@@ -72,7 +80,7 @@
               <td>
                 <div
                   class="flex items-center gap-2 justify-center rounded-lg px-2 py-1 text-white w-20"
-                  [ngClass]="inventary.cantidad > 0 ? 'bg-emerald-500' : 'bg-red-500'"
+                  [ngClass]="inventary.cantidad > 5 ? 'bg-emerald-500' : 'bg-red-500'"
                 >
                   {{ inventary.cantidad }}
                 </div>

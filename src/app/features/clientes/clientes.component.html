@@ -27,7 +27,7 @@
           <thead>
             <tr class="*:font-normal *:text-neutral-400 *:px-6 *:py-3">
               <th scope="col">Nombre</th>
-              <th scope="col">Indetificación</th>
+              <th scope="col">Identificación</th>
               <th scope="col">Telefono</th>
               <th scope="col">Dirección</th>
               <th scope="col">Email</th>
@@ -80,7 +80,12 @@
                 <p>{{ email }}</p>
                 }
               </td>
-              <td>
+              <td class="m-2">
+                <button class="rounded-lg p-3 inline-block cursor-pointer bg-blue-500"
+                  (click)="downloadPDF(client)"
+                >
+                  <img src="/assets/icons/pdf.svg" alt="PDF" class="size-4" />
+                </button>
                 <button
                   class="bg-red-500 rounded-lg p-3 inline-block cursor-pointer"
                   (click)="deleteClientModal.open(); dataFlotante.set(client.id)"
@@ -122,10 +127,10 @@
       </header>
       @if (dataFlotante(); as idCliente) {
 
-        <section class="p-4">
-          <div class="text-center p-6">
-            <div class="flex justify-center">
-              <div class="p-4 bg-red-100 rounded-full">
+      <section class="p-4">
+        <div class="text-center p-6">
+          <div class="flex justify-center">
+            <div class="p-4 bg-red-100 rounded-full">
               <img src="/assets/icons/info.svg" alt="" class="size-12" />
             </div>
           </div>
@@ -135,12 +140,16 @@
             <button class="bg-gray-200 text-gray-600 px-4 py-2 rounded-md" (click)="deleteClientModal.close()">
               Cancelar
             </button>
-            <button class="bg-red-600 text-white px-4 py-2 rounded-md"
-              (click)="deleteClient(idCliente); deleteClientModal.close()">Eliminar</button>
+            <button
+              class="bg-red-600 text-white px-4 py-2 rounded-md"
+              (click)="deleteClient(idCliente); deleteClientModal.close()"
+            >
+              Eliminar
+            </button>
           </div>
         </div>
       </section>
-    }
+      }
     </div>
   </div>
   }
