@@ -96,6 +96,8 @@ export class EditPedidoComponent implements OnInit {
     this.editPedido.emit({
       ...pedido,
       id: this.editarPedido.id,
+      total: this.calcularTotal(),
+      tiempo_total: this.calcularTiempo(),
     });
   }
 

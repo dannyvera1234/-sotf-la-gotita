@@ -39,6 +39,7 @@ export class OrdenPedidosComponent {
         next: (clientes) => {
           const clientesConPedidosHoy = clientes
             .map((cliente) => {
+              console.log('Cliente:', cliente);
               const pedidosHoy = cliente.pedidos.filter((pedido: any) => pedido.fecha_entrega === hoy);
 
               return pedidosHoy.length > 0 ? { ...cliente, pedidos: pedidosHoy } : null;

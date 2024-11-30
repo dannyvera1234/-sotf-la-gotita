@@ -56,6 +56,9 @@ export class PedidosService {
   }
 
   updatePedido(idCliente: string, pedidoId: string, cambios: Partial<any>): Promise<void> {
+    console.log('cambios', cambios);
+    console.log('idCliente', idCliente);
+    console.log('pedidoId', pedidoId);
     const pedidoRef = doc(this._firestore, `${APP_CLIENTES.COLLECTION_NAME}/${idCliente}/pedidos/${pedidoId}`);
     return updateDoc(pedidoRef, {
       ...cambios,

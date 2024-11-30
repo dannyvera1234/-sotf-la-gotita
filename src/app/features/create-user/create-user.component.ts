@@ -76,7 +76,7 @@ export class CreateUserComponent {
     establecimiento: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]],
     direccion: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(50)]],
     password: ['', [Validators.required, Validators.minLength(8), passwordValidator()]],
-    email:['', [Validators.required, emailValidator()]],
+    email:['', [Validators.required, emailValidator(), Validators.maxLength(50)]],
     phones: this._fb.array<FormGroup<{ phone: FormControl<any | null> }>>([], [Validators.required]),
   });
 

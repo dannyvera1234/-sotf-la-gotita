@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, signal } from '@angular/core';
 import { of, mergeMap, finalize } from 'rxjs';
 import { LaGotitaConfigService } from '../../util';
-import { ClienteService } from '../../services';
+import { ClienteService, PedidosService } from '../../services';
 import { TextInitialsPipe } from '../../pipes';
 import { ModalComponent } from '../../components';
 import { CreatePedidoComponent, PedidosDetailsComponent, UpdateClientComponent } from './components';
@@ -10,25 +10,22 @@ import { NgClass, NgOptimizedImage } from '@angular/common';
 @Component({
   selector: 'app-clientes-details',
   standalone: true,
-  imports: [TextInitialsPipe, ModalComponent, UpdateClientComponent, PedidosDetailsComponent, NgOptimizedImage
-  ],
+  imports: [TextInitialsPipe, ModalComponent, UpdateClientComponent, PedidosDetailsComponent, NgOptimizedImage],
   templateUrl: './clientes-details.component.html',
   styles: ``,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ClientesDetailsComponent {
-  public _udateClient = signal('');
+  public idClient = signal('');
 
   @Input({ required: true }) set id(value: string) {
     this.getClient(value);
-    this._udateClient.set(value);
+    this.idClient.set(value);
   }
 
   public readonly loading = signal(false);
 
   public readonly client = signal<any | null>(null);
-
-
 
   constructor(
     private readonly _clienteService: ClienteService,
@@ -41,9 +38,9 @@ export class ClientesDetailsComponent {
         mergeMap(() => this._clienteService.getClientes(id)),
         finalize(() => this.loading.set(false)),
       )
-      .subscribe((client) => {this.client.set(client)
-
-
+      .subscribe((client) => {
+        this.client.set(client);
       });
   }
+
 }

@@ -33,15 +33,15 @@ export class CreatePedidoService {
       prendas: this._fb.array([
         this._fb.group({
           nombre_prenda: ['', [Validators.required]],
-          cantidad: [0],
+          cantidad: [0, [Validators.required, Validators.min(1), Validators.max(100)]],
           tiempo_lavado: [0],
           precio: [0],
         }),
       ]),
       fecha_ingreso: [new Date(), [Validators.required]],
       fecha_entrega: [new Date(), [Validators.required]],
-      descripcion: ['', [Validators.maxLength(50)]],
-      descuento: [0],
+      descripcion: ['', [Validators.maxLength(100)]],
+      descuento: [0, [Validators.min(0), Validators.max(100)]],
       total: [{ value: '', disabled: true }],
       tiempo_total: [{ value: '', disabled: true }],
     }),

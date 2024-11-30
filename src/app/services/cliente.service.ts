@@ -28,11 +28,18 @@ export class ClienteService {
     return doc(this._firestore, APP_CLIENTES.COLLECTION_NAME, id);
   }
 
-  async getClientes(id: string): Promise<any> {
+  async getClientes(id: string): Promise<any | null> {
     const docRef = this._getDocRef(id);
     const documentData = await getDoc(docRef);
-    return documentData.data();
+
+    if (documentData.exists()) {
+      return { id: documentData.id, ...documentData.data() }; // Retorna el ID y los datos del documento.
+    } else {
+      console.warn(`El documento con ID ${id} no existe.`);
+      return null; // Si no existe, retorna `null` o maneja el error como prefieras.
+    }
   }
+
 
   updateClientes(id: string, updateClient: Partial<any>): Promise<void> {
     const docRef = this._getDocRef(id);

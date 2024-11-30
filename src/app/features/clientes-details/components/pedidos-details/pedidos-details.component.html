@@ -45,15 +45,30 @@
       <div class="absolute top-4 left-4 text-red-600">{{ config.statusUser()[item.estado] }}</div>
       <div class="absolute bottom-4 right-4 text-sm">{{ item.fecha_entrega | customDate }}</div>
 
-      <button class="absolute top-4 right-4" (click)="deletePedido.open(); setPedidoId(item.id)">
-        <img src="/assets/icons/trash-icon.svg" width="14" height="16" alt="Delete" />
-      </button>
-      <button class="absolute top-4 right-10" (click)="editPedido.open(); viewing.set(item)">
-        <img src="/assets/icons/edit-copy.svg" class="size-4" alt="Delete" />
-      </button>
-      <button class="absolute top-4 right-16" (click)="entregarPedido.open(); viewingPedido.set(item.id)">
-        <img src="/assets/icons/check-icon.svg" class="size-4" alt="Delete" />
-      </button>
+
+
+      <div class="absolute top-4 right-4 flex gap-2">
+        <!-- Botón Eliminar -->
+        <button (click)="deletePedido.open(); setPedidoId(item.id)">
+          <img src="/assets/icons/trash-icon.svg" width="14" height="16" alt="Eliminar" />
+        </button>
+
+        <!-- Botón Editar -->
+        <button (click)="editPedido.open(); viewing.set(item)">
+          <img src="/assets/icons/edit-copy.svg" class="size-4" alt="Editar" />
+        </button>
+
+        <!-- Botón Entregar -->
+        <button (click)="entregarPedido.open(); viewingPedido.set(item.id)">
+          <img src="/assets/icons/check-icon.svg" class="size-4" alt="Entregar" />
+        </button>
+
+        <!-- Botón PDF -->
+        <button (click)="downloadPDF(item)">
+          <img src="/assets/icons/pdf.svg" alt="PDF" class="size-4" width="14" height="16" />
+        </button>
+      </div>
+
     </div>
     }
   </div>

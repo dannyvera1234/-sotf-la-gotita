@@ -71,7 +71,7 @@
               </button>
             </header>
             <section class="p-4">
-              <app-update-client (client)="clientModal.close()" [updateClient]="client()" [id]="_udateClient()" />
+              <app-update-client (client)="clientModal.close()" [updateClient]="client()" [id]="idClient()" />
             </section>
           </div>
         </div>
@@ -84,7 +84,9 @@
     <div class="flex flex-col lg:flex-row gap-4 w-full">
       <section class="bg-white rounded-lg shadow p-4 w-full lg:w-full">
 
-        <app-pedidos-details [id]="_udateClient()"  />
+        <app-pedidos-details [id]="idClient()"
+          [cliente]="client()"
+        />
       </section>
     </div>
   </main>

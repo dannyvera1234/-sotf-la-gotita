@@ -44,10 +44,10 @@ export class CreateInventoryComponent {
   ) {}
 
   public readonly form = this._fb.group({
-    nombre: ['', [Validators.required, onlyLettersValidator()]],
-    descripcion: ['', [Validators.required]],
-    cantidad: ['', [Validators.required, onlyNumbersValidator()]],
-    precio: ['', [Validators.required, onlyNumbersDecimalsValidator()]],
+    nombre: ['', [Validators.required, onlyLettersValidator(), Validators.maxLength(50)]],
+    descripcion: ['', [Validators.required, Validators.maxLength(100)]],
+    cantidad: ['', [Validators.required, onlyNumbersValidator(), Validators.maxLength(10)]],
+    precio: ['', [Validators.required, onlyNumbersDecimalsValidator(), Validators.maxLength(10)]],
     tipo_articulo: ['', [Validators.required]],
   });
 

@@ -113,7 +113,7 @@ export class CreateClientesComponent {
   public addEmail(): void {
     this.form.controls.emails.push(
       this._fb.group({
-        email: ['', [Validators.required, emailValidator()]],
+        email: ['', [Validators.required, emailValidator(), Validators.maxLength(50)]],
       }),
     );
   }

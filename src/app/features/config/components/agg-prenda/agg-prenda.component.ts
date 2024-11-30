@@ -21,9 +21,9 @@ export class AggPrendaComponent {
   constructor(private readonly _fb: FormBuilder, private readonly configService: ConfigService) {}
 
   public readonly form = this._fb.group({
-    nombre_prenda: ['', [Validators.required, onlyLettersValidator()]],
-    precio: [0, [Validators.required, onlyNumbersDecimalsValidator()]],
-    tiempo_lavado: [0, [Validators.required, onlyNumbersValidator() ]],
+    nombre_prenda: ['', [Validators.required, onlyLettersValidator(), Validators.maxLength(50)],],
+    precio: [0, [Validators.required, onlyNumbersDecimalsValidator(), Validators.maxLength(1000)]],
+    tiempo_lavado: [0, [Validators.required, onlyNumbersValidator(), Validators.maxLength(1000)]],
   });
 
   submit(): void {

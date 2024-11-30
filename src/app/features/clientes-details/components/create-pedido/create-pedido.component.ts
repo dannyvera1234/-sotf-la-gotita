@@ -84,9 +84,16 @@ export class CreatePedidoComponent {
     }
 
     const pedido = {
-      ...this.form.value,
-      };
-
+      estado: this.form.value.estado,
+      tipoPago: this.form.value.tipoPago,
+      prendas: this.form.value.prendas,
+      fecha_ingreso: this.form.value.fecha_ingreso,
+      fecha_entrega: this.form.value.fecha_entrega,
+      descripcion: this.form.value.descripcion,
+      descuento: this.form.value.descuento,
+      total: this.calcularTotal(),
+      tiempo_total: this.calcularTiempo(),
+    };
 
     this.newPedidos.emit({
       ...pedido,
