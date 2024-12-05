@@ -153,7 +153,7 @@ export class EditPedidoComponent implements OnInit {
     const selectedPrendaId = (event.target as HTMLSelectElement).value;
     const pedidoSeleccionado = this.pedidos().find((pedido) => pedido.id === selectedPrendaId);
     if (pedidoSeleccionado) {
-      const prenda = this.editarPedido.at(index) as FormGroup;
+      const prenda = this.prendas.at(index) as FormGroup;
       prenda.patchValue({
         nombre_prenda: pedidoSeleccionado.nombre_prenda,
         cantidad: pedidoSeleccionado.cantidad,
