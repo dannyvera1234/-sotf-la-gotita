@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, computed, EventEmitter, Input, OnInit, Output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  signal,
+} from '@angular/core';
 import { FormBuilder, Validators, FormArray, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { take, finalize } from 'rxjs';
 import { PedidosService, ConfigService } from '../../../../services';
@@ -54,13 +63,22 @@ export class EditPedidoComponent implements OnInit {
     const currentDate = new Date();
     this.today.set(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`);
     this.listPedido();
-
-
   }
   ngOnInit(): void {
-     this.form.patchValue({
+    this.form.patchValue({
       ...this.editarPedido,
-     });
+      prendas: this.editarPedido.prendas.map((prenda: any) => ({
+        nombre_prenda: prenda.nombre_prenda,
+        cantidad: prenda.cantidad,
+        precio: prenda.precio,
+        tiempo_lavado: prenda.tiempo_lavado,
+      })),
+    });
+    if (this.editarPedido.prendas) {
+      this.editarPedido.prendas.forEach((prenda: any) => {
+        this.addPrenda(prenda);
+      });
+    }
   }
 
   public form = this._fb.group({
@@ -82,6 +100,18 @@ export class EditPedidoComponent implements OnInit {
     total: [{ value: '', disabled: true }],
     tiempo_total: [{ value: '', disabled: true }],
   });
+
+  addPrenda(prenda: any) {
+    const prendasArray = this.form.get('prendas') as FormArray;
+    prendasArray.push(
+      this._fb.group({
+        nombre_prenda: [prenda.nombre_prenda, [Validators.required]],
+        cantidad: [prenda.cantidad],
+        precio: [prenda.precio],
+        tiempo_lavado: [prenda.tiempo_lavado],
+      }),
+    );
+  }
 
   public submit(): void {
     if (this.form.invalid) {
@@ -123,7 +153,7 @@ export class EditPedidoComponent implements OnInit {
     const selectedPrendaId = (event.target as HTMLSelectElement).value;
     const pedidoSeleccionado = this.pedidos().find((pedido) => pedido.id === selectedPrendaId);
     if (pedidoSeleccionado) {
-      const prenda = this.prendas.at(index) as FormGroup;
+      const prenda = this.editarPedido.at(index) as FormGroup;
       prenda.patchValue({
         nombre_prenda: pedidoSeleccionado.nombre_prenda,
         cantidad: pedidoSeleccionado.cantidad,
@@ -162,17 +192,6 @@ export class EditPedidoComponent implements OnInit {
       tiempo_lavado: nuevoTiempo,
       cantidad: cantidad,
     });
-  }
-
-  addPrenda() {
-    const prendaGroup = this._fb.group({
-      nombre_prenda: ['', [Validators.required]],
-      cantidad: [0],
-      tiempo_lavado: [0],
-      precio: [0],
-    });
-
-    this.prendas.push(prendaGroup);
   }
 
   calcularTotal(): string {

@@ -22,32 +22,6 @@ export class LaGotitaConfigService {
 
   constructor(private readonly _firestore: Firestore) {}
 
-  public tipo_prenda = signal<Record<string, string>>({
-    LAVADO_NORMAL: 'Lavado Normal',
-    ALMOHADAS_PEQUEÑAS: 'Almohadas Pequeñas',
-    ALMOHADAS_MEDIANAS: 'Almohadas Medianas',
-    ALMOHADAS_GRANDES: 'Almohadas Grandes',
-    COLCHAS_PELUCHES_PEQUEÑOS: ' Colchas Peluches Pequeños',
-    COLCHAS_GRADES: 'Colchas Grandes',
-    EDREDONES: 'Edredones',
-    TOLDOS: 'Toldos',
-    COBERTORES: 'Cobertores',
-    CHAQUETAS_LAVADO_NORMAL: 'Chaquetas Lavado Normal',
-    CHAQUETAS_LAVADO_SECOS: 'Chaqueas Lavado Secos',
-    MOCHILAS: 'Mochilas',
-    CHALECOS: 'Chalecos',
-    VESTIDOS_DE_FIESTA_SENCILLOS: 'Vestidos de Fiesta Sencillos',
-    VESTIDOS_DE_FIESTA_PERLAS: 'Vestidos de Fiesta Perlas',
-    VESTIDOS_DE_FIESTA_LARGOS: 'Vestidos de Fiesta Largos',
-    TERNOS: 'Ternos',
-    CAMISAS_LAVADO_SECOS: 'Camisas Lavado Secos',
-    ZAPATOS_PEQUEÑOS: 'Zapatos Pequeños',
-    ZAPATOS_MEDIANOS: 'Zapatos Medianos',
-    ZAPATOS_GRANDES: 'Zapatos Grandes',
-    PELUCHES_GRANDES: 'Peluches Grandes',
-    PELUCHES_EXTRA_GRANDES: 'Peluches Extra Grandes',
-    CORBATAS: 'Corbatas',
-  });
 
   public statusUser = signal<Record<string, string>>({
     PROCESO: 'En Proceso',

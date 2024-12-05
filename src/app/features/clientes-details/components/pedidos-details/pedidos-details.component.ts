@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, signal } from '@angular/core';
 import { PedidosService } from '../../../../services';
-import { JsonPipe, NgClass, NgOptimizedImage } from '@angular/common';
+import { CurrencyPipe, JsonPipe, NgClass, NgOptimizedImage } from '@angular/common';
 import { finalize, mergeMap, of } from 'rxjs';
 import { LaGotitaConfigService } from '../../../../util';
 import { CustomDatePipe } from '../../../../pipes';
@@ -13,7 +13,7 @@ import autoTable from 'jspdf-autotable';
 @Component({
   selector: 'app-pedidos-details',
   standalone: true,
-  imports: [NgClass, CustomDatePipe, NgOptimizedImage, ModalComponent, CreatePedidoComponent, EditPedidoComponent],
+  imports: [NgClass, CustomDatePipe, NgOptimizedImage, ModalComponent, CreatePedidoComponent, EditPedidoComponent, CurrencyPipe],
   templateUrl: './pedidos-details.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -59,6 +59,7 @@ export class PedidosDetailsComponent {
       .subscribe((pedidos) => {
         const pedidosFiltrados = pedidos.filter((pedido) => pedido.estado !== 'FINALIZADO');
         this.pedidos.set(pedidosFiltrados);
+        console.log('pedidos', pedidosFiltrados);
       });
   }
 
@@ -85,7 +86,6 @@ export class PedidosDetailsComponent {
   }
 
   updatePedido(pedido: any): void {
-    console.log(pedido);
     of(this.loading.set(true))
       .pipe(
         mergeMap(() => this.pedidosService.updatePedido(this.idCliente(), pedido.id, pedido)),
@@ -110,81 +110,104 @@ export class PedidosDetailsComponent {
   }
 
   public downloadPDF(data: any) {
-    console.log('Data:', data);
-    const doc = new jsPDF();
 
-    // Añadir logo de la empresa (Asegúrate de que la URL o el archivo base64 sea correcto)
-    const logoUrl = 'assets/icons/lagotita.jpg'; // Ruta del logo
-    const logoWidth = 30; // Ajusta el tamaño del logo
-    const logoHeight = 15; // Ajusta el tamaño del logo
-    doc.addImage(logoUrl, 'PNG', 10, 10, logoWidth, logoHeight); // Posición del logo (X, Y)
+    const pageWidth = 100; // en mm
+    const pageHeight = 150; // Altura inicial en mm
+    const doc = new jsPDF({
+      unit: 'mm',
+      format: [pageWidth, pageHeight],
+    });
 
-    // Información de la empresa
-    doc.setFontSize(24);
-    const title = 'Lavandería "La Gotita"';
-    const titleWidth = (doc.getStringUnitWidth(title) * doc.getFontSize()) / doc.internal.scaleFactor;
-    const xPosition = (doc.internal.pageSize.width - titleWidth) / 2; // Centrar el título
-    doc.text(title, xPosition, 17); // Posición Y en 15 para no solapar
+    const logoUrl = 'assets/icons/lagotita.jpg';
+    const logoWidth = 25;
+    const logoHeight = 20;
+    const logoX = 8;
+    const logoY = 8;
 
-    // Texto adicional con tamaño de fuente 12
-    doc.setFontSize(10);
-    doc.text('Calle Enrique Delgado y Av. La Esperanza', 50, 25); // Dirección de la empresa
-    doc.text('Teléfono: (123) 456-7890', 50, 30); // Teléfono de la empresa
+    doc.addImage(logoUrl, 'PNG', logoX, logoY, logoWidth, logoHeight);
 
-    // Información del cliente
-    doc.setFontSize(10);
+    doc.setFontSize(12);
 
-    // Definir las posiciones de las columnas
-    const col1X = 10; // Posición en X para la primera columna
-    const col2X = 70; // Posición en X para la segunda columna
-    const col3X = 130; // Posición en X para la tercera columna
+    const textX = logoX + logoWidth + 5;
 
-    // Y inicial (espaciado vertical entre las filas)
-    let startY = 40;
-
-    // Columna 1
-    doc.text(`Nombre: ${this.cliente.nombres}`, col1X, startY);
-    startY += 5; // Incrementar Y para la siguiente fila
-    doc.text(`Identificación: ${this.cliente.cedula}`, col1X, startY);
-    startY += 5; // Incrementar Y para la siguiente fila
-
-    // Columna 2
-    doc.text(`Teléfono: ${this.cliente.phones}`, col2X, 40); // Repetir `40` si quieres alinear en la misma fila
-    doc.text('Fecha: ' + new Date().toLocaleDateString(), col2X, 45);
-    startY = 50; // Se puede cambiar según tu preferencia
-
-    // Columna 3
-    doc.text(`Correo: ${this.cliente.emails}`, col3X, 40);
-    doc.text(`Dirección: ${this.cliente.direccion}`, col3X, 45);
+    // Título y dirección en la misma fila
+    doc.text('Lavandería "La Gotita"', textX, 10);
+    doc.setFontSize(8);
+    doc.text('Calle Enrique Delgado y Av. La Esperanza', textX, 15);
+    doc.text('Teléfono: 0994034040', textX, 20);
+    doc.text('R.U.C. 2350239311001', textX, 25);
 
     doc.setFontSize(8);
 
-    const productData = data.prendas.map((prenda: any, index: number) => {
-      const total = prenda.precio * prenda.cantidad;
-      return [index + 1, prenda.nombre_prenda, prenda.cantidad, prenda.precio, `$${total.toFixed(2)}`];
-    });
+    const margenIzquierdo = 5;
+    const margenDerecho = 5;
+    const anchoDisponible = pageWidth - margenIzquierdo - margenDerecho;
 
+    const col1X = margenIzquierdo;
+    const col2X = margenIzquierdo + anchoDisponible / 2;
+
+    let startY = 35;
+
+    // Columna 1
+    doc.text(`Nombre: ${this.cliente.nombres}`, col1X, startY);
+    startY += 5;
+    doc.text(`Identificación: ${this.cliente.cedula}`, col1X, startY);
+    startY += 5;
+    doc.text(`Dirección: ${this.cliente.direccion}`, col1X, startY);
+    startY += 5;
+    // Columna 2
+    doc.text(`Teléfono: ${this.cliente.phones}`, col2X, 35);
+    doc.text('Fecha: ' + new Date().toLocaleDateString(), col2X, 40);
+    doc.text(`Correo: ${this.cliente.emails}`, col2X, 45);
+
+    // Tabla de productos
+    startY += 2;
     autoTable(doc, {
-      head: [['#', 'Producto', 'Cantidad', 'Precio Unitario', 'Total']],
-      body: productData,
-      startY: 50,
+      head: [['#', 'Producto', 'Cant.', 'P. Unit.', 'Total']],
+      body: data.prendas.map((prenda: any, index: number) => [
+        index + 1,
+        prenda.nombre_prenda,
+        prenda.cantidad,
+        (prenda.precio / prenda.cantidad).toFixed(2),
+        prenda.precio,
+      ]),
+      startY,
       theme: 'grid',
       styles: { fontSize: 8, halign: 'center' },
+      margin: { left: 5, right: 5 },
+      tableWidth: pageWidth - 10,
     });
 
-    // Agregar el total
     const finalY = (doc as any).autoTable.previous.finalY;
-
-
-    // Agregar la fila de total
-    doc.setFontSize(10);
-    doc.text('Total: $' + data.total, doc.internal.pageSize.width - 36, finalY + 5);
-
-    // Líneas de separación
+    doc.setFontSize(8);
+    doc.text('Total: $' + data.total, doc.internal.pageSize.width - 23, finalY + 4);
     doc.setLineWidth(0.5);
-    doc.line(10, finalY + 10, doc.internal.pageSize.width - 10, finalY + 10);
+    doc.line(7, finalY + 7, doc.internal.pageSize.width - 7, finalY + 7);
 
-    // Visualizar el PDF en el navegador
+    doc.setFontSize(8);
+    const textoNota =
+      'NOTA: No nos responsabilizamos por objetos personales que vengan en sus prendas. No nos responsabilizamos por prendas no retirada en 30 días. No nos responsabilizamos por prendas que destiñan.';
+    doc.text(doc.splitTextToSize(textoNota, pageWidth - 15), 5, finalY + 15);
+
+    const yPos = finalY + 40;
+
+    const margenHorizontal = 20;
+    const espacioDisponible = pageWidth - 2 * margenHorizontal;
+
+    const textoFirma1 = 'RETIRADO POR';
+    const textoFirma2 = 'ENTREGADO POR';
+    const anchoFirma1 = doc.getTextWidth(textoFirma1);
+    const anchoFirma2 = doc.getTextWidth(textoFirma2);
+
+    const firma1X = margenHorizontal + espacioDisponible / 4 - anchoFirma1 / 2;
+    const firma2X = margenHorizontal + (3 * espacioDisponible) / 4 - anchoFirma2 / 2;
+
+    doc.line(firma1X, yPos, firma1X + anchoFirma1, yPos);
+    doc.text(textoFirma1, firma1X, yPos + 5);
+
+    doc.line(firma2X, yPos, firma2X + anchoFirma2, yPos);
+    doc.text(textoFirma2, firma2X, yPos + 5);
+
     const pdfUrl = doc.output('bloburl');
     window.open(pdfUrl, '_blank');
   }

@@ -41,7 +41,7 @@
           id="pedidoSelect"
           class="block w-full bg-white border border-gray-300 rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:ring focus:border-sky-500"
           (change)="onPedidoSelect($event, $index)"
-          formArrayName="nombre_prenda"
+          formControlName="nombre_prenda"
         >
           <option value="" disabled selected>Seleccionar</option>
           @for (pedido of pedidos(); track $index) {
@@ -104,7 +104,7 @@
       <div class="mb-4 mt-7 flex gap-4">
         <button
           class="flex items-center gap-2 bg-secondary text-white px-3 py-2 rounded-md text-xs"
-          (click)="addPrenda()"
+          (click)="addPrenda(prendas)"
         >
           <div class="relative size-5 shrink-0">
             <img src="/assets/icons/add.svg" alt="Crear" />

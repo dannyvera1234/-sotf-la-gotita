@@ -27,25 +27,22 @@
       style="overflow: hidden"
     >
       <p class="text-sm mb-10 mt-8" [ngClass]="{ 'line-clamp-3': expandedIndex() !== $index }">
-        <li>{{ item.descripcion }}</li>
-        <li>{{ item.pesoPrenda + ' libras' }}</li>
-        <li>Tiempo: {{ item.tiempoLavado }} minutos</li>
-        <li>{{ item.tipoPago }}</li>
-        <li>Fecha Ingreso: {{ item.fecha_ingreso | customDate }}</li>
-        @for (prenda of item.tipoPrenda; track $index) {
-        <span>
-          <li>
-            {{ prenda.name }}
-          </li>
-        </span>
+        @for (prenda of item.prendas; track $index) {
+        <li>{{ prenda.nombre_prenda }}</li>
+        <li>
+          Cantidad:
+           {{ prenda.cantidad }}
+        </li>
         }
-        <li>${{ item.total }}</li>
+        <li>{{ item.descripcion }}</li>
+        <li>{{ config.metodo_pago()[item.tipoPago] }}</li>
+        <li>Ingreso: {{ item.fecha_ingreso | customDate }}</li>
+        <li>Tiempo: {{ item.tiempo_total }}</li>
+        <li>Total: {{ item.total | currency }}</li>
       </p>
 
       <div class="absolute top-4 left-4 text-red-600">{{ config.statusUser()[item.estado] }}</div>
-      <div class="absolute bottom-4 right-4 text-sm">{{ item.fecha_entrega | customDate }}</div>
-
-
+      <div class="absolute bottom-4 right-4 text-sm">Retiro: {{ item.fecha_entrega | customDate }}</div>
 
       <div class="absolute top-4 right-4 flex gap-2">
         <!-- Botón Eliminar -->
@@ -68,7 +65,6 @@
           <img src="/assets/icons/pdf.svg" alt="PDF" class="size-4" width="14" height="16" />
         </button>
       </div>
-
     </div>
     }
   </div>
@@ -219,12 +215,15 @@
           <button class="bg-gray-200 text-gray-600 px-4 py-2 rounded-md" (click)="entregarPedido.close()">
             Cancelar
           </button>
-          <button class="bg-red-600 text-white px-4 py-2 rounded-md" (click)="finalizarPedido(pedidoId); entregarPedido.close()"  >
+          <button
+            class="bg-red-600 text-white px-4 py-2 rounded-md"
+            (click)="finalizarPedido(pedidoId); entregarPedido.close()"
+          >
             Entregar
           </button>
         </div>
       </div>
-    }
+      }
     </div>
   </div>
   }
