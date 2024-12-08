@@ -29,6 +29,11 @@ export class LaGotitaConfigService {
     ENTREGAR: 'Entregar',
   });
 
+  public rol = signal<Record<string, string>>({
+    SUPER_ADMIN: 'Super Administrador',
+    ADMIN: 'Administrador',
+  });
+
   public tipo_membresia = signal<Record<string, string>>({
     MEMBRESIA_BASICA: 'Membresía Básica',
     MEMBRESIA_PREMIUM: 'Membresía Premium',

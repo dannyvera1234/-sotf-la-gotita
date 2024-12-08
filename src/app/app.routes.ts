@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth.guard';
+import { superAdminGuard } from './guards/super-admin.guard';
 export const routes: Routes & {
   data?: any & { icon?: string; name?: string };
 } = [
@@ -47,6 +48,7 @@ export const routes: Routes & {
       {
         path: 'users',
         loadChildren: () => import('./features/user/routes'),
+        canActivate: [superAdminGuard],
         data: {
           icon: '/assets/icons/contact.svg',
           name: 'Usuarios',

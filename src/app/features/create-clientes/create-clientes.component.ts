@@ -91,6 +91,7 @@ export class CreateClientesComponent {
       direccion: this.form.value.direccion!.trim(),
       emails: this.form.value.emails!.map((email) => email!.email!.trim().toLowerCase()),
       phones: this.form.value.phones!.map((phone) => phone.phone),
+      establecimiento: "La Gotita",
     };
 
     of(this.loading.set(true))

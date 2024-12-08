@@ -29,6 +29,9 @@
     <div>
       <app-custom-input formControlName="email" label="Email" />
     </div>
+    <div>
+      <app-custom-select formControlName="rol" placeholder="Rol" [options]="rol().values" [labels]="rol().labels" />
+    </div>
 
     <div formArrayName="phones">
       @for (control of form.controls.phones.controls; track $index) {

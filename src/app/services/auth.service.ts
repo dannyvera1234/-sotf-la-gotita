@@ -26,6 +26,11 @@ export class AuthService {
     }
   }
 
+  get userRole(): string | null {
+    return this.userData?.userData.rol;
+
+  }
+
 
   login({ email, password }: any): Promise<any> {
     const auth = getAuth();

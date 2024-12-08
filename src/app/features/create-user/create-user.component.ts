@@ -48,6 +48,18 @@ export class CreateUserComponent {
     );
   });
 
+  public readonly rol = computed<{ values: string[]; labels: string[] }>(() => {
+    return Object.entries(this.config.rol()).reduce(
+      (prev, [value, key]) => {
+        prev.labels.push(key);
+        prev.values.push(value);
+
+        return prev;
+      },
+      { values: [] as string[], labels: [] as string[] },
+    );
+  });
+
   constructor(
     public readonly _fb: FormBuilder,
     public readonly config: LaGotitaConfigService,
@@ -78,6 +90,7 @@ export class CreateUserComponent {
     password: ['', [Validators.required, Validators.minLength(8), passwordValidator()]],
     email:['', [Validators.required, emailValidator(), Validators.maxLength(50)]],
     phones: this._fb.array<FormGroup<{ phone: FormControl<any | null> }>>([], [Validators.required]),
+    rol: ['', [Validators.required]],
   });
 
 
@@ -113,10 +126,11 @@ export class CreateUserComponent {
       cedula: Number(this.form.value.cedula!),
       establecimiento: this.form.value.establecimiento!.trim(),
       direccion: this.form.value.direccion!.trim(),
-      password: this.form.value.password!.trim(),
+      password: this.form.value.password!,
       email: this.form.value.email!.trim(),
       phones: this.form.value.phones!.map((phone) => phone.phone),
       estado: true,
+      rol: this.form.value.rol!,
     } as any;
 
     of(this.loading.set(true))
