@@ -54,36 +54,10 @@ export class EditPedidoComponent implements OnInit {
       { values: [] as string[], labels: [] as string[] },
     );
   });
-  constructor(
-    public readonly pedidoService: PedidosService,
-    public readonly config: LaGotitaConfigService,
-    private readonly _fb: FormBuilder,
-    private readonly configService: ConfigService,
-  ) {
-    const currentDate = new Date();
-    this.today.set(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`);
-    this.listPedido();
-  }
-  ngOnInit(): void {
-    this.form.patchValue({
-      ...this.editarPedido,
-      prendas: this.editarPedido.prendas.map((prenda: any) => ({
-        nombre_prenda: prenda.nombre_prenda,
-        cantidad: prenda.cantidad,
-        precio: prenda.precio,
-        tiempo_lavado: prenda.tiempo_lavado,
-      })),
-    });
-    if (this.editarPedido.prendas) {
-      this.editarPedido.prendas.forEach((prenda: any) => {
-        this.addPrenda(prenda);
-      });
-    }
-  }
 
   public form = this._fb.group({
     estado: ['PENDIENTE'],
-    codigo: [{ value: 'COD-01', disabled: true }],
+    codigo: [{ value: '', disabled: true }],
     tipoPago: ['', [Validators.required]],
     prendas: this._fb.array([
       this._fb.group({
@@ -101,16 +75,46 @@ export class EditPedidoComponent implements OnInit {
     tiempo_total: [{ value: '', disabled: true }],
   });
 
-  addPrenda(prenda: any) {
-    const prendasArray = this.form.get('prendas') as FormArray;
-    prendasArray.push(
-      this._fb.group({
+  constructor(
+    public readonly pedidoService: PedidosService,
+    public readonly config: LaGotitaConfigService,
+    private readonly _fb: FormBuilder,
+    private readonly configService: ConfigService,
+  ) {
+    const currentDate = new Date();
+    this.today.set(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`);
+    this.listPedido();
+  }
+
+  ngOnInit(): void {
+    this.form.patchValue(
+      {
+        ...this.editarPedido,
+      },
+      { emitEvent: false },
+    );
+
+    this.editarPedido.prendas.forEach((prenda: any) => {
+      const prendaGroup = this._fb.group({
         nombre_prenda: [prenda.nombre_prenda, [Validators.required]],
         cantidad: [prenda.cantidad],
-        precio: [prenda.precio],
         tiempo_lavado: [prenda.tiempo_lavado],
-      }),
-    );
+        precio: [prenda.precio],
+      });
+
+      this.form.controls.prendas.push(prendaGroup, { emitEvent: false });
+    });
+  }
+
+  addPrenda(): void {
+    const prendaGroup = this._fb.group({
+      nombre_prenda: ['', [Validators.required]],
+      cantidad: [0],
+      tiempo_lavado: [0],
+      precio: [0],
+    });
+
+    this.form.controls.prendas.push(prendaGroup, { emitEvent: false });
   }
 
   public submit(): void {
@@ -145,15 +149,13 @@ export class EditPedidoComponent implements OnInit {
         this.pedidos.set(prendas);
       });
   }
-  get prendas() {
-    return this.form.get('prendas') as FormArray;
-  }
 
   onPedidoSelect(event: Event, index: number) {
+    console.log('onPedidoSelect');
     const selectedPrendaId = (event.target as HTMLSelectElement).value;
-    const pedidoSeleccionado = this.pedidos().find((pedido) => pedido.id === selectedPrendaId);
+    const pedidoSeleccionado = this.pedidos().find((pedido) => pedido.nombre_prenda === selectedPrendaId);
     if (pedidoSeleccionado) {
-      const prenda = this.prendas.at(index) as FormGroup;
+      const prenda = this.form.controls.prendas.at(index) as FormGroup;
       prenda.patchValue({
         nombre_prenda: pedidoSeleccionado.nombre_prenda,
         cantidad: pedidoSeleccionado.cantidad,
@@ -164,7 +166,7 @@ export class EditPedidoComponent implements OnInit {
   }
 
   onCantidadChange(event: Event, index: number) {
-    const prenda = this.prendas.at(index);
+    const prenda = this.form.controls.prendas.at(index);
 
     // Nueva cantidad introducida
     let cantidad = Number((event.target as HTMLInputElement).value);
@@ -188,34 +190,39 @@ export class EditPedidoComponent implements OnInit {
     const nuevoTiempo = tiempoUnidad * cantidad;
 
     prenda.patchValue({
-      precio: nuevoPrecio.toFixed(2),
+      precio: nuevoPrecio,
       tiempo_lavado: nuevoTiempo,
       cantidad: cantidad,
     });
   }
 
-  calcularTotal(): string {
+  calcularTotal(): number {
     let total = 0;
 
-    // Itera sobre todas las prendas en el FormArray
-    this.prendas.controls.forEach((prenda) => {
+    // Recorrer todas las prendas en el FormArray y sumar el precio * cantidad
+    this.form.controls.prendas.controls.forEach((prenda) => {
+      const cantidad = prenda.get('cantidad')?.value || 0;
       const precio = prenda.get('precio')?.value || 0;
 
-      // Acumula el total sumando el precio de cada prenda
-      total += parseFloat(precio); // Asegúrate de que el precio se trata como un número
+      total += cantidad * precio; // Se multiplica por cantidad
     });
 
-    // Redondear el total a 2 decimales
-    return total.toFixed(2); // Devuelve el total como string con 2 decimales
+    // Obtener el valor del descuento desde el formulario
+    const descuento = this.form.get('descuento')?.value || 0; // Descuento en porcentaje
+
+    // Aplicar el descuento
+    const totalConDescuento = total - total * (descuento / 100);
+
+    // Asegurarse de que el total no sea negativo
+    return Math.max(totalConDescuento, 0);
   }
 
   calcularTiempo(): string {
     let tiempoTotal = 0;
 
     // Sumar el tiempo de lavado de cada prenda
-    this.prendas.controls.forEach((prenda) => {
-      const tiempoLavado = +prenda.get('tiempo_lavado')?.value || 0; // Asegurarse de que sea un número
-      tiempoTotal += tiempoLavado;
+    this.form.controls.prendas.controls.forEach((prenda) => {
+      tiempoTotal += prenda.get('tiempo_lavado')?.value || 0;
     });
 
     // Convertir a horas y minutos
@@ -227,6 +234,6 @@ export class EditPedidoComponent implements OnInit {
   }
 
   deletePrenda(index: number) {
-    this.prendas.removeAt(index);
+    this.form.controls.prendas.removeAt(index);
   }
 }

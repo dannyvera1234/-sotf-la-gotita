@@ -68,7 +68,9 @@ export class NewPedidoComponent implements OnInit {
     this.today.set(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`);
     this.listPedido();
   }
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.generateNewCode();
+  }
 
 
   public next(): void {
@@ -77,8 +79,11 @@ export class NewPedidoComponent implements OnInit {
       return;
     }
     console.log('Formulario válido:', this.form.value);
+    this.generateNewCode();
     this.createPedido.next();
   }
+
+
 
   public readonly loading = signal(false);
 
@@ -145,6 +150,12 @@ export class NewPedidoComponent implements OnInit {
     });
   }
 
+  generateNewCode() {
+    const randomSuffix = Math.floor(10 + Math.random() * 90); // Número aleatorio entre 10 y 99
+    const newCode = `COD-${randomSuffix}`;
+    this.form.patchValue({ codigo: newCode });
+  }
+
   addPrenda() {
     const prendaGroup = this.createPedido._fb.group({
       nombre_prenda: ['', [Validators.required]],
@@ -155,20 +166,28 @@ export class NewPedidoComponent implements OnInit {
 
     this.prendas.push(prendaGroup);
   }
-  calcularTotal(): string {
-    const total = this.prendas.controls.reduce((acc, prenda) => {
-      const precio = parseFloat(prenda.get('precio')?.value) || 0;
-      return acc + precio;
-    }, 0);
+  calcularTotal(): number {
+    let total = 0;
 
-    const totalRedondeado = total.toFixed(2);
+    // Recorrer todas las prendas en el FormArray y sumar el precio * cantidad
+    this.prendas.controls.forEach((prenda) => {
+      const cantidad = prenda.get('cantidad')?.value || 0;
+      const precio = prenda.get('precio')?.value || 0;
 
-    // Actualiza el total en el servicio
-    this.createPedido.totalPedido =totalRedondeado;
+      total += cantidad * precio; // Se multiplica por cantidad
+    });
 
-    return totalRedondeado;
+    // Obtener el valor del descuento desde el formulario
+    const descuento = this.form.get('descuento')?.value || 0; // Descuento en porcentaje
+
+    // Aplicar el descuento
+    const totalConDescuento = total - total * (descuento / 100);
+
+    this.createPedido.totalPedido = totalConDescuento;
+
+    // Asegurarse de que el total no sea negativo
+    return Math.max(totalConDescuento, 0);
   }
-
   calcularTiempo(): string {
     let tiempoTotal = 0;
 

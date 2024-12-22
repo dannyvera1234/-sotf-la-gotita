@@ -28,7 +28,7 @@ export class CreatePedidoService {
     }),
     step_2: this._fb.group({
       estado: ['PENDIENTE'],
-      codigo: [{ value: 'COD-01', disabled: true }],
+      codigo: [{ value: '', disabled: true }],
       tipoPago: ['', [Validators.required]],
       prendas: this._fb.array([
         this._fb.group({
@@ -61,7 +61,7 @@ export class CreatePedidoService {
     });
     this.form.controls.step_2.setValue({
       estado: 'PENDIENTE',
-      codigo: 'COD-01',
+      codigo: '',
       tipoPago: '',
       prendas: [],
       fecha_ingreso: new Date(),
@@ -100,6 +100,7 @@ export class CreatePedidoService {
   }
 
 
+
   private mapPedidoForm(): any {
     const step2 = this.form.controls.step_2.value;
     return {
@@ -115,15 +116,17 @@ export class CreatePedidoService {
       descripcion: step2.descripcion,
       estado: step2.estado,
       descuento: step2.descuento,
-      tiempo_total_lavado: this.tiempoTotal,
+      tiempo_total: this.tiempoTotal,
       total: this.totalPedido,
+      codigo: this.form.controls.step_2.get('codigo')?.value,
 
     };
   }
 
-  public totalPedido = '0';
+  public totalPedido = 0;
 
   public tiempoTotal = '0';
+
   private async submit(): Promise<void> {
      if (this.form.invalid) {
        this.form.markAllAsTouched();
@@ -134,6 +137,8 @@ export class CreatePedidoService {
 
      const cliente = this.mapClienteForm();
      const pedido = this.mapPedidoForm();
+     console.log('Cliente:', cliente);
+      console.log('Pedido:', pedido);
 
      try {
        const clienteDocRef = await this.clienteService.createCliente(cliente);

@@ -6,7 +6,7 @@ export interface User {
   establecimiento: string;
   direccion: string;
   password: string;
-  phones: string[];
-  emails: string[];
+  phones: string;
+  emails: string;
   estado: boolean;
 }

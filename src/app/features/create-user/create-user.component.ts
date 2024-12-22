@@ -70,10 +70,6 @@ export class CreateUserComponent {
   ngOnInit(): void {
 
 
-    if (this.form.controls.phones.length === 0) {
-      this.addPhone();
-    }
-
     this.form.controls.tipoDocumento.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((TipoDocumento) => {
       if (typeof TipoDocumento === 'string') {
         this.identificationService.updateCedulaValidators(this.form, TipoDocumento);
@@ -89,7 +85,7 @@ export class CreateUserComponent {
     direccion: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(50)]],
     password: ['', [Validators.required, Validators.minLength(8), passwordValidator()]],
     email:['', [Validators.required, emailValidator(), Validators.maxLength(50)]],
-    phones: this._fb.array<FormGroup<{ phone: FormControl<any | null> }>>([], [Validators.required]),
+    phone: ['', [Validators.required, onlyNumbersValidator(), Validators.minLength(10), Validators.maxLength(10)]],
     rol: ['', [Validators.required]],
   });
 
@@ -98,22 +94,6 @@ export class CreateUserComponent {
 
 
 
-  removePhone(index: number): void {
-    if (index > 0) {
-      this.form.controls.phones.removeAt(index);
-    }
-  }
-
-  public addPhone(): void {
-    this.form.controls.phones.push(
-      this._fb.group({
-        phone: [
-          null,
-          [Validators.required, onlyNumbersValidator(), Validators.minLength(10), Validators.maxLength(10)],
-        ],
-      }),
-    );
-  }
 
   public submit(){
     if (this.form.invalid) {
@@ -128,7 +108,7 @@ export class CreateUserComponent {
       direccion: this.form.value.direccion!.trim(),
       password: this.form.value.password!,
       email: this.form.value.email!.trim(),
-      phones: this.form.value.phones!.map((phone) => phone.phone),
+      phone: this.form.value.phone!,
       estado: true,
       rol: this.form.value.rol!,
     } as any;

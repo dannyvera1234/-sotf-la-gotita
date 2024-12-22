@@ -1,9 +1,17 @@
 import { ConfigService } from './../../../../services/config.service';
-import { ChangeDetectionStrategy, Component, computed, EventEmitter, Input, Output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  signal,
+} from '@angular/core';
 import { CustomInputComponent, CustomSelectComponent } from '../../../../components';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { LaGotitaConfigService } from '../../../../util';
-import { CreatePedidoService } from '../create-pedido.service';
 import { finalize, mergeMap, of, take } from 'rxjs';
 import { PedidosService } from '../../../../services';
 
@@ -15,7 +23,7 @@ import { PedidosService } from '../../../../services';
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PedidosComponent {
+export class PedidosComponent implements OnInit {
   @Input({ required: true }) idCliente!: string;
 
   @Output() newPedidos = new EventEmitter<any | null>();
@@ -62,6 +70,9 @@ export class PedidosComponent {
 
     this.listPedido();
   }
+  ngOnInit(): void {
+    this.generateNewCode();
+  }
 
   deletePrenda(index: number) {
     this.prendas.removeAt(index);
@@ -69,7 +80,7 @@ export class PedidosComponent {
 
   public form = this._fb.group({
     estado: ['PENDIENTE'],
-    codigo: [{ value: 'COD-01', disabled: true }],
+    codigo: [{ value: '', disabled: true }],
     tipoPago: ['', [Validators.required]],
     prendas: this._fb.array([
       this._fb.group({
@@ -86,6 +97,12 @@ export class PedidosComponent {
     total: [{ value: '', disabled: true }],
     tiempo_total: [{ value: '', disabled: true }],
   });
+
+  generateNewCode() {
+    const randomSuffix = Math.floor(10 + Math.random() * 90); // Número aleatorio entre 10 y 99
+    const newCode = `COD-${randomSuffix}`;
+    this.form.patchValue({ codigo: newCode });
+  }
 
   public listPedido(): void {
     this.loading.set(true);
@@ -145,7 +162,7 @@ export class PedidosComponent {
     this.prendas.push(prendaGroup);
   }
 
-  calcularTotal() {
+  calcularTotal(): number {
     let total = 0;
 
     // Recorrer todas las prendas en el FormArray y sumar el precio * cantidad
@@ -156,9 +173,15 @@ export class PedidosComponent {
       total += cantidad * precio; // Se multiplica por cantidad
     });
 
-    return total;
-  }
+    // Obtener el valor del descuento desde el formulario
+    const descuento = this.form.get('descuento')?.value || 0; // Descuento en porcentaje
 
+    // Aplicar el descuento
+    const totalConDescuento = total - total * (descuento / 100);
+
+    // Asegurarse de que el total no sea negativo
+    return Math.max(totalConDescuento, 0);
+  }
   calcularTiempo(): string {
     let tiempoTotal = 0;
 
@@ -184,9 +207,12 @@ export class PedidosComponent {
 
     const pedidos = {
       ...this.form.value,
+      codigo: this.form.get('codigo')?.value,
       total: this.calcularTotal(),
       tiempo_total: this.calcularTiempo(),
     };
+
+    console.log('Pedido:', pedidos);
 
     of(this.loading.set(true))
       .pipe(
@@ -194,12 +220,29 @@ export class PedidosComponent {
         finalize(() => this.loading.set(false)),
       )
       .subscribe(() => {
+        // Emitir el nuevo pedido
         this.newPedidos.emit(
           this.pedidos().concat({
             ...pedidos,
             id: this.pedidos().length + 1,
           }),
         );
+
+        this.form.reset();
+        this.form.patchValue({
+          estado: 'PENDIENTE',
+          fecha_ingreso: new Date(),
+          fecha_entrega: new Date(),
+          prendas: [],
+          descuento: 0,
+          total: '',
+          tiempo_total: '',
+        });
+        // Generar un nuevo código para el próximo pedido
+        this.generateNewCode();
+
+        // Log para confirmar que el código ha cambiado
+        console.log('Nuevo código generado:', this.form.get('codigo')?.value);
       });
   }
 }

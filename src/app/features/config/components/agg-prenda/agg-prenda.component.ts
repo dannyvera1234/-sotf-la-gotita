@@ -3,7 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CustomInputComponent } from '../../../../components';
 import { finalize, mergeMap, of } from 'rxjs';
 import { ConfigService } from '../../../../services';
-import { onlyLettersValidator, onlyNumbersDecimalsValidator, onlyNumbersValidator } from '../../../../util';
+import { ObjectId, onlyLettersValidator, onlyNumbersDecimalsValidator, onlyNumbersValidator } from '../../../../util';
 
 @Component({
   selector: 'app-agg-prenda',
@@ -31,7 +31,8 @@ export class AggPrendaComponent {
       nombre_prenda: this.form.controls.nombre_prenda.value,
       precio: this.form.controls.precio.value,
       tiempo_lavado: this.form.controls.tiempo_lavado.value,
-      cantidad: 1
+      cantidad: 1,
+      id: ObjectId(),
     };
 
     of(this.loading.set(true))

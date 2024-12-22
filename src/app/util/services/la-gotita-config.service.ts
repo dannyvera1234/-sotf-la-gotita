@@ -24,9 +24,8 @@ export class LaGotitaConfigService {
 
 
   public statusUser = signal<Record<string, string>>({
-    PROCESO: 'En Proceso',
-    PENDIENTE: 'Pendiente',
-    ENTREGAR: 'Entregar',
+   true: 'Activo',
+    false: 'Inactivo',
   });
 
   public rol = signal<Record<string, string>>({

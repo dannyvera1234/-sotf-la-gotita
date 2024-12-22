@@ -66,14 +66,19 @@ export class UpdateUserComponent implements OnInit {
   }
 
   syncForm(): void {
-    const { emails, phones, ...updateUser } = this.updateUser;
+
 
     this.form.patchValue({
-      ...updateUser,
+      nombre: this.updateUser.nombre,
+      tipoDocumento: this.updateUser.tipoDocumento,
+      cedula: this.updateUser.cedula,
+      establecimiento: this.updateUser.establecimiento,
+      direccion: this.updateUser.direccion,
+      password: this.updateUser.password,
+      email: this.updateUser.email,
+      phone: this.updateUser.phone,
     });
 
-    emails.forEach((email: string) => this.addEmail(email));
-    phones.forEach((phone: string) => this.addPhone(phone));
 
     this.form.controls.tipoDocumento.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((TipoDocumento) => {
       if (typeof TipoDocumento === 'string') {
@@ -89,8 +94,8 @@ export class UpdateUserComponent implements OnInit {
     establecimiento: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]],
     direccion: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(50)]],
     password: ['', [Validators.required, Validators.minLength(8), passwordValidator()]],
-    emails: this._fb.array<FormGroup<{ email: FormControl<string | null> }>>([], [Validators.required]),
-    phones: this._fb.array<FormGroup<{ phone: FormControl<any | null> }>>([], [Validators.required]),
+    email: ['', [Validators.required, emailValidator()]],
+    phone: ['', [Validators.required, onlyNumbersValidator(), Validators.minLength(10), Validators.maxLength(10)]],
   });
 
   public submit(): void {
@@ -105,9 +110,9 @@ export class UpdateUserComponent implements OnInit {
       establecimiento: this.form.value.establecimiento!.trim(),
       direccion: this.form.value.direccion!.trim(),
       password: this.form.value.password!.trim(),
-      emails: this.form.value.emails!.map((email) => email!.email!.trim().toLowerCase()),
-      phones: this.form.value.phones!.map((phone) => phone.phone),
-    } as User;
+      email: this.form.value.email!.trim(),
+      phone: this.form.value.phone!.trim(),
+    } as any;
 
     of(this.loading.set(true))
       .pipe(
@@ -121,33 +126,4 @@ export class UpdateUserComponent implements OnInit {
       .subscribe(() => this.user.emit(userForm));
   }
 
-  removeEmail(index: number): void {
-    if (index > 0) {
-      this.form.controls.emails.removeAt(index);
-    }
-  }
-  public addEmail(email?: string): void {
-    this.form.controls.emails.push(
-      this._fb.group({
-        email: [email ?? null, [Validators.required, emailValidator()]],
-      }),
-    );
-  }
-
-  removePhone(index: number): void {
-    if (index > 0) {
-      this.form.controls.phones.removeAt(index);
-    }
-  }
-
-  public addPhone(phone?: string): void {
-    this.form.controls.phones.push(
-      this._fb.group({
-        phone: [
-          phone ?? null,
-          [Validators.required, onlyNumbersValidator(), Validators.minLength(10), Validators.maxLength(10)],
-        ],
-      }),
-    );
-  }
 }

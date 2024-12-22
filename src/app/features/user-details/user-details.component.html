@@ -25,7 +25,7 @@
         </a>
         <div
           class="text-white p-2 rounded-md text-center mb-6"
-          [ngClass]="user.estado === 'Activo' ? 'bg-red-500' : 'bg-emerald-500'"
+          [ngClass]="user.estado === true ? 'bg-emerald-500' : 'bg-red-500'"
         >
           {{ congfi.statusUser()[ user.estado]  }}
         </div>
@@ -60,9 +60,7 @@
                     <img src="/assets/icons/email.svg" alt="Email Icon" class="size-3" />
                   </div>
                   <div class="flex flex-wrap gap-x-2 truncate">
-                    @for (email of user.emails; track $index) {
-                    <span class="truncate">{{ email }}</span>
-                    }
+                    <span>{{ user.email }}</span>
                   </div>
                 </div>
 
@@ -71,9 +69,7 @@
                     <img src="/assets/icons/phone.svg" alt="Phone Icon" class="size-3" />
                   </div>
                   <div class="grid grid-cols-2 gap-4 mb-2">
-                    @for (phone of user.phones; track $index) {
-                    <span>{{ phone }}</span>
-                    }
+                  {{ user.phone }}
                   </div>
                 </div>
 

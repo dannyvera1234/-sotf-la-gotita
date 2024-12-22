@@ -174,21 +174,26 @@ export class CreatePedidoComponent {
     this.prendas.push(prendaGroup);
   }
 
-  calcularTotal(): string {
+  calcularTotal(): number {
     let total = 0;
 
-    // Itera sobre todas las prendas en el FormArray
+    // Recorrer todas las prendas en el FormArray y sumar el precio * cantidad
     this.prendas.controls.forEach((prenda) => {
+      const cantidad = prenda.get('cantidad')?.value || 0;
       const precio = prenda.get('precio')?.value || 0;
 
-      // Acumula el total sumando el precio de cada prenda
-      total += parseFloat(precio); // Asegúrate de que el precio se trata como un número
+      total += cantidad * precio; // Se multiplica por cantidad
     });
 
-    // Redondear el total a 2 decimales
-    return total.toFixed(2); // Devuelve el total como string con 2 decimales
-  }
+    // Obtener el valor del descuento desde el formulario
+    const descuento = this.form.get('descuento')?.value || 0; // Descuento en porcentaje
 
+    // Aplicar el descuento
+    const totalConDescuento = total - total * (descuento / 100);
+
+    // Asegurarse de que el total no sea negativo
+    return Math.max(totalConDescuento, 0);
+  }
   calcularTiempo(): string {
     let tiempoTotal = 0;
 
