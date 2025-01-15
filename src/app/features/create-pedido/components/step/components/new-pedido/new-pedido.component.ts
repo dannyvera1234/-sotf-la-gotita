@@ -105,6 +105,41 @@ export class NewPedidoComponent implements OnInit {
     return this.createPedido.form.controls.step_2.get('prendas') as FormArray;
   }
 
+
+
+  onCantidadChange(event: Event, index: number) {
+    const prenda = this.prendas.at(index);
+
+    // Obtener la nueva cantidad ingresada
+    let cantidad = Number((event.target as HTMLInputElement).value);
+
+    // Validar que la cantidad sea al menos 1
+    if (cantidad <= 0) {
+      cantidad = 1;
+    }
+
+    // Obtener el precio unitario y el tiempo por unidad (no se modifican)
+    const precioUnidad = prenda.get('precio')?.value || 0;
+    const tiempoUnidad = prenda.get('tiempo_lavado')?.value || 0;
+
+    // Calcular el nuevo precio total y el nuevo tiempo total
+    const nuevoPrecioTotal = precioUnidad * cantidad;
+    const nuevoTiempoTotal = tiempoUnidad * cantidad;
+
+    console.log('Cantidad:', cantidad);
+    console.log('Precio unitario:', precioUnidad);
+    console.log('Nuevo precio total:', nuevoPrecioTotal);
+    console.log('Nuevo tiempo total:', nuevoTiempoTotal);
+
+
+    // Solo actualizamos el campo 'preciototal' y 'tiempo_lavado', no el 'precio'
+    prenda.patchValue({
+      cantidad: cantidad, // Actualizar solo cantidad
+      preciototal: nuevoPrecioTotal, // Actualizar solo el precio total
+      tiempo_lavado: nuevoTiempoTotal, // Actualizar solo el tiempo total
+    });
+  }
+
   onPedidoSelect(event: Event, index: number) {
     const selectedPrendaId = (event.target as HTMLSelectElement).value;
     const pedidoSeleccionado = this.pedidos().find((pedido) => pedido.id === selectedPrendaId);
@@ -115,40 +150,39 @@ export class NewPedidoComponent implements OnInit {
         cantidad: pedidoSeleccionado.cantidad,
         tiempo_lavado: pedidoSeleccionado.tiempo_lavado,
         precio: pedidoSeleccionado.precio,
+
+        preciototal: pedidoSeleccionado.precio * pedidoSeleccionado.cantidad, // Calculamos el precio total
       });
     }
   }
 
-  onCantidadChange(event: Event, index: number) {
-    const prenda = this.prendas.at(index);
+  // onCantidadChange(event: Event, index: number) {
+  //   const prenda = this.prendas.at(index);
 
-    // Nueva cantidad introducida
-    let cantidad = Number((event.target as HTMLInputElement).value);
+  //   // Nueva cantidad introducida
+  //   let cantidad = Number((event.target as HTMLInputElement).value);
 
-    // Validar que la cantidad nunca sea 0 o menor
-    if (cantidad <= 0) {
-      cantidad = 1; // Se puede establecer a 1 o mostrar un mensaje de advertencia
-    }
+  //   // Validar que la cantidad nunca sea 0 o menor
+  //   if (cantidad <= 0) {
+  //     cantidad = 1; // Se puede establecer a 1 o mostrar un mensaje de advertencia
+  //   }
 
-    // Obtén la cantidad actual y el precio/tiempo totales
-    const cantidadActual = prenda.get('cantidad')?.value || 0;
-    const precioTotal = prenda.get('precio')?.value || 0;
-    const tiempoTotal = prenda.get('tiempo_lavado')?.value || 0;
+  //   // Obtén la cantidad actual y el precio/tiempo totales
+  //   const cantidadActual = prenda.get('cantidad')?.value ;
+  //   const precioTotal = prenda.get('precio')?.value || 0;
+  //   const tiempoTotal = prenda.get('tiempo_lavado')?.value || 0;
 
-    // Calcula el precio y tiempo por unidad
-    const precioUnidad = cantidadActual > 0 ? precioTotal / cantidadActual : 0;
-    const tiempoUnidad = cantidadActual > 0 ? tiempoTotal / cantidadActual : 0;
 
-    // Realiza el cálculo basado en la cantidad validada
-    const nuevoPrecio = precioUnidad * cantidad;
-    const nuevoTiempo = tiempoUnidad * cantidad;
+  //   // Calcular el nuevo precio y tiempo de lavado
+  //   const nuevoPrecio =  cantidadActual * precioTotal;
+  //   const nuevoTiempo = tiempoTotal / cantidadActual * cantidad;
 
-    prenda.patchValue({
-      precio: nuevoPrecio.toFixed(2),
-      tiempo_lavado: nuevoTiempo,
-      cantidad: cantidad,
-    });
-  }
+  //   prenda.patchValue({
+  //     preciototal: nuevoPrecioTotal,
+  //     tiempo_lavado: nuevoTiempo,
+  //     cantidad: cantidad,
+  //   });
+  // }
 
   generateNewCode() {
     const randomSuffix = Math.floor(10 + Math.random() * 90); // Número aleatorio entre 10 y 99
@@ -167,27 +201,26 @@ export class NewPedidoComponent implements OnInit {
     this.prendas.push(prendaGroup);
   }
   calcularTotal(): number {
-    let total = 0;
+    // Usamos reduce para calcular el total de forma más funcional
+    const total = this.prendas.controls.reduce((sum, prenda) => {
+      const cantidad = prenda.get('cantidad')?.value ?? 0;
+      const precio = prenda.get('precio')?.value ?? 0;
 
-    // Recorrer todas las prendas en el FormArray y sumar el precio * cantidad
-    this.prendas.controls.forEach((prenda) => {
-      const cantidad = prenda.get('cantidad')?.value || 0;
-      const precio = prenda.get('precio')?.value || 0;
+      return sum + cantidad * precio;
+    }, 0);
 
-      total += cantidad * precio; // Se multiplica por cantidad
-    });
+    // Obtenemos el descuento en porcentaje desde el formulario
+    const descuento = this.form.get('descuento')?.value ?? 0;
 
-    // Obtener el valor del descuento desde el formulario
-    const descuento = this.form.get('descuento')?.value || 0; // Descuento en porcentaje
+    // Calculamos el total con descuento aplicado
+    const totalConDescuento = total * (1 - descuento / 100);
 
-    // Aplicar el descuento
-    const totalConDescuento = total - total * (descuento / 100);
+    // Actualizamos el total en el modelo `createPedido` y aseguramos que no sea negativo
+    this.createPedido.totalPedido = Math.max(totalConDescuento, 0);
 
-    this.createPedido.totalPedido = totalConDescuento;
-
-    // Asegurarse de que el total no sea negativo
-    return Math.max(totalConDescuento, 0);
+    return this.createPedido.totalPedido;
   }
+
   calcularTiempo(): string {
     let tiempoTotal = 0;
 
@@ -209,8 +242,14 @@ export class NewPedidoComponent implements OnInit {
 
 
 
+  restrictInput(event: KeyboardEvent) {
+    // Permitir solo teclas de flecha (arriba y abajo) y retroceso
+    const allowedKeys = ['ArrowUp', 'ArrowDown', 'Backspace', 'Tab'];
 
-
+    if (!allowedKeys.includes(event.key)) {
+      event.preventDefault(); // Bloquea cualquier otra tecla
+    }
+  }
 
   deletePrenda(index: number) {
     this.prendas.removeAt(index);

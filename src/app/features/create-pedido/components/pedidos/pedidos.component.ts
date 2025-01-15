@@ -124,13 +124,17 @@ export class PedidosComponent implements OnInit {
   onPedidoSelect(event: Event, index: number) {
     const selectedPrendaId = (event.target as HTMLSelectElement).value;
     const pedidoSeleccionado = this.pedidos().find((pedido) => pedido.id === selectedPrendaId);
+
     if (pedidoSeleccionado) {
       const prenda = this.prendas.at(index) as FormGroup;
+
+      // Aquí asignamos el precio unitario, cantidad y tiempo de lavado
       prenda.patchValue({
         nombre_prenda: pedidoSeleccionado.nombre_prenda,
         cantidad: pedidoSeleccionado.cantidad,
         tiempo_lavado: pedidoSeleccionado.tiempo_lavado,
         precio: pedidoSeleccionado.precio,
+        // preciototal: pedidoSeleccionado.precio * pedidoSeleccionado.cantidad, // Calculamos el precio total
       });
     }
   }
@@ -138,17 +142,40 @@ export class PedidosComponent implements OnInit {
   onCantidadChange(event: Event, index: number) {
     const prenda = this.prendas.at(index);
 
-    const cantidad = Number((event.target as HTMLInputElement).value);
+    // Obtener la nueva cantidad ingresada
+    let cantidad = Number((event.target as HTMLInputElement).value);
+
+    // Validar que la cantidad sea al menos 1
+    if (cantidad <= 0) {
+      cantidad = 1;
+    }
+
+    // Obtener el precio unitario y el tiempo por unidad (no se modifican)
+
     const precioUnidad = prenda.get('precio')?.value || 0;
-    const tiempoUnidad = prenda.get('tiempo_lavado')?.value || 0;
 
-    const nuevoPrecio = precioUnidad * cantidad;
-    const nuevoTiempo = tiempoUnidad * cantidad;
+    // Calcular el nuevo precio total y el nuevo tiempo total
+    const nuevoPrecioTotal = precioUnidad * cantidad;
 
+    console.log('Cantidad:', cantidad);
+    console.log('Precio unitario:', precioUnidad);
+    console.log('Nuevo precio total:', nuevoPrecioTotal);
+    // console.log('Nuevo tiempo total:', nuevoTiempoTotal);
+
+    // Solo actualizamos el campo 'preciototal' y 'tiempo_lavado', no el 'precio'
     prenda.patchValue({
-      precio: nuevoPrecio,
-      tiempo_lavado: nuevoTiempo,
+      cantidad: cantidad, // Actualizar solo cantidad
+      preciototal: nuevoPrecioTotal, // Actualizar solo el precio total
     });
+  }
+
+  restrictInput(event: KeyboardEvent) {
+    // Permitir solo teclas de flecha (arriba y abajo) y retroceso
+    const allowedKeys = ['ArrowUp', 'ArrowDown', 'Backspace', 'Tab'];
+
+    if (!allowedKeys.includes(event.key)) {
+      event.preventDefault(); // Bloquea cualquier otra tecla
+    }
   }
 
   addPrenda() {
@@ -189,6 +216,7 @@ export class PedidosComponent implements OnInit {
     this.prendas.controls.forEach((prenda) => {
       const tiempoLavado = +prenda.get('tiempo_lavado')?.value || 0; // Asegurarse de que sea un número
       tiempoTotal += tiempoLavado;
+      console.log('Tiempo lavado:', tiempoLavado);
     });
 
     // Convertir a horas y minutos

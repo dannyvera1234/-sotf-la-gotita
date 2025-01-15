@@ -62,9 +62,10 @@
             type="number"
             class="w-full border border-gray-300 rounded-md py-2 px-3"
             formGroupName="cantidad"
+            [min]="1"
             [value]="prenda.value.cantidad"
-            [min]="0"
             (keydown.enter)="$event.preventDefault()"
+            (keydown)="restrictInput($event)"
             (change)="onCantidadChange($event, $index)"
           />
         </div>
@@ -76,9 +77,9 @@
             id="precio"
             type="number"
             class="w-full bg-gray-100 border border-gray-300 rounded-md py-2 px-3 text-gray-700 cursor-not-allowed pr-8"
-            formGroupName="precio"
-            [value]="prenda.value.precio"
+            [value]="prenda.value.precio * prenda.value.cantidad"
             (keydown.enter)="$event.preventDefault()"
+
             readonly
           />
           <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
@@ -91,8 +92,7 @@
             id="tiempo"
             type="number"
             class="w-full bg-gray-100 border border-gray-300 rounded-md py-2 px-3 text-gray-700 cursor-not-allowed pr-8"
-            formGroupName="tiempo_lavado"
-            [value]="prenda.value.tiempo_lavado"
+            [value]="prenda.value.tiempo_lavado * prenda.value.cantidad"
             (keydown.enter)="$event.preventDefault()"
             disabled
           />
@@ -167,7 +167,7 @@
   <div class="mt-8 mb-4 flex justify-end gap-4">
     <div class="md:w-1/6">
       <label class="block text-gray-700 text-sm font-bold mb-2" for="tiempo_total">Total Tiempo Lavado</label>
-      <div class="relative ">
+      <div class="relative">
         <input
           id="tiempo_total"
           class="shadow appearance-none border-2 border-red-500 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:border-red-700 focus:ring-2 focus:ring-red-300 pr-12"
