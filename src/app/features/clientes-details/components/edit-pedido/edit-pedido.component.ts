@@ -87,6 +87,7 @@ export class EditPedidoComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // Inicializar los valores del formulario
     this.form.patchValue(
       {
         ...this.editarPedido,
@@ -94,16 +95,22 @@ export class EditPedidoComponent implements OnInit {
       { emitEvent: false },
     );
 
-    this.editarPedido.prendas.forEach((prenda: any) => {
-      const prendaGroup = this._fb.group({
-        nombre_prenda: [prenda.nombre_prenda, [Validators.required]],
-        cantidad: [prenda.cantidad],
-        tiempo_lavado: [prenda.tiempo_lavado],
-        precio: [prenda.precio],
-      });
+    // Limpiar el FormArray de prendas
+    // this.form.setControl('prendas', this._fb.array([]));
 
-      this.form.controls.prendas.push(prendaGroup, { emitEvent: false });
-    });
+    // // Agregar prendas si existen
+    // if (this.editarPedido?.prendas?.length > 0) {
+    //   this.editarPedido.prendas.forEach((prenda: any) => {
+    //     const prendaGroup = this._fb.group({
+    //       nombre_prenda: [prenda.nombre_prenda, [Validators.required]],
+    //       cantidad: [prenda.cantidad, [Validators.required, Validators.min(1)]],
+    //       tiempo_lavado: [prenda.tiempo_lavado, [Validators.required]],
+    //       precio: [prenda.precio, [Validators.required, Validators.min(0)]],
+    //     });
+
+    //     (this.form.controls.prendas as FormArray).push(prendaGroup);
+    //   });
+    // }
   }
 
   addPrenda(): void {

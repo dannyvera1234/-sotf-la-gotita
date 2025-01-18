@@ -28,12 +28,14 @@
     >
       <p class="text-sm mb-10 mt-8" [ngClass]="{ 'line-clamp-3': expandedIndex() !== $index }">
         @for (prenda of item.prendas; track $index) {
+
         <li>{{ prenda.nombre_prenda }}</li>
         <li>
           Cantidad:
            {{ prenda.cantidad }}
         </li>
         }
+        <li>{{item.codigo}} </li>
         <li>{{ item.descripcion }}</li>
         <li>{{ config.metodo_pago()[item.tipoPago] }}</li>
         <li>Ingreso: {{ item.fecha_ingreso | customDate }}</li>
