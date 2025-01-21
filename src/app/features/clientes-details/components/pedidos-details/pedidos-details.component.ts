@@ -111,7 +111,7 @@ export class PedidosDetailsComponent {
   }
 
   public downloadPDF(data: any) {
-
+    console.log('data', data);
     const pageWidth = 100; // en mm
     const pageHeight = 150; // Altura inicial en mm
     const doc = new jsPDF({
@@ -181,7 +181,7 @@ export class PedidosDetailsComponent {
 
     const finalY = (doc as any).autoTable.previous.finalY;
     doc.setFontSize(8);
-    doc.text('Total: $' + data.total, doc.internal.pageSize.width - 23, finalY + 4);
+    doc.text('Total: $' + data.totalGeneral, doc.internal.pageSize.width - 23, finalY + 4);
     doc.setLineWidth(0.5);
     doc.line(7, finalY + 7, doc.internal.pageSize.width - 7, finalY + 7);
 
