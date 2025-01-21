@@ -275,7 +275,8 @@ export class EditPedidoComponent {
 
      const pedido = {
        ...this.form.value,
-
+       totalGeneral: Number(this.form.get('totalGeneral')?.value),
+        tiempoGeneral: this.form.get('tiempoGeneral')?.value,
      };
      console.log(pedido);
      this.editPedido.emit({

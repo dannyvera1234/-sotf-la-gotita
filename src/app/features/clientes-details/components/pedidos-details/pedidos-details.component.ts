@@ -86,6 +86,7 @@ export class PedidosDetailsComponent {
   }
 
   updatePedido(pedido: any): void {
+    console.log('pedido', pedido);
     of(this.loading.set(true))
       .pipe(
         mergeMap(() => this.pedidosService.updatePedido(this.idCliente(), pedido.id, pedido)),
