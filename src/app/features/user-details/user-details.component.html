@@ -27,7 +27,7 @@
           class="text-white p-2 rounded-md text-center mb-6"
           [ngClass]="user.estado === true ? 'bg-emerald-500' : 'bg-red-500'"
         >
-          {{ congfi.statusUser()[ user.estado]  }}
+          {{ congfi.statusUser()[user.estado] }}
         </div>
 
         <div class="flex justify-between items-center">
@@ -69,7 +69,7 @@
                     <img src="/assets/icons/phone.svg" alt="Phone Icon" class="size-3" />
                   </div>
                   <div class="grid grid-cols-2 gap-4 mb-2">
-                  {{ user.phone }}
+                    {{ user.phone }}
                   </div>
                 </div>
 
@@ -104,8 +104,8 @@
           </button>
         </header>
         <section class="p-4">
-          <app-update-user [updateUser]="user" (user)="updateUserModal.close()"
-          [id]="_udateUser()"
+          <app-update-user [updateUser]="user" (user)="updateUserModal.close()" [id]="_udateUser()"
+            (user)="$event && updateUser($event)"
           />
         </section>
       </div>

@@ -8,19 +8,22 @@ import {
   Output,
   signal,
 } from '@angular/core';
-import { FormBuilder, Validators, FormGroup, FormControl, ReactiveFormsModule } from '@angular/forms';
-import { of, mergeMap, finalize, takeUntil, Subject } from 'rxjs';
-import { User } from '../../../../interfaces';
+import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { takeUntil, Subject, finalize, mergeMap, of } from 'rxjs';
 import { UserService } from '../../../../services';
-
 import { CustomInputComponent, CustomSelectComponent } from '../../../../components';
-import { NgOptimizedImage } from '@angular/common';
-import { emailValidator, IdentificationValidatorService, LaGotitaConfigService, onlyLettersValidator, onlyNumbersValidator, passwordValidator } from '../../../../util';
+import {
+  emailValidator,
+  IdentificationValidatorService,
+  LaGotitaConfigService,
+  onlyLettersValidator,
+  onlyNumbersValidator,
+} from '../../../../util';
 
 @Component({
   selector: 'app-update-user',
   standalone: true,
-  imports: [CustomInputComponent, ReactiveFormsModule, CustomSelectComponent, NgOptimizedImage],
+  imports: [CustomInputComponent, ReactiveFormsModule, CustomSelectComponent],
   templateUrl: './update-user.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -36,7 +39,7 @@ export class UpdateUserComponent implements OnInit {
 
   public readonly maxEmails = this.config.maxEmails;
 
-  @Output() user = new EventEmitter<User | null>();
+  @Output() public readonly user = new EventEmitter<any | null>();
 
   public readonly cedulaLabel = this.identificationService.cedulaLabel;
 
@@ -66,19 +69,15 @@ export class UpdateUserComponent implements OnInit {
   }
 
   syncForm(): void {
-
-
     this.form.patchValue({
       nombre: this.updateUser.nombre,
       tipoDocumento: this.updateUser.tipoDocumento,
       cedula: this.updateUser.cedula,
       establecimiento: this.updateUser.establecimiento,
       direccion: this.updateUser.direccion,
-      password: this.updateUser.password,
       email: this.updateUser.email,
       phone: this.updateUser.phone,
     });
-
 
     this.form.controls.tipoDocumento.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((TipoDocumento) => {
       if (typeof TipoDocumento === 'string') {
@@ -93,37 +92,35 @@ export class UpdateUserComponent implements OnInit {
     cedula: ['', [Validators.required, onlyNumbersValidator(), Validators.minLength(10), Validators.maxLength(13)]],
     establecimiento: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]],
     direccion: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(50)]],
-    password: ['', [Validators.required, Validators.minLength(8), passwordValidator()]],
     email: ['', [Validators.required, emailValidator()]],
     phone: ['', [Validators.required, onlyNumbersValidator(), Validators.minLength(10), Validators.maxLength(10)]],
   });
 
-  public submit(): void {
+  submit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
-    const userForm = {
-      nombre: this.form.value.nombre!.trim(),
-      tipoDocumento: this.form.value.tipoDocumento!,
-      cedula: Number(this.form.value.cedula!),
-      establecimiento: this.form.value.establecimiento!.trim(),
-      direccion: this.form.value.direccion!.trim(),
-      password: this.form.value.password!.trim(),
-      email: this.form.value.email!.trim(),
-      phone: this.form.value.phone!.trim(),
-    } as any;
+     const userForm = {
+       nombre: this.form.value.nombre!.trim(),
+       tipoDocumento: this.form.value.tipoDocumento!,
+       cedula: Number(this.form.value.cedula!),
+       establecimiento: this.form.value.establecimiento!.trim(),
+       direccion: this.form.value.direccion!.trim(),
 
-    of(this.loading.set(true))
-      .pipe(
-        mergeMap(() =>
-          this.userService.updateUser(this.id, {
-            ...userForm,
-          }),
-        ),
-        finalize(() => this.loading.set(false)),
-      )
-      .subscribe(() => this.user.emit(userForm));
+       email: this.form.value.email!.trim(),
+       phone: this.form.value.phone!.trim(),
+     };
+
+     of(this.loading.set(true))
+       .pipe(
+         mergeMap(() =>
+           this.userService.updateUser(this.id, {
+             ...userForm,
+           }),
+         ),
+         finalize(() => this.loading.set(false)),
+       )
+       .subscribe(() => this.user.emit(userForm));
   }
-
 }
