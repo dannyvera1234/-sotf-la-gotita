@@ -152,6 +152,7 @@ export class EditPedidoComponent {
 
   deletePrenda(index: number) {
     this.prendas.removeAt(index);
+    this.updateTotal();
   }
 
   generateNewCode() {
