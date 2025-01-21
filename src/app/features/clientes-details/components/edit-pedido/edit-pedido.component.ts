@@ -23,11 +23,11 @@ import { CustomInputComponent, CustomSelectComponent } from '../../../../compone
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditPedidoComponent {
-  @Input({ required: true }) set editarPedido(value: any) {
+  @Input() set editarPedido(value: any) {
     if (!value) {
       return;
     }
-
+    this.id.set(value.id);
     // Actualizar los valores principales del formulario
     this.form.patchValue({
       codigo: value.codigo,
@@ -39,8 +39,6 @@ export class EditPedidoComponent {
       totalGeneral: value.totalGeneral,
       tiempoGeneral: value.tiempoGeneral,
       tipoPago: value.tipoPago,
-
-
     });
 
     // Actualizar el FormArray de prendas
@@ -51,8 +49,9 @@ export class EditPedidoComponent {
 
     // Agregar cada prenda al FormArray
     value.prendas.forEach((prenda: any) => {
+      console.log(prenda);
       prendasFormArray.push(this._fb.group({
-        nombre_prenda: [prenda.nombre_prenda, [Validators.required]],
+        nombre_prenda: [prenda.nombre_prenda, [Validators.required]],  // Almacena el ID
         cantidad: [prenda.cantidad, [Validators.required]],
         tiempo_lavado: [prenda.tiempo_lavado, [Validators.required]],
         precio: [prenda.precio, [Validators.required]],
@@ -62,6 +61,7 @@ export class EditPedidoComponent {
     });
   }
 
+  public readonly id = signal<string>('');
 
   public readonly pedidos = signal<any[]>([]);
 
@@ -188,8 +188,8 @@ export class EditPedidoComponent {
 
   onPedidoSelect(event: Event, index: number) {
     const selectedPrendaId = (event.target as HTMLSelectElement).value;
-    const pedidoSeleccionado = this.pedidos().find((pedido) => pedido.id === selectedPrendaId);
-
+    const pedidoSeleccionado = this.pedidos().find((pedido) => pedido.nombre_prenda === selectedPrendaId);
+    console.log(pedidoSeleccionado);
     if (pedidoSeleccionado) {
       const prenda = this.prendas.at(index) as FormGroup;
 
@@ -278,11 +278,10 @@ export class EditPedidoComponent {
 
      };
      console.log(pedido);
-    // this.editPedido.emit({
-    //   ...pedido,
-    //   id: this.editarPedido.id,
-    //   // total: this.calcularTotal(),
-    //   // tiempo_total: this.calcularTiempo(),
-    // });
+     this.editPedido.emit({
+      ...pedido,
+     id: this.id(),
+
+   });
   }
 }

@@ -39,12 +39,13 @@
         <label class="block text-gray-700 text-sm font-bold mb-2" for="pedidoSelect"> Selecciona una prenda </label>
         <select
           id="pedidoSelect"
+          formControlName="nombre_prenda"
           class="block w-full bg-white border border-gray-300 rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:ring focus:border-sky-500"
           (change)="onPedidoSelect($event, $index)"
         >
           <option value="" disabled selected>Seleccionar</option>
           @for (pedido of pedidos(); track $index) {
-          <option [value]="pedido.id">
+          <option [value]="pedido.nombre_prenda">
             {{ pedido.nombre_prenda }}
           </option>
           }
