@@ -33,17 +33,19 @@ export class CreatePedidoService {
       prendas: this._fb.array([
         this._fb.group({
           nombre_prenda: ['', [Validators.required]],
-          cantidad: [0, [Validators.required, Validators.min(1), Validators.max(100)]],
+          cantidad: [0],
           tiempo_lavado: [0],
           precio: [0],
+          precio_total: [0],
+          total_tiempo: [0],
         }),
       ]),
       fecha_ingreso: [new Date(), [Validators.required]],
       fecha_entrega: [new Date(), [Validators.required]],
-      descripcion: ['', [Validators.maxLength(100)]],
-      descuento: [0, [Validators.min(0), Validators.max(100)]],
-      total: [{ value: '', disabled: true }],
-      tiempo_total: [{ value: '', disabled: true }],
+      descripcion: ['', [Validators.maxLength(50)]],
+      descuento: [0],
+      totalGeneral: [{ value: '', disabled: true }],
+      tiempoGeneral: [{ value: '', disabled: true }],
     }),
   });
 
@@ -68,8 +70,8 @@ export class CreatePedidoService {
       fecha_entrega: new Date(),
       descripcion: '',
       descuento: 0,
-      total: '',
-      tiempo_total: '',
+      totalGeneral: '',
+      tiempoGeneral: '',
     });
     this.form.updateValueAndValidity();
   }
@@ -110,22 +112,21 @@ export class CreatePedidoService {
         cantidad: prenda.cantidad,
         tiempo_lavado: prenda.tiempo_lavado || '0',
         precio: prenda.precio,
+        precio_total: prenda.precio_total,
+        total_tiempo: prenda.total_tiempo,
       })),
       fecha_ingreso: step2.fecha_ingreso,
       fecha_entrega: step2.fecha_entrega,
       descripcion: step2.descripcion,
       estado: step2.estado,
       descuento: step2.descuento,
-      tiempo_total: this.tiempoTotal,
-      total: this.totalPedido,
+      tiempoGeneral: this.form.controls.step_2.controls.totalGeneral.value,
+      totalGeneral: this.form.controls.step_2.controls.tiempoGeneral.value,
       codigo: this.form.controls.step_2.get('codigo')?.value,
 
     };
   }
 
-  public totalPedido = 0;
-
-  public tiempoTotal = '0';
 
   private async submit(): Promise<void> {
      if (this.form.invalid) {
@@ -137,8 +138,7 @@ export class CreatePedidoService {
 
      const cliente = this.mapClienteForm();
      const pedido = this.mapPedidoForm();
-     console.log('Cliente:', cliente);
-      console.log('Pedido:', pedido);
+
 
      try {
        const clienteDocRef = await this.clienteService.createCliente(cliente);
