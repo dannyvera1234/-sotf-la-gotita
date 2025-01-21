@@ -22,14 +22,55 @@ import { CustomInputComponent, CustomSelectComponent } from '../../../../compone
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EditPedidoComponent implements OnInit {
-  @Input({ required: true }) editarPedido!: any;
+export class EditPedidoComponent {
+  @Input({ required: true }) set editarPedido(value: any) {
+    if (!value) {
+      return;
+    }
+
+    // Actualizar los valores principales del formulario
+    this.form.patchValue({
+      codigo: value.codigo,
+      estado: value.estado,
+      fecha_ingreso: value.fecha_ingreso,
+      fecha_entrega: value.fecha_entrega,
+      descripcion: value.descripcion,
+      descuento: value.descuento,
+      totalGeneral: value.totalGeneral,
+      tiempoGeneral: value.tiempoGeneral,
+    });
+
+    // Actualizar el FormArray de prendas
+    const prendasFormArray = this.form.get('prendas') as FormArray;
+
+    // Limpiar el FormArray actual
+    prendasFormArray.clear();
+
+    // Agregar cada prenda al FormArray
+    value.prendas.forEach((prenda: any) => {
+      prendasFormArray.push(this._fb.group({
+        nombre_prenda: [prenda.nombre_prenda, [Validators.required]],
+        cantidad: [prenda.cantidad, [Validators.required]],
+        tiempo_lavado: [prenda.tiempo_lavado, [Validators.required]],
+        precio: [prenda.precio, [Validators.required]],
+        precio_total: [prenda.precio_total, [Validators.required]],
+        total_tiempo: [prenda.total_tiempo, [Validators.required]],
+      }));
+    });
+  }
+
+
+  public readonly pedidos = signal<any[]>([]);
 
   public readonly today = signal('');
 
   public readonly loading = signal(false);
 
   @Output() editPedido = new EventEmitter<any | null>();
+
+
+  public readonly selectedPedido = signal<any | null>(null);
+
 
   public readonly metodo_pago = computed<{ values: string[]; labels: string[] }>(() => {
     return Object.entries(this.config.metodo_pago()).reduce(
@@ -55,6 +96,20 @@ export class EditPedidoComponent implements OnInit {
     );
   });
 
+  constructor(
+    public readonly config: LaGotitaConfigService,
+    public readonly configService: ConfigService,
+    public readonly _fb: FormBuilder,
+    public readonly pedidosService: PedidosService,
+  ) {
+    this.generateNewCode();
+
+    const currentDate = new Date();
+    this.today.set(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`);
+
+    this.listPedido();
+  }
+
   public form = this._fb.group({
     estado: ['PENDIENTE'],
     codigo: [{ value: '', disabled: true }],
@@ -64,85 +119,19 @@ export class EditPedidoComponent implements OnInit {
         nombre_prenda: ['', [Validators.required]],
         cantidad: [0],
         tiempo_lavado: [0],
-        precio: [0],
+        precio: [0], // Precio unitario
+        precio_total: [0], // Precio total
+        total_tiempo: [0], // Tiempo total
       }),
     ]),
-    fecha_ingreso: ['', [Validators.required]],
-    fecha_entrega: ['', [Validators.required]],
+    fecha_ingreso: [new Date(), [Validators.required]],
+    fecha_entrega: [new Date(), [Validators.required]],
     descripcion: ['', [Validators.maxLength(50)]],
     descuento: [0],
-    total: [{ value: '', disabled: true }],
-    tiempo_total: [{ value: '', disabled: true }],
+    totalGeneral: [{ value: '', disabled: true }],
+    tiempoGeneral: [{ value: '', disabled: true }],
   });
 
-  constructor(
-    public readonly pedidoService: PedidosService,
-    public readonly config: LaGotitaConfigService,
-    private readonly _fb: FormBuilder,
-    private readonly configService: ConfigService,
-  ) {
-    const currentDate = new Date();
-    this.today.set(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`);
-    this.listPedido();
-  }
-
-  ngOnInit(): void {
-    // Inicializar los valores del formulario
-    this.form.patchValue(
-      {
-        ...this.editarPedido,
-      },
-      { emitEvent: false },
-    );
-
-    // Limpiar el FormArray de prendas
-    // this.form.setControl('prendas', this._fb.array([]));
-
-    // // Agregar prendas si existen
-    // if (this.editarPedido?.prendas?.length > 0) {
-    //   this.editarPedido.prendas.forEach((prenda: any) => {
-    //     const prendaGroup = this._fb.group({
-    //       nombre_prenda: [prenda.nombre_prenda, [Validators.required]],
-    //       cantidad: [prenda.cantidad, [Validators.required, Validators.min(1)]],
-    //       tiempo_lavado: [prenda.tiempo_lavado, [Validators.required]],
-    //       precio: [prenda.precio, [Validators.required, Validators.min(0)]],
-    //     });
-
-    //     (this.form.controls.prendas as FormArray).push(prendaGroup);
-    //   });
-    // }
-  }
-
-  addPrenda(): void {
-    const prendaGroup = this._fb.group({
-      nombre_prenda: ['', [Validators.required]],
-      cantidad: [0],
-      tiempo_lavado: [0],
-      precio: [0],
-    });
-
-    this.form.controls.prendas.push(prendaGroup, { emitEvent: false });
-  }
-
-  public submit(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
-
-    const pedido = {
-      ...this.form.value,
-    };
-
-    this.editPedido.emit({
-      ...pedido,
-      id: this.editarPedido.id,
-      total: this.calcularTotal(),
-      tiempo_total: this.calcularTiempo(),
-    });
-  }
-
-  public readonly pedidos = signal<any[]>([]);
 
   public listPedido(): void {
     this.loading.set(true);
@@ -157,90 +146,140 @@ export class EditPedidoComponent implements OnInit {
       });
   }
 
-  onPedidoSelect(event: Event, index: number) {
-    console.log('onPedidoSelect');
-    const selectedPrendaId = (event.target as HTMLSelectElement).value;
-    const pedidoSeleccionado = this.pedidos().find((pedido) => pedido.nombre_prenda === selectedPrendaId);
-    if (pedidoSeleccionado) {
-      const prenda = this.form.controls.prendas.at(index) as FormGroup;
-      prenda.patchValue({
-        nombre_prenda: pedidoSeleccionado.nombre_prenda,
-        cantidad: pedidoSeleccionado.cantidad,
-        tiempo_lavado: pedidoSeleccionado.tiempo_lavado,
-        precio: pedidoSeleccionado.precio,
-      });
-    }
-  }
-
-  onCantidadChange(event: Event, index: number) {
-    const prenda = this.form.controls.prendas.at(index);
-
-    // Nueva cantidad introducida
-    let cantidad = Number((event.target as HTMLInputElement).value);
-
-    // Validar que la cantidad nunca sea 0 o menor
-    if (cantidad <= 0) {
-      cantidad = 1; // Se puede establecer a 1 o mostrar un mensaje de advertencia
-    }
-
-    // Obtén la cantidad actual y el precio/tiempo totales
-    const cantidadActual = prenda.get('cantidad')?.value || 0;
-    const precioTotal = prenda.get('precio')?.value || 0;
-    const tiempoTotal = prenda.get('tiempo_lavado')?.value || 0;
-
-    // Calcula el precio y tiempo por unidad
-    const precioUnidad = cantidadActual > 0 ? precioTotal / cantidadActual : 0;
-    const tiempoUnidad = cantidadActual > 0 ? tiempoTotal / cantidadActual : 0;
-
-    // Realiza el cálculo basado en la cantidad validada
-    const nuevoPrecio = precioUnidad * cantidad;
-    const nuevoTiempo = tiempoUnidad * cantidad;
-
-    prenda.patchValue({
-      precio: nuevoPrecio,
-      tiempo_lavado: nuevoTiempo,
-      cantidad: cantidad,
-    });
-  }
-
-  calcularTotal(): number {
-    let total = 0;
-
-    // Recorrer todas las prendas en el FormArray y sumar el precio * cantidad
-    this.form.controls.prendas.controls.forEach((prenda) => {
-      const cantidad = prenda.get('cantidad')?.value || 0;
-      const precio = prenda.get('precio')?.value || 0;
-
-      total += cantidad * precio; // Se multiplica por cantidad
-    });
-
-    // Obtener el valor del descuento desde el formulario
-    const descuento = this.form.get('descuento')?.value || 0; // Descuento en porcentaje
-
-    // Aplicar el descuento
-    const totalConDescuento = total - total * (descuento / 100);
-
-    // Asegurarse de que el total no sea negativo
-    return Math.max(totalConDescuento, 0);
-  }
-
-  calcularTiempo(): string {
-    let tiempoTotal = 0;
-
-    // Sumar el tiempo de lavado de cada prenda
-    this.form.controls.prendas.controls.forEach((prenda) => {
-      tiempoTotal += prenda.get('tiempo_lavado')?.value || 0;
-    });
-
-    // Convertir a horas y minutos
-    const horas = Math.floor(tiempoTotal / 60);
-    const minutos = tiempoTotal % 60;
-
-    // Formatear el resultado
-    return `${horas}h ${minutos}m`;
-  }
 
   deletePrenda(index: number) {
-    this.form.controls.prendas.removeAt(index);
+    this.prendas.removeAt(index);
+  }
+
+  generateNewCode() {
+    const randomSuffix = Math.floor(10 + Math.random() * 90); // Número aleatorio entre 10 y 99
+    const newCode = `COD-${randomSuffix}`;
+    this.form.patchValue({ codigo: newCode });
+  }
+
+
+  get prendas() {
+    return this.form.controls.prendas as FormArray;
+  }
+
+  addPrenda() {
+    const prendaGroup = this._fb.group({
+      nombre_prenda: ['', [Validators.required]],
+      cantidad: [0],
+      tiempo_lavado: [0],
+      precio: [0],
+      precio_total: [0],
+      total_tiempo: [0],
+    });
+
+    this.prendas.push(prendaGroup);
+  }
+  restrictInput(event: KeyboardEvent) {
+    // Permitir solo teclas de flecha (arriba y abajo) y retroceso
+    const allowedKeys = ['ArrowUp', 'ArrowDown', 'Backspace', 'Tab'];
+
+    if (!allowedKeys.includes(event.key)) {
+      event.preventDefault(); // Bloquea cualquier otra tecla
+    }
+  }
+
+  onPedidoSelect(event: Event, index: number) {
+    const selectedPrendaId = (event.target as HTMLSelectElement).value;
+    const pedidoSeleccionado = this.pedidos().find((pedido) => pedido.id === selectedPrendaId);
+
+    if (pedidoSeleccionado) {
+      const prenda = this.prendas.at(index) as FormGroup;
+
+      prenda.patchValue({
+        nombre_prenda: pedidoSeleccionado.nombre_prenda,
+        cantidad: 1, // Cantidad inicial
+        tiempo_lavado: pedidoSeleccionado.tiempo_lavado,
+        precio: pedidoSeleccionado.precio, // Precio unitario
+        precio_total: pedidoSeleccionado.precio, // Precio total inicial
+        total_tiempo: pedidoSeleccionado.tiempo_lavado, // Tiempo total inicial
+      });
+    }
+    this.updateTotal();
+  }
+
+
+  onCantidadChange(event: Event, index: number) {
+    const prenda = this.prendas.at(index);
+
+    let cantidad = Number((event.target as HTMLInputElement).value);
+
+    if (cantidad <= 0) {
+      cantidad = 1;
+    }
+
+    const precioUnidad = prenda.get('precio')?.value || 0; // Precio unitario
+    const tiempoLavado = prenda.get('tiempo_lavado')?.value || 0;
+
+    const precioTotal = (precioUnidad * cantidad).toFixed(2); // Calcular precio total
+    const tiempoTotal = tiempoLavado * cantidad;
+
+    prenda.patchValue({
+      cantidad,
+      precio_total: precioTotal, // Actualizar precio total
+      total_tiempo: tiempoTotal, // Actualizar tiempo total
+    });
+
+    this.updateTotal();
+  }
+
+
+
+
+  updateTotal() {
+    let totalGeneral = 0;
+    let tiempoTotal = 0;
+
+    // Recorremos cada prenda seleccionada para calcular el total general y el tiempo de lavado
+    this.form.get('prendas')?.value.forEach((prenda: any) => {
+      const cantidad = prenda.cantidad || 0;
+      const precio = prenda.precio || 0;
+      const tiempoLavado = prenda.tiempo_lavado || 0;
+
+      totalGeneral += cantidad * precio;  // Calculamos el precio total
+      tiempoTotal += cantidad * tiempoLavado;  // Calculamos el tiempo total de lavado
+    });
+
+    // Obtenemos el valor del descuento
+    const descuento = this.form.get('descuento')?.value || 0;
+
+    // Verificamos que el descuento sea un número válido y que esté en el rango adecuado (0 a 100)
+    if (descuento >= 0 && descuento <= 100) {
+      const descuentoAplicado = totalGeneral * (descuento / 100);
+      totalGeneral -= descuentoAplicado;  // Aplicamos el descuento al total general
+    }
+
+    // Actualizamos los campos del formulario con los valores calculados
+    this.form.patchValue({
+      totalGeneral: totalGeneral.toFixed(2),   // Total con 2 decimales
+      tiempoGeneral: `${tiempoTotal} minutos`, // Tiempo como string (puedes personalizar la unidad)
+    });
+  }
+
+
+
+
+
+  public submit(): void {
+     if (this.form.invalid) {
+       this.form.markAllAsTouched();
+       return;
+     }
+
+     const pedido = {
+       ...this.form.value,
+
+     };
+     console.log(pedido);
+    // this.editPedido.emit({
+    //   ...pedido,
+    //   id: this.editarPedido.id,
+    //   // total: this.calcularTotal(),
+    //   // tiempo_total: this.calcularTiempo(),
+    // });
   }
 }

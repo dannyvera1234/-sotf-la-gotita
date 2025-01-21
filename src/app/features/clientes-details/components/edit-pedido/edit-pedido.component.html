@@ -33,20 +33,18 @@
     </div>
   </div>
   <div formArrayName="prendas">
-    @for (prenda of form.controls.prendas.controls; track $index) {
+    @for (prenda of prendas.controls; track $index) {
     <div class="grid grid-cols-1 md:grid-cols-5 gap-4" [formGroupName]="$index">
       <div class="mb-4">
         <label class="block text-gray-700 text-sm font-bold mb-2" for="pedidoSelect"> Selecciona una prenda </label>
         <select
           id="pedidoSelect"
           class="block w-full bg-white border border-gray-300 rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:ring focus:border-sky-500"
-          formControlName="nombre_prenda"
-
           (change)="onPedidoSelect($event, $index)"
         >
           <option value="" disabled selected>Seleccionar</option>
           @for (pedido of pedidos(); track $index) {
-          <option [value]="pedido.nombre_prenda">
+          <option [value]="pedido.id">
             {{ pedido.nombre_prenda }}
           </option>
           }
@@ -63,10 +61,10 @@
             id="cantidad"
             type="number"
             class="w-full border border-gray-300 rounded-md py-2 px-3"
-            formGroupName="cantidad"
-            [value]="prenda.value.cantidad"
-            [min]="0"
+            formControlName="cantidad"
+            [min]="1"
             (keydown.enter)="$event.preventDefault()"
+            (keydown)="restrictInput($event)"
             (change)="onCantidadChange($event, $index)"
           />
         </div>
@@ -78,8 +76,7 @@
             id="precio"
             type="number"
             class="w-full bg-gray-100 border border-gray-300 rounded-md py-2 px-3 text-gray-700 cursor-not-allowed pr-8"
-            formGroupName="precio"
-            [value]="prenda.value.precio"
+            formControlName="precio_total"
             (keydown.enter)="$event.preventDefault()"
             readonly
           />
@@ -93,10 +90,9 @@
             id="tiempo"
             type="number"
             class="w-full bg-gray-100 border border-gray-300 rounded-md py-2 px-3 text-gray-700 cursor-not-allowed pr-8"
-            formGroupName="tiempo_lavado"
-            [value]="prenda.value.tiempo_lavado"
+            formControlName="total_tiempo"
             (keydown.enter)="$event.preventDefault()"
-            disabled
+
           />
           <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">min</span>
         </div>
@@ -106,14 +102,14 @@
         <button
           class="flex items-center gap-2 bg-secondary text-white px-3 py-2 rounded-md text-xs"
           (click)="addPrenda()"
-          >
+        >
           <div class="relative size-5 shrink-0">
             <img src="/assets/icons/add.svg" alt="Crear" />
           </div>
           Agregar
         </button>
         @if ($index > 0 ) {
-          <!--  -->
+
         <button class="flex items-center gap-2 text-white px-3 py-2 rounded-md text-xs" (click)="deletePrenda($index)">
           <div class="relative size-5 shrink-0">
             <img src="/assets/icons/trash-icon.svg" alt="Eliminar" />
@@ -174,10 +170,9 @@
           id="tiempo_total"
           class="shadow appearance-none border-2 border-red-500 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:border-red-700 focus:ring-2 focus:ring-red-300 pr-12"
           type="text"
-          formControlName="tiempo_total"
+          formControlName="tiempoGeneral"
           readonly
-          [value]="calcularTiempo()"
-          />
+        />
       </div>
     </div>
 
@@ -191,6 +186,7 @@
           formControlName="descuento"
           (keydown.enter)="$event.preventDefault()"
           placeholder="Descuento"
+          (input)="updateTotal()"
         />
         <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">%</span>
       </div>
@@ -204,13 +200,11 @@
         type="number"
         (keydown.enter)="$event.preventDefault()"
         placeholder="Total a pagar"
-        formControlName="total"
-        [value]="calcularTotal()"
+        formControlName="totalGeneral"
         readonly
-        />
+      />
     </div>
   </div>
-
   <div class="flex gap-4 justify-end mt-10 md:flex-row flex-col text-center max-md:w-full">
     @if (!loading()) {
     <button
