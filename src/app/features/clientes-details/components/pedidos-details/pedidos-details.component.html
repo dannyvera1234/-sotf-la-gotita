@@ -32,15 +32,19 @@
         <li>{{ prenda.nombre_prenda }}</li>
         <li>
           Cantidad:
-           {{ prenda.cantidad }}
+          {{ prenda.cantidad }}
         </li>
         }
-        <li>{{item.codigo}} </li>
-        <li>{{ item.descripcion }}</li>
+        <li>{{ item.codigo }}</li>
+
         <li>{{ config.metodo_pago()[item.tipoPago] }}</li>
         <li>Ingreso: {{ item.fecha_ingreso | customDate }}</li>
-        <li>Tiempo: {{ item.tiempo_total }}</li>
-        <li>Total: {{ item.total | currency }}</li>
+        <li>Tiempo: {{ item.tiempoGeneral }}</li>
+        <li>Total: {{ item.totalGeneral | currency }}</li>
+        @if (item.descripcion) {
+
+        <li>Descripcion:{{ item.descripcion }}</li>
+        }
       </p>
 
       <div class="absolute top-4 left-4 text-red-600">{{ config.statusUser()[item.estado] }}</div>
