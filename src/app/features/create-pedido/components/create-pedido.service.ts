@@ -120,8 +120,8 @@ export class CreatePedidoService {
       descripcion: step2.descripcion,
       estado: step2.estado,
       descuento: step2.descuento,
-      tiempoGeneral: this.form.controls.step_2.controls.totalGeneral.value,
-      totalGeneral: this.form.controls.step_2.controls.tiempoGeneral.value,
+      tiempoGeneral: this.form.controls.step_2.controls.tiempoGeneral.value,
+      totalGeneral: this.form.controls.step_2.controls.totalGeneral.value,
       codigo: this.form.controls.step_2.get('codigo')?.value,
 
     };

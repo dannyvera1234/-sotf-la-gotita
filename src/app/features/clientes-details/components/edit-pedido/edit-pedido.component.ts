@@ -38,6 +38,9 @@ export class EditPedidoComponent {
       descuento: value.descuento,
       totalGeneral: value.totalGeneral,
       tiempoGeneral: value.tiempoGeneral,
+      tipoPago: value.tipoPago,
+
+
     });
 
     // Actualizar el FormArray de prendas
