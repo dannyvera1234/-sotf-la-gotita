@@ -23,7 +23,7 @@ import { PedidosService } from '../../../../services';
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PedidosComponent implements OnInit {
+export class PedidosComponent {
   @Input({ required: true }) idCliente!: string;
 
   @Output() newPedidos = new EventEmitter<any | null>();
@@ -59,23 +59,19 @@ export class PedidosComponent implements OnInit {
       { values: [] as string[], labels: [] as string[] },
     );
   });
+
   constructor(
     public readonly config: LaGotitaConfigService,
     public readonly configService: ConfigService,
     public readonly _fb: FormBuilder,
     public readonly pedidosService: PedidosService,
   ) {
+    this.generateNewCode();
+
     const currentDate = new Date();
     this.today.set(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}-${currentDate.getDate()}`);
 
     this.listPedido();
-  }
-  ngOnInit(): void {
-    this.generateNewCode();
-  }
-
-  deletePrenda(index: number) {
-    this.prendas.removeAt(index);
   }
 
   public form = this._fb.group({
@@ -87,22 +83,19 @@ export class PedidosComponent implements OnInit {
         nombre_prenda: ['', [Validators.required]],
         cantidad: [0],
         tiempo_lavado: [0],
-        precio: [0],
+        precio: [0], // Precio unitario
+        precio_total: [0], // Precio total
+        total_tiempo: [0], // Tiempo total
       }),
     ]),
     fecha_ingreso: [new Date(), [Validators.required]],
     fecha_entrega: [new Date(), [Validators.required]],
     descripcion: ['', [Validators.maxLength(50)]],
     descuento: [0],
-    total: [{ value: '', disabled: true }],
-    tiempo_total: [{ value: '', disabled: true }],
+    totalGeneral: [{ value: '', disabled: true }],
+    tiempoGeneral: [{ value: '', disabled: true }],
   });
 
-  generateNewCode() {
-    const randomSuffix = Math.floor(10 + Math.random() * 90); // Número aleatorio entre 10 y 99
-    const newCode = `COD-${randomSuffix}`;
-    this.form.patchValue({ codigo: newCode });
-  }
 
   public listPedido(): void {
     this.loading.set(true);
@@ -117,58 +110,36 @@ export class PedidosComponent implements OnInit {
       });
   }
 
+
+  deletePrenda(index: number) {
+    this.prendas.removeAt(index);
+  }
+
+  generateNewCode() {
+    const randomSuffix = Math.floor(10 + Math.random() * 90); // Número aleatorio entre 10 y 99
+    const newCode = `COD-${randomSuffix}`;
+    this.form.patchValue({ codigo: newCode });
+  }
+
+
   get prendas() {
-    return this.form.get('prendas') as FormArray;
+    return this.form.controls.prendas as FormArray;
   }
 
-  onPedidoSelect(event: Event, index: number) {
-    const selectedPrendaId = (event.target as HTMLSelectElement).value;
-    const pedidoSeleccionado = this.pedidos().find((pedido) => pedido.id === selectedPrendaId);
 
-    if (pedidoSeleccionado) {
-      const prenda = this.prendas.at(index) as FormGroup;
 
-      // Aquí asignamos el precio unitario, cantidad y tiempo de lavado
-      prenda.patchValue({
-        nombre_prenda: pedidoSeleccionado.nombre_prenda,
-        cantidad: pedidoSeleccionado.cantidad,
-        tiempo_lavado: pedidoSeleccionado.tiempo_lavado,
-        precio: pedidoSeleccionado.precio,
-        // preciototal: pedidoSeleccionado.precio * pedidoSeleccionado.cantidad, // Calculamos el precio total
-      });
-    }
-  }
-
-  onCantidadChange(event: Event, index: number) {
-    const prenda = this.prendas.at(index);
-
-    // Obtener la nueva cantidad ingresada
-    let cantidad = Number((event.target as HTMLInputElement).value);
-
-    // Validar que la cantidad sea al menos 1
-    if (cantidad <= 0) {
-      cantidad = 1;
-    }
-
-    // Obtener el precio unitario y el tiempo por unidad (no se modifican)
-
-    const precioUnidad = prenda.get('precio')?.value || 0;
-
-    // Calcular el nuevo precio total y el nuevo tiempo total
-    const nuevoPrecioTotal = precioUnidad * cantidad;
-
-    console.log('Cantidad:', cantidad);
-    console.log('Precio unitario:', precioUnidad);
-    console.log('Nuevo precio total:', nuevoPrecioTotal);
-    // console.log('Nuevo tiempo total:', nuevoTiempoTotal);
-
-    // Solo actualizamos el campo 'preciototal' y 'tiempo_lavado', no el 'precio'
-    prenda.patchValue({
-      cantidad: cantidad, // Actualizar solo cantidad
-      preciototal: nuevoPrecioTotal, // Actualizar solo el precio total
+  addPrenda() {
+    const prendaGroup = this._fb.group({
+      nombre_prenda: ['', [Validators.required]],
+      cantidad: [0],
+      tiempo_lavado: [0],
+      precio: [0],
+      precio_total: [0],
+      total_tiempo: [0],
     });
-  }
 
+    this.prendas.push(prendaGroup);
+  }
   restrictInput(event: KeyboardEvent) {
     // Permitir solo teclas de flecha (arriba y abajo) y retroceso
     const allowedKeys = ['ArrowUp', 'ArrowDown', 'Backspace', 'Tab'];
@@ -178,53 +149,81 @@ export class PedidosComponent implements OnInit {
     }
   }
 
-  addPrenda() {
-    const prendaGroup = this._fb.group({
-      nombre_prenda: ['', [Validators.required]],
-      cantidad: [0],
-      tiempo_lavado: [0],
-      precio: [0],
-    });
+  onPedidoSelect(event: Event, index: number) {
+    const selectedPrendaId = (event.target as HTMLSelectElement).value;
+    const pedidoSeleccionado = this.pedidos().find((pedido) => pedido.id === selectedPrendaId);
 
-    this.prendas.push(prendaGroup);
+    if (pedidoSeleccionado) {
+      const prenda = this.prendas.at(index) as FormGroup;
+
+      prenda.patchValue({
+        nombre_prenda: pedidoSeleccionado.nombre_prenda,
+        cantidad: 1, // Cantidad inicial
+        tiempo_lavado: pedidoSeleccionado.tiempo_lavado,
+        precio: pedidoSeleccionado.precio, // Precio unitario
+        precio_total: pedidoSeleccionado.precio, // Precio total inicial
+        total_tiempo: pedidoSeleccionado.tiempo_lavado, // Tiempo total inicial
+      });
+    }
+    this.updateTotal();
   }
 
-  calcularTotal(): number {
-    let total = 0;
 
-    // Recorrer todas las prendas en el FormArray y sumar el precio * cantidad
-    this.prendas.controls.forEach((prenda) => {
-      const cantidad = prenda.get('cantidad')?.value || 0;
-      const precio = prenda.get('precio')?.value || 0;
+  onCantidadChange(event: Event, index: number) {
+    const prenda = this.prendas.at(index);
 
-      total += cantidad * precio; // Se multiplica por cantidad
+    let cantidad = Number((event.target as HTMLInputElement).value);
+
+    if (cantidad <= 0) {
+      cantidad = 1;
+    }
+
+    const precioUnidad = prenda.get('precio')?.value || 0; // Precio unitario
+    const tiempoLavado = prenda.get('tiempo_lavado')?.value || 0;
+
+    const precioTotal = (precioUnidad * cantidad).toFixed(2); // Calcular precio total
+    const tiempoTotal = tiempoLavado * cantidad;
+
+    prenda.patchValue({
+      cantidad,
+      precio_total: precioTotal, // Actualizar precio total
+      total_tiempo: tiempoTotal, // Actualizar tiempo total
     });
 
-    // Obtener el valor del descuento desde el formulario
-    const descuento = this.form.get('descuento')?.value || 0; // Descuento en porcentaje
-
-    // Aplicar el descuento
-    const totalConDescuento = total - total * (descuento / 100);
-
-    // Asegurarse de que el total no sea negativo
-    return Math.max(totalConDescuento, 0);
+    this.updateTotal();
   }
-  calcularTiempo(): string {
+
+
+
+
+  updateTotal() {
+    let totalGeneral = 0;
     let tiempoTotal = 0;
 
-    // Sumar el tiempo de lavado de cada prenda
-    this.prendas.controls.forEach((prenda) => {
-      const tiempoLavado = +prenda.get('tiempo_lavado')?.value || 0; // Asegurarse de que sea un número
-      tiempoTotal += tiempoLavado;
-      console.log('Tiempo lavado:', tiempoLavado);
+    // Recorremos cada prenda seleccionada para calcular el total general y el tiempo de lavado
+    this.form.get('prendas')?.value.forEach((prenda: any) => {
+      const cantidad = prenda.cantidad || 0;
+      const precio = prenda.precio || 0;
+      const tiempoLavado = prenda.tiempo_lavado || 0;
+
+      totalGeneral += cantidad * precio;  // Calculamos el precio total
+      tiempoTotal += cantidad * tiempoLavado;  // Calculamos el tiempo total de lavado
     });
 
-    // Convertir a horas y minutos
-    const horas = Math.floor(tiempoTotal / 60);
-    const minutos = tiempoTotal % 60;
+    // Obtenemos el valor del descuento
+    const descuento = this.form.get('descuento')?.value || 0;
 
-    // Formatear el resultado
-    return `${horas}h ${minutos}m`;
+    // Verificamos que el descuento sea un número válido y que esté en el rango adecuado (0 a 100)
+    if (descuento >= 0 && descuento <= 100) {
+      const descuentoAplicado = totalGeneral * (descuento / 100);
+      totalGeneral -= descuentoAplicado;  // Aplicamos el descuento al total general
+    }
+
+    // Actualizamos los campos del formulario con los valores calculados
+    this.form.patchValue({
+      totalGeneral: totalGeneral.toFixed(2),   // Total con 2 decimales
+      tiempoGeneral: `${tiempoTotal} minutos`, // Tiempo como string (puedes personalizar la unidad)
+    });
   }
 
   public submit(): void {
@@ -235,12 +234,11 @@ export class PedidosComponent implements OnInit {
 
     const pedidos = {
       ...this.form.value,
-      codigo: this.form.get('codigo')?.value,
-      total: this.calcularTotal(),
-      tiempo_total: this.calcularTiempo(),
+      codigo: this.form.controls.codigo.value,
+      totalGeneral: this.form.controls.totalGeneral.value,
+      tiempoGeneral: this.form.controls.tiempoGeneral.value,
     };
-
-    console.log('Pedido:', pedidos);
+    console.log(pedidos);
 
     of(this.loading.set(true))
       .pipe(
@@ -263,14 +261,12 @@ export class PedidosComponent implements OnInit {
           fecha_entrega: new Date(),
           prendas: [],
           descuento: 0,
-          total: '',
-          tiempo_total: '',
+          totalGeneral: '',
+          tiempoGeneral: '',
         });
         // Generar un nuevo código para el próximo pedido
         this.generateNewCode();
 
-        // Log para confirmar que el código ha cambiado
-        console.log('Nuevo código generado:', this.form.get('codigo')?.value);
       });
   }
 }

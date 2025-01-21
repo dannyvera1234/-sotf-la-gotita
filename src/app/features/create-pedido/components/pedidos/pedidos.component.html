@@ -61,9 +61,8 @@
             id="cantidad"
             type="number"
             class="w-full border border-gray-300 rounded-md py-2 px-3"
-            formGroupName="cantidad"
+            formControlName="cantidad"
             [min]="1"
-            [value]="prenda.value.cantidad"
             (keydown.enter)="$event.preventDefault()"
             (keydown)="restrictInput($event)"
             (change)="onCantidadChange($event, $index)"
@@ -77,9 +76,8 @@
             id="precio"
             type="number"
             class="w-full bg-gray-100 border border-gray-300 rounded-md py-2 px-3 text-gray-700 cursor-not-allowed pr-8"
-            [value]="prenda.value.precio * prenda.value.cantidad"
+            formControlName="precio_total"
             (keydown.enter)="$event.preventDefault()"
-
             readonly
           />
           <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
@@ -92,9 +90,9 @@
             id="tiempo"
             type="number"
             class="w-full bg-gray-100 border border-gray-300 rounded-md py-2 px-3 text-gray-700 cursor-not-allowed pr-8"
-            [value]="prenda.value.tiempo_lavado * prenda.value.cantidad"
+            formControlName="total_tiempo"
             (keydown.enter)="$event.preventDefault()"
-            disabled
+
           />
           <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">min</span>
         </div>
@@ -172,8 +170,7 @@
           id="tiempo_total"
           class="shadow appearance-none border-2 border-red-500 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:border-red-700 focus:ring-2 focus:ring-red-300 pr-12"
           type="text"
-          [value]="calcularTiempo()"
-          formControlName="tiempo_total"
+          formControlName="tiempoGeneral"
           readonly
         />
       </div>
@@ -189,6 +186,7 @@
           formControlName="descuento"
           (keydown.enter)="$event.preventDefault()"
           placeholder="Descuento"
+          (input)="updateTotal()"
         />
         <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">%</span>
       </div>
@@ -202,8 +200,7 @@
         type="number"
         (keydown.enter)="$event.preventDefault()"
         placeholder="Total a pagar"
-        formControlName="total"
-        [value]="calcularTotal()"
+        formControlName="totalGeneral"
         readonly
       />
     </div>
