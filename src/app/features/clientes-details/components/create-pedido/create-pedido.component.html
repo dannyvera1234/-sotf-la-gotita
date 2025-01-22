@@ -23,14 +23,14 @@
     </div>
 
     <!-- Campo de Código -->
-    <!-- <div class="flex items-center">
+    <div class="flex items-center">
       <input
         class="shadow appearance-none border-2 border-blue-500 rounded w-32 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:border-blue-700 focus:ring-2 focus:ring-blue-300"
         type="text"
         formControlName="codigo"
         placeholder="Código"
       />
-    </div> -->
+    </div>
   </div>
   <div formArrayName="prendas">
     @for (prenda of prendas.controls; track $index) {
@@ -61,10 +61,10 @@
             id="cantidad"
             type="number"
             class="w-full border border-gray-300 rounded-md py-2 px-3"
-            formGroupName="cantidad"
-            [value]="prenda.value.cantidad"
-            [min]="0"
+            formControlName="cantidad"
+            [min]="1"
             (keydown.enter)="$event.preventDefault()"
+            (keydown)="restrictInput($event)"
             (change)="onCantidadChange($event, $index)"
           />
         </div>
@@ -76,8 +76,7 @@
             id="precio"
             type="number"
             class="w-full bg-gray-100 border border-gray-300 rounded-md py-2 px-3 text-gray-700 cursor-not-allowed pr-8"
-            formGroupName="precio"
-            [value]="prenda.value.precio"
+            formControlName="precio_total"
             (keydown.enter)="$event.preventDefault()"
             readonly
           />
@@ -91,10 +90,9 @@
             id="tiempo"
             type="number"
             class="w-full bg-gray-100 border border-gray-300 rounded-md py-2 px-3 text-gray-700 cursor-not-allowed pr-8"
-            formGroupName="tiempo_lavado"
-            [value]="prenda.value.tiempo_lavado"
+            formControlName="total_tiempo"
             (keydown.enter)="$event.preventDefault()"
-            disabled
+
           />
           <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">min</span>
         </div>
@@ -172,8 +170,7 @@
           id="tiempo_total"
           class="shadow appearance-none border-2 border-red-500 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:border-red-700 focus:ring-2 focus:ring-red-300 pr-12"
           type="text"
-          [value]="calcularTiempo()"
-          formControlName="tiempo_total"
+          formControlName="tiempoGeneral"
           readonly
         />
       </div>
@@ -189,6 +186,7 @@
           formControlName="descuento"
           (keydown.enter)="$event.preventDefault()"
           placeholder="Descuento"
+          (input)="updateTotal()"
         />
         <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">%</span>
       </div>
@@ -202,12 +200,12 @@
         type="number"
         (keydown.enter)="$event.preventDefault()"
         placeholder="Total a pagar"
-        formControlName="total"
-        [value]="calcularTotal()"
+        formControlName="totalGeneral"
         readonly
       />
     </div>
   </div>
+
 
   <div class="flex gap-4 justify-end mt-10 md:flex-row flex-col text-center max-md:w-full">
     @if (!loading()) {
